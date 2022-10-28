@@ -1,0 +1,529 @@
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+
+import { AiOutlineLogout, AiOutlineUser } from "react-icons/ai";
+import { PageBanner } from "./PageBanner";
+import { store } from "../../store";
+import { Space, Avatar, Image, Menu, Typography, Badge } from "antd";
+import type { MenuProps } from "antd";
+import * as routes from "../../constants/routes";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import jd_ver from "../assets/img/jd-ver.svg";
+import {
+  InboxOutlined,
+  MailOutlined,
+  QuestionCircleOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import {
+  displayErrorMessage,
+  displaySuccessNotification,
+} from "../../util/notifications";
+import * as AuthService from "../../store/auth/auth.actions";
+import { clearAuthError, clearAuthStatus } from "../../store/auth/auth.slice";
+import { UserType } from "../../enums";
+import { useFireBase } from "../Components/ChatStore/firebase/config";
+import { goOffline } from "firebase/database";
+import {
+  clearProductStateError,
+  clearProductStateStatus,
+} from "../../store/product/product.slice";
+import * as ProductService from "../../store/product/product.actions";
+import { Helmet } from "react-helmet-async";
+import { clearTransactionStateError } from "../../store/transaction/transaction.slice";
+import useEffectOnce from "../../hooks/useEffectOnce";
+import chatIcon from "../assets/img/chat-icon.png";
+import { ChatNotifyBadge } from "../Components";
+
+// import "../../js/jquery.min.js";
+// import "../../js/jquery-ui.min.js";
+// import "../../js/albery.js";
+
+const { Text } = Typography;
+
+interface PageHeaderProps {
+  bannerImage: string;
+  useBannerAsStrip: boolean;
+}
+
+const { Item, SubMenu } = Menu;
+
+export const PageHeader = (props: PageHeaderProps) => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const {
+    user,
+    status: authStatus,
+    error: authError,
+  } = useAppSelector((state) => state.auth);
+
+  const { status: productStatus, error: productError } = useAppSelector(
+    (state) => state.product
+  );
+
+  const { status: setupStatus, error: setupError } = useAppSelector(
+    (state) => state.config
+  );
+
+  useEffect(() => {
+    if (setupError) {
+      displayErrorMessage(setupError);
+      dispatch(clearTransactionStateError());
+    }
+  }, [dispatch, setupError]);
+
+  useEffect(() => {
+    if (productError) {
+      displayErrorMessage(productError);
+      dispatch(clearProductStateError());
+    }
+  }, [dispatch, productError]);
+
+  useEffect(() => {
+    if (productStatus === "addLikesResolved") {
+      displaySuccessNotification("Likes added");
+      dispatch(ProductService.fetchProductsForSell(undefined));
+    }
+
+    if (productStatus === "addToWishListResolved") {
+      displaySuccessNotification("Added to Wishlist");
+      dispatch(ProductService.fetchProductsForSell(undefined));
+      dispatch(ProductService.fetchProductsWishList());
+    }
+
+    if (productStatus === "approveProductResolved") {
+      displaySuccessNotification("Product has been approved");
+      if (
+        [UserType.ADMIN, UserType.SUPER_ADMIN].includes(Number(user.userType))
+      ) {
+        dispatch(ProductService.fetchAllProducts(undefined));
+      } else {
+        dispatch(ProductService.fetchUserProducts());
+      }
+    }
+
+    if (productStatus === "createProductResolved") {
+      displaySuccessNotification("Product has been uploaded");
+    }
+    if (productStatus.endsWith("Resolved")) {
+      dispatch(clearProductStateStatus());
+    }
+  }, [dispatch, productStatus]);
+
+  useEffect(() => {
+    if (authError) {
+      displayErrorMessage(authError);
+
+      dispatch(clearAuthError());
+    }
+  }, [dispatch, authError]);
+
+  useEffect(() => {
+    if (authStatus === "sendNotificationResolved") {
+      displaySuccessNotification("Email has been sent successfully");
+
+      dispatch(clearAuthStatus());
+    }
+    if (authStatus === "forgetPasswordResolved") {
+      displaySuccessNotification(
+        "Email sent, Please check your inbox for reset password link."
+      );
+
+      dispatch(clearAuthStatus());
+    }
+    if (authStatus === "resetPasswordResolved") {
+      displaySuccessNotification("Reset password successfully.");
+
+      clearAuthStatus();
+    }
+    if (authStatus === "userSignedUp") {
+      displaySuccessNotification(
+        "Account has been created, Please check your email for the activation."
+      );
+
+      navigate(routes.LOGIN);
+
+      dispatch(clearAuthStatus());
+    }
+  }, [dispatch, authStatus]);
+
+  const changeLocation = (placeToGo: string) => {
+    navigate(placeToGo, { replace: true });
+    window.location.reload();
+  };
+
+  return (
+    <>
+      <Helmet>
+        <title>JuniorDeals</title>
+      </Helmet>{" "}
+      <section className="sec-topMost">
+        <div className="topBar">
+          <div className="tb-left"></div>
+          {user && user.userName ? <PrivateLinks /> : <PublicLinks />}
+        </div>
+        {[UserType.ADMIN, UserType.SUPER_ADMIN].includes(
+          Number(user.userType)
+        ) ? (
+          <div className="menuCutom">
+            <ul className="jdNav">
+              <li>
+                <Link to={routes.ADMIN_HOME} className="btn-link">
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={routes.ADMIN_HOME}
+                  // onClick={() => changeLocation(routes.FETCH_STORE_PRODUCT)}
+                  state={{ activeTabIndex: "1" }}
+                  className="btn-link"
+                  replace
+                >
+                  Manage Products
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={routes.ADMIN_HOME}
+                  // onClick={() => changeLocation(routes.FETCH_STORE_PRODUCT)}
+                  state={{ activeTabIndex: "2" }}
+                  className="btn-link"
+                  replace
+                >
+                  Manage Deals
+                </Link>
+              </li>
+            </ul>
+            <a href="/home">
+              <img className="brand" src={jd_ver} />
+            </a>
+            <ul className="jdNav">
+              <li>
+                <Link
+                  to={routes.ADMIN_HOME}
+                  state={{ activeTabIndex: "3" }}
+                  className="btn-link"
+                >
+                  Manager Credits
+                </Link>
+              </li>
+              {/* <li>
+                <Link
+                  to={routes.QUIZ_VIEW}
+                  state={{ activeTabIndex: "5" }}
+                  className="btn-link"
+                >
+                  Setup Quiz
+                </Link>
+              </li> */}
+              <li>
+                <Link
+                  to={routes.ADMIN_HOME}
+                  state={{ activeTabIndex: "4" }}
+                  className="btn-link"
+                >
+                  Manager Users
+                </Link>
+              </li>
+              {/* <li>
+<NavLink to={routes.USER_SIGNUP} className="btn-link">
+Join Us
+</NavLink>
+</li> */}
+              <li>
+                <a href="#" className="btn-link">
+                  Contact Us
+                </a>
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <div className="menuCutom">
+            <ul className="jdNav">
+              <li>
+                {/* {user.userType === UserType.PARENT ? (
+                <Link to="/navigate/parent/home" className="btn-link">
+                  Home
+                </Link>
+              ) : (
+                ""
+              )}
+              {user.userType === UserType.CHILD ? (
+                <Link to="/navigate/child/home" className="btn-link">
+                  Home
+                </Link>
+              ) : (
+                ""
+              )}
+              {user.userType === UserType.ADMIN ? (
+                <Link to="/navigate/admin/home" className="btn-link">
+                  Home
+                </Link>
+              ) : (
+                ""
+              )}
+              {!user.userName && (
+                <a href="/" className="btn-link">
+                  Home
+                </a>
+              )} */}
+                <Link to={routes.HOME} className="btn-link">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={routes.FETCH_STORE_PRODUCT}
+                  // onClick={() => changeLocation(routes.FETCH_STORE_PRODUCT)}
+                  state={{ ["barter"]: "active" }}
+                  className="btn-link"
+                  replace
+                >
+                  Barter
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={routes.FETCH_STORE_PRODUCT}
+                  // onClick={() => changeLocation(routes.FETCH_STORE_PRODUCT)}
+                  state={{ ["product"]: "active" }}
+                  className="btn-link"
+                  replace
+                >
+                  Products
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={routes.USER_PROFILE}
+                  state={{ activeTabIndex: "5" }}
+                  className="btn-link"
+                >
+                  My Wallet
+                </Link>
+              </li>
+            </ul>
+            <a href="/home">
+              <img className="brand" src={jd_ver} />
+            </a>
+            <ul className="jdNav">
+              {/* <li>
+                <NavLink to={routes.QUIZ_VIEW} className="btn-link">
+                  Quizes
+                </NavLink>
+              </li>{" "} */}
+              <li>
+                <Link to="/view/aboutus" className="btn-link">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/view/howitworks" className="btn-link">
+                  How it Works
+                </Link>
+              </li>
+              <li>
+                <Link to="/view/contactus" className="btn-link">
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
+          </div>
+        )}
+        <PageBanner
+          bannerImage={props.bannerImage}
+          useBannerAsStrip={props.useBannerAsStrip}
+        />
+      </section>
+    </>
+  );
+};
+
+const PublicLinks = () => {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <div style={{ marginRight: "20px" }}>
+        <Space direction="horizontal">
+          <div key="/login">
+            {/* <NavLink to={routes.LOGIN}>Sign In</NavLink> */}
+            <button
+              type="button"
+              className="btn-round btn-block"
+              onClick={() => navigate(routes.LOGIN)}
+              style={{ padding: "5px 20px", marginTop: "20px" }}
+            >
+              Sign In
+            </button>
+          </div>
+          <div key="/signup">
+            <button
+              type="button"
+              className="btn-round btn-block"
+              onClick={() => navigate(routes.USER_SIGNUP)}
+              style={{ padding: "5px 20px", marginTop: "20px" }}
+            >
+              Create Account
+            </button>
+          </div>
+        </Space>
+      </div>
+    </>
+  );
+};
+
+const PrivateLinks = () => {
+  const { user, status } = useAppSelector((state) => state.auth);
+
+  const dispatch = useAppDispatch();
+
+  const navigate = useNavigate();
+
+  const onLogOut = () => {
+    dispatch(AuthService.logOut());
+    displaySuccessNotification("You've successfully logged out!");
+  };
+
+  const onMenuItemClick: MenuProps["onClick"] = (e) => {
+    // console.log('click ', e);
+    // setCurrent(e.key);
+    if (e.key === "/logout") {
+      onLogOut();
+    }
+  };
+
+  const items = [];
+
+  if ([UserType.ADMIN, UserType.SUPER_ADMIN].includes(Number(user.userType))) {
+    items.push({
+      label: <Avatar icon={<UserOutlined />} />,
+      key: "submenu",
+      children: [
+        {
+          label: (
+            <>
+              <AiOutlineLogout></AiOutlineLogout> <Text>Log out</Text>
+            </>
+          ),
+          key: "/logout",
+        },
+      ],
+    });
+  } else {
+    items.push({
+      label: <Avatar icon={<UserOutlined />} />,
+      key: "submenu",
+      children: [
+        {
+          label: (
+            <NavLink to={routes.USER_PROFILE}>
+              <AiOutlineUser></AiOutlineUser> Profile
+            </NavLink>
+          ),
+          key: "/user",
+        },
+        {
+          label: (
+            <NavLink to={routes.FETCH_USER_PRODUCT}>
+              <InboxOutlined /> My Products
+            </NavLink>
+          ),
+          key: "/user/product",
+        },
+        // {
+        //   label: (
+        //     <NavLink to={routes.FETCH_USER_QUIZ}>
+        //       <QuestionCircleOutlined /> My Quizes
+        //     </NavLink>
+        //   ),
+        //   key: "/user/quizes",
+        // },
+        {
+          label: (
+            <>
+              <AiOutlineLogout></AiOutlineLogout> <Text>Log out</Text>
+            </>
+          ),
+          key: "/logout",
+        },
+      ],
+    });
+  }
+
+  return (
+    <>
+      <Space>
+        <div className="tb-right">
+          <p>
+            <b>Hi,</b> {user.userName}
+          </p>
+        </div>
+        {/* <ChatNotifyBadge user={user} size="small" bgcolor="rgb(247,248,250)" /> */}
+        <Menu
+          mode="horizontal"
+          selectable={false}
+          style={{ backgroundColor: "#F7F8FA" }}
+          items={items}
+          // items={[
+          //   {
+          //     label: <Avatar icon={<UserOutlined />} />,
+          //     key: "submenu",
+          //     children: [
+          //       {
+          //         label: (
+          //           <NavLink to={routes.USER_PROFILE}>
+          //             <AiOutlineUser></AiOutlineUser> Profile
+          //           </NavLink>
+          //         ),
+          //         key: "/user",
+          //       },
+          //       {
+          //         label: (
+          //           <NavLink to={routes.FETCH_USER_PRODUCT}>
+          //             <InboxOutlined /> My Products
+          //           </NavLink>
+          //         ),
+          //         key: "/user/product",
+          //       },
+          //       {
+          //         label: (
+          //           <>
+          //             <AiOutlineLogout></AiOutlineLogout> <Text>Log out</Text>
+          //           </>
+          //         ),
+          //         key: "/logout",
+          //       },
+          //     ],
+          //   },
+          // ]}
+          onClick={onMenuItemClick}
+        >
+          {/* <SubMenu title={<Avatar icon={<UserOutlined />} />} key="submenu">
+              {user.userType !== UserType.ADMIN && (
+                <>
+                  <Item key="/user">
+                    <NavLink to={routes.USER_PROFILE}>
+                      <AiOutlineUser></AiOutlineUser> Profile
+                    </NavLink>
+                  </Item>
+
+                  <Item key="/user/product">
+                    <NavLink to={routes.FETCH_USER_PRODUCT}>
+                      <InboxOutlined /> My Products
+                    </NavLink>
+                  </Item>
+                </>
+              )}
+              <Item key={routes.LOGOUT} onClick={onLogOut}>
+                <AiOutlineLogout></AiOutlineLogout> Log out
+              </Item>
+            </SubMenu> */}
+        </Menu>
+      </Space>
+    </>
+  );
+};

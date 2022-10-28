@@ -1,0 +1,340 @@
+/* body {
+  font-family: sans-serif;
+  padding: 0%;
+  scroll-behavior: smooth;
+} */
+
+/* Messages */
+
+.messages {
+  font-size: smaller;
+  height: 80vh;
+  width: 40vw;
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.msg {
+  padding: 1%;
+}
+
+.msg span {
+  color: white;
+  border-radius: 10px 10px 10px 0px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  padding: 10px;
+}
+
+.msg-content {
+  max-width: 30vw;
+  margin: 0.5vw;
+  margin: 1vw 0vw 1vw 0vw;
+  display: flex;
+  flex-direction: row;
+}
+
+.msg-left,
+.msg-right {
+  margin: 0vw 1vw 0vw 1vw;
+}
+
+.msg-right {
+  font-size: smaller;
+  color: grey;
+}
+
+.sentByYou {
+  margin-left: auto;
+}
+
+.sentByYou span {
+  color: white;
+  border-radius: 10px 10px 0px 10px;
+  word-break: break-all;
+}
+
+.sentByYou .msg-content {
+  flex-direction: row-reverse;
+}
+
+.sentByYou {
+  text-align: right;
+}
+
+.messages::-webkit-scrollbar {
+  width: 0.7em;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: grey;
+}
+
+/* Layout */
+
+.homepage {
+  display: flex;
+  padding: 0%;
+  margin: 0%;
+}
+
+aside,
+main {
+  padding: 1%;
+  margin: 0%;
+  height: 100vh;
+}
+
+aside {
+  width: 25%;
+}
+
+li,
+ul {
+  list-style-type: none;
+  margin: 0%;
+  padding: 0%;
+}
+
+li {
+  margin-bottom: 20px;
+}
+
+.members {
+  height: 90vh;
+  overflow: auto;
+}
+
+.you {
+  color: limegreen;
+}
+
+/* textbox */
+
+.textbox {
+  width: 100%;
+  display: flex;
+}
+
+.textbox input {
+  width: 100%;
+  margin: 1.5%;
+  padding: 2%;
+  border-radius: 20px;
+}
+
+/* registeration */
+
+.registeration {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.registeration p {
+  width: 50%;
+  margin: 1%;
+  padding: 1%;
+}
+
+.registeration input {
+  width: 300px;
+  margin: 1%;
+  padding: 1%;
+}
+
+.registeration button {
+  margin: 1%;
+  padding: 1%;
+}
+
+.settings input {
+  width: 65%;
+}
+
+/* settings */
+
+.request {
+  display: flex;
+  justify-content: center;
+}
+
+.settings button,
+.settings input,
+.settings select {
+  margin: 2%;
+  padding: 4%;
+  border-radius: 10px;
+}
+
+.settings,
+.settheme {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* down button */
+
+/* button:hover {
+  opacity: 0.8;
+  transition: 0.25s;
+} */
+
+#down-button {
+  position: absolute;
+  right: 14vw;
+  z-index: 99;
+}
+
+#down-button i {
+  font-size: 1.5rem;
+}
+
+.msgs-list {
+	float: left;
+	width: 100%;
+	background-color: #fff;
+	border-top: 1px solid #e5e5e5;
+	border-left: 1px solid #e5e5e5;
+	border-bottom: 1px solid #e5e5e5;
+	border-right: 1px solid #e5e5e5
+}
+
+.msg-title1 {
+	float: left;
+	width: 100%;
+	padding: 15px 20px;
+	border-bottom: 1px solid #e5e5e5
+}
+
+.srch_br {
+	position: relative
+}
+
+.list_search {
+	width: 100%;
+	height: 40px;
+	border: 1px solid #e5e5e5;
+	border-radius: 20px;
+	padding: 0 10px 0 40px;
+	background: #fafafa
+}
+
+.messages-list {
+	float: left;
+	width: 100%;
+	height: 465px;
+	overflow-y: auto
+}
+
+.messages-list ul {
+	float: left;
+	width: 100%
+}
+
+.messages-list ul li {
+	float: left;
+	width: 100%;
+	padding: 20px;
+	border-bottom: 1px solid #eee;
+	cursor: pointer
+}
+
+.messages-list ul li.active {
+	background-color: #fff
+}
+
+.messages-list ul li.active .msg-status {
+	border: 2px solid #fff;
+	height: 14px;
+	width: 14px;
+	background-color: #e4383f
+}
+
+.scrollstyle_4::-webkit-scrollbar {
+	width: 6px;
+	background-color: #f1f1f1
+}
+
+.scrollstyle_4::-webkit-scrollbar-thumb {
+	background-color: #e5e5e5
+}
+
+.scrollstyle_4::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, .3);
+	background-color: #f5f5f5
+}
+
+.usr-msg-details {
+	float: left;
+	position: relative;
+	width: 100%
+}
+
+.usr-ms-img {
+	float: left;
+	position: relative
+}
+
+img.user-dp {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  background-color: #e1e1e1;
+}
+
+.msg-status {
+	-webkit-border-radius: 100px;
+	-moz-border-radius: 100px;
+	-ms-border-radius: 100px;
+	-o-border-radius: 100px;
+	border-radius: 100px;
+	background-color: #a1a1a1;
+	position: absolute;
+	top: -5px;
+	right: 0;
+	border: 2px solid #fff;
+	height: 14px;
+	width: 14px
+}
+
+.messages-list ul li.active .msg-status {
+	border: 2px solid #fff;
+	height: 14px;
+	width: 14px;
+	background-color: #e4383f
+}
+
+.usr-mg-info {
+	float: left;
+	padding-left: 15px;
+	margin-top: 0
+}
+
+.usr-mg-info h3 {
+	color: #242424;
+	font-size: 16px;
+	font-weight: 500;
+	margin-bottom: 3px;
+	font-family: roboto, sans-serif
+}
+
+.usr-mg-info p {
+	color: #757575;
+	font-size: 13px;
+	font-weight: 400;
+	margin-bottom: 5px;
+	font-family: roboto, sans-serif
+}
+
+.usr-mg-info p img {
+	float: right;
+	position: relative;
+	top: 5px;
+	padding-left: 5px
+}

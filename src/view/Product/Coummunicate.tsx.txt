@@ -1,0 +1,164 @@
+import { Link, useLocation } from "react-router-dom";
+import Apiconfig from "../../config/Apiconfig";
+import * as routes from "../../constants/routes";
+import parse from "html-react-parser";
+import { ProductResponse } from "../../types";
+import ChatRoom from "../Components/ChatStore/ChatRoom";
+
+export const CommunicationPage = () => {
+  const location = useLocation();
+
+  // const { product } = (location.state as any) || {};
+  const product = location.state as ProductResponse;
+
+  return (
+    <>
+      <section className="sec-product-info">
+        <div className="row">
+          <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div className="albery-container">
+              <div className="albery-wrapper">
+                {product.productImage?.map((img: string) => (
+                  <div className="albery-item">
+                    <img
+                      src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${img}&type=product`}
+                      alt=""
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="move-right">
+                <a href="#" id="rightArrow">
+                  &nbsp;
+                </a>
+              </div>
+              <div className="move-left">
+                <a href="#" id="leftArrow">
+                  &nbsp;
+                </a>
+              </div>
+            </div>
+            <div className="pagination-container">
+              <div className="pagination-wrapper">
+                {product.productImage?.map((img: string) => (
+                  <div className="pagination-item" data-item="1">
+                    <img
+                      src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${img}&type=product`}
+                      alt=""
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <ChatRoom></ChatRoom>
+          </div>
+        </div>
+      </section>
+      <div className="sec-barter-latest">
+        <div className="freeHeadCenter">
+          <h2>
+            Recently Viewed Items
+            <br />
+            <small>
+              Consectetur adipisicing elit. Commodi dolores enim eos quos
+              voluptates.
+            </small>
+          </h2>
+        </div>
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="shot">
+                <div className="flexible">
+                  <img
+                    src="https://images.unsplash.com/photo-1545558014-8692077e9b5c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8a2lkcyUyMHRveXN8ZW58MHx8MHx8&w=1000&q=80"
+                    alt=""
+                  />
+                </div>
+                <div className="shotKnow">
+                  <div className="price">$1.00</div>
+                  <div className="like">
+                    33K&emsp;<i className="mdi mdi-heart"></i>
+                  </div>
+                </div>
+              </div>
+              <div className="shot">
+                <div className="flexible">
+                  <img
+                    src="https://securecdn.pymnts.com/wp-content/uploads/2020/10/toys-spending-pandemic-Mattel.jpg"
+                    alt=""
+                  />
+                </div>
+                <div className="shotKnow">
+                  <div className="price">$1.00</div>
+                  <div className="like">
+                    33K&emsp;<i className="mdi mdi-heart"></i>
+                  </div>
+                </div>
+              </div>
+              <div className="shot">
+                <div className="flexible">
+                  <img
+                    src="https://i.ebayimg.com/images/g/UYYAAOSwk-tiH~ne/s-l400.jpg"
+                    alt=""
+                  />
+                </div>
+                <div className="shotKnow">
+                  <div className="price">$1.00</div>
+                  <div className="like">
+                    33K&emsp;<i className="mdi mdi-heart"></i>
+                  </div>
+                </div>
+              </div>
+              <div className="shot">
+                <div className="flexible">
+                  <img
+                    src="https://cdn.britannica.com/59/59259-050-455241E6/toys-pottery-paper-Mexico-Oaxaca-collection-Height-1960.jpg"
+                    alt=""
+                  />
+                </div>
+                <div className="shotKnow">
+                  <div className="price">$1.00</div>
+                  <div className="like">
+                    33K&emsp;<i className="mdi mdi-heart"></i>
+                  </div>
+                </div>
+              </div>
+              <div className="shot">
+                <div className="flexible">
+                  <img
+                    src="https://us.123rf.com/450wm/olegdudko/olegdudko1908/olegdudko190806118/129160546-toys-collection-isolated-on-background.jpg?ver=6"
+                    alt=""
+                  />
+                </div>
+                <div className="shotKnow">
+                  <div className="price">$1.00</div>
+                  <div className="like">
+                    33K&emsp;<i className="mdi mdi-heart"></i>
+                  </div>
+                </div>
+              </div>
+              <div className="shot">
+                <div className="flexible">
+                  <img
+                    src="https://media.wired.com/photos/5bfdba3586ef9a0ff73f01dd/3:2/w_1280%2Cc_limit/Amazon-Toys.jpg"
+                    alt=""
+                  />
+                </div>
+                <div className="shotKnow">
+                  <div className="price">$1.00</div>
+                  <div className="like">
+                    33K&emsp;<i className="mdi mdi-heart"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
