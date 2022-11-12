@@ -2,19 +2,19 @@ import $ from "jquery";
 
 const lightmode = () => {
   $("body, .homepage").css({ background: "whitesmoke" });
-  $("body, input, button, select").css({ color: "black" });
-  $("body, input, button, select").css({ fontFamily: "sans-serif" });
+  $("body, input, select").css({ color: "black" });
+  $("body, input, select").css({ fontFamily: "sans-serif" });
   $(".messages").css({ background: "white" });
 
   $("input").css({
     border: "none",
     background: "white",
   });
-  $("button").css({
-    border: "none",
-    background: "white",
-    color: "black",
-  });
+  // $("button").css({
+  //   border: "none",
+  //   background: "white",
+  //   color: "black",
+  // });
 
   $(".sentByYou span").css({ background: "deepskyblue" });
   $(".sentByOther span").css({ background: "limegreen" });
@@ -27,19 +27,19 @@ const lightmode = () => {
 
 const darkmode = () => {
   $("body, .homepage").css({ background: "#2E2E2E" });
-  $("body, input, button, select").css({ color: "white" });
-  $("body, input, button, select").css({ fontFamily: "sans-serif" });
+  $("body, input, select").css({ color: "white" });
+  $("body, input, select").css({ fontFamily: "sans-serif" });
   $(".messages").css({ background: "#323232" });
 
   $("input").css({
     border: "none",
     background: "#5A5A5A",
   });
-  $("button").css({
-    border: "none",
-    background: "#5A5A5A",
-    color: "white",
-  });
+  // $("button").css({
+  //   border: "none",
+  //   background: "#5A5A5A",
+  //   color: "white",
+  // });
 
   $(".sentByYou span").css({ background: "blue" });
   $(".sentByOther span").css({ background: "green" });
@@ -52,19 +52,19 @@ const darkmode = () => {
 
 const terminal = () => {
   $("body, .homepage").css({ background: "black" });
-  $("body, input, button, select").css({ color: "white" });
-  $("body, input, button, select").css({ fontFamily: "monospace" });
+  $("body, input, select").css({ color: "white" });
+  $("body, input, select").css({ fontFamily: "monospace" });
   $(".messages").css({ background: "black" });
 
   $("input").css({
     border: "none",
     background: "#171717",
   });
-  $("button").css({
-    border: "none",
-    background: "#171717",
-    color: "white",
-  });
+  // $("button").css({
+  //   border: "none",
+  //   background: "#171717",
+  //   color: "white",
+  // });
 
   $(".sentByYou span, .sentByOther span").css({ background: "black" });
   $("#down-button").css({ color: "grey" });
@@ -80,19 +80,19 @@ const oldweb = () => {
     background: "url(https://wallpaperaccess.com/full/698524.jpg)",
     backgroundRepeat: "no-repeat",
   });
-  $("body, input, button, select").css({ color: "white" });
-  $("body, input, button, select").css({ fontFamily: "serif" });
+  $("body, input, select").css({ color: "white" });
+  $("body, input, select").css({ fontFamily: "serif" });
   $(".messages").css({ background: "black", opacity: 0.8 });
 
   $("input").css({
     border: "none",
     background: "#323232",
   });
-  $("button").css({
-    border: "none",
-    background: "#323232",
-    color: "white",
-  });
+  // $("button").css({
+  //   border: "none",
+  //   background: "#323232",
+  //   color: "white",
+  // });
 
   $(".sentByYou span").css({ background: "blue" });
   $(".sentByOther span").css({ background: "green" });
@@ -105,19 +105,19 @@ const oldweb = () => {
 
 const colourful = () => {
   $("body, .homepage").css({ background: "skyblue" });
-  $("body, input, button, select").css({ color: "black" });
-  $("body, input, button, select").css({ fontFamily: "Futura, sans-serif" });
+  $("body, input, select").css({ color: "black" });
+  $("body, input, select").css({ fontFamily: "Futura, sans-serif" });
   $(".messages").css({ background: "lightblue" });
 
   $("input").css({
     border: "none",
     background: "yellow",
   });
-  $("button").css({
-    border: "none",
-    background: "orange",
-    color: "black",
-  });
+  // $("button").css({
+  //   border: "none",
+  //   background: "orange",
+  //   color: "black",
+  // });
 
   $(".sentByYou span").css({ background: "deepskyblue" });
   $(".sentByOther span").css({ background: "limegreen" });
@@ -130,19 +130,19 @@ const colourful = () => {
 
 const gradientlight = () => {
   $("body, .homepage").css({ background: "whitesmoke" });
-  $("body, input, button, select").css({ color: "black" });
-  $("body, input, button, select").css({ fontFamily: "sans-serif" });
+  $("body, input, select").css({ color: "black" });
+  $("body, input, select").css({ fontFamily: "sans-serif" });
   $(".messages").css({ background: "white" });
 
   $("input").css({
     border: "none",
     background: "white",
   });
-  $("button").css({
-    border: "none",
-    background: "white",
-    color: "black",
-  });
+  // $("button").css({
+  //   border: "none",
+  //   background: "white",
+  //   color: "black",
+  // });
 
   $(".sentByYou span, .sentByOther span").css({
     background:
@@ -157,19 +157,19 @@ const gradientlight = () => {
 
 const gradientdark = () => {
   $("body, .homepage").css({ background: "#2E2E2E" });
-  $("body, input, button, select").css({ color: "white" });
-  $("body, input, button, select").css({ fontFamily: "sans-serif" });
+  $("body, input, select").css({ color: "white" });
+  $("body, input, select").css({ fontFamily: "sans-serif" });
   $(".messages").css({ background: "#323232" });
 
   $("input").css({
     border: "none",
     background: "#5A5A5A",
   });
-  $("button").css({
-    border: "none",
-    background: "#5A5A5A",
-    color: "white",
-  });
+  // $("button").css({
+  //   border: "none",
+  //   background: "#5A5A5A",
+  //   color: "white",
+  // });
 
   $(".sentByYou span, .sentByOther span").css({
     background:
@@ -188,8 +188,8 @@ const appel = () => {
       "url(https://media.idownloadblog.com/wp-content/uploads/2021/10/macOS-Monterey-Apple-Stock-Wallpaper-still-1-1200x1200.jpg)",
     backgroundSize: "cover",
   });
-  $("body, input, button, select").css({ color: "black" });
-  $("body, input, button, select").css({
+  $("body, input, select").css({ color: "black" });
+  $("body, input, select").css({
     fontFamily: "BlinkMacSystemFont, sans-serif",
   });
   $(".homepage").css({ background: "transparent" });
@@ -199,11 +199,11 @@ const appel = () => {
     border: "none",
     background: "whitesmoke",
   });
-  $("button").css({
-    border: "none",
-    background: "whitesmoke",
-    color: "black",
-  });
+  // $("button").css({
+  //   border: "none",
+  //   background: "whitesmoke",
+  //   color: "black",
+  // });
 
   $(".sentByYou span").css({ background: "#1888FF" });
   $(".sentByOther span").css({ background: "#f0ecec", color: "black" });

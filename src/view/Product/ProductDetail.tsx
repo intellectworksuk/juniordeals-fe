@@ -1,32 +1,32 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import Apiconfig from '../../config/Apiconfig'
-import * as routes from '../../constants/routes'
-import parse from 'html-react-parser'
-import { ProductResponse } from '../../types'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
-import * as ProductService from '../../store/product/product.actions'
-import useEffectOnce from '../../hooks/useEffectOnce'
-import { Carousel, Image, Space, Tag } from 'antd'
-import moment from 'moment'
-import noImageIcon from '../assets/img/jd-icon.png'
-import { useScrollToTop } from '../../hooks/useScrollToTop'
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Apiconfig from "../../config/Apiconfig";
+import * as routes from "../../constants/routes";
+import parse from "html-react-parser";
+import { ProductResponse } from "../../types";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import * as ProductService from "../../store/product/product.actions";
+import useEffectOnce from "../../hooks/useEffectOnce";
+import { Carousel, Image, Space, Tag } from "antd";
+import moment from "moment";
+import noImageIcon from "../assets/img/jd-icon.png";
+import { useScrollToTop } from "../../hooks/useScrollToTop";
 
 export const ProductDetailPage = () => {
-  const location = useLocation()
+  const location = useLocation();
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
-  const { product } = (location.state as any) || {}
+  const { product } = (location.state as any) || {};
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { recentproducts: recentlyViewedProducts } = useAppSelector(
-    (state) => state.product,
-  )
+    (state) => state.product
+  );
 
-  useEffectOnce(() => {
-    dispatch(ProductService.fetchRecentlyViewedList())
-  })
+  // useEffectOnce(() => {
+  //   dispatch(ProductService.fetchRecentlyViewedList());
+  // });
 
   // const productAttachToBuy = () => {
   //   // const chatRoomId = window.btoa(
@@ -40,7 +40,7 @@ export const ProductDetailPage = () => {
   //   // dispatch(ProductService.userAttachToProduct(chatRoomId))
   // };
 
-  useScrollToTop()
+  useScrollToTop();
 
   return (
     <>
@@ -99,8 +99,8 @@ export const ProductDetailPage = () => {
           </div>
           <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <h6 className="text-uppercase">
-              Upload Date:{' '}
-              {moment(product.createdOn).format('MM-DD-YYYY HH:mm:ss')}
+              Upload Date:{" "}
+              {moment(product.createdOn).format("MM-DD-YYYY HH:mm:ss")}
             </h6>
             <h2>{product.title}</h2>
             <h4>{product.subTitle}</h4>
@@ -125,7 +125,7 @@ export const ProductDetailPage = () => {
                   onClick={() => dispatch(ProductService.addLikes(product.id!))}
                 >
                   Like this Item
-                </a>{' '}
+                </a>{" "}
                 |
                 <a
                   href="javascript:void(0)"
@@ -143,7 +143,7 @@ export const ProductDetailPage = () => {
               <br />
             </p>
             <hr />
-            <h5 style={{ fontWeight: 'bold' }}>
+            <h5 style={{ fontWeight: "bold" }}>
               Item Specs &amp; other Information
             </h5>
             {parse(product.specification)}
@@ -151,7 +151,7 @@ export const ProductDetailPage = () => {
             <p className="itemDesc">
               <Tag
                 color="darkgreen"
-                style={{ width: '50px', textAlign: 'center' }}
+                style={{ width: "50px", textAlign: "center" }}
               >
                 <b> {product.rate}</b>
               </Tag>
@@ -162,7 +162,7 @@ export const ProductDetailPage = () => {
                 className="btn btn-default btn-lg"
                 onClick={() =>
                   navigate(routes.TO_CHAT, {
-                    state: { product: product, chatUserType: 'buyer' },
+                    state: { product: product, chatUserType: "buyer" },
                   })
                 }
               >
@@ -173,8 +173,8 @@ export const ProductDetailPage = () => {
                 <button
                   className="btn btn-default btn-lg"
                   onClick={() =>
-                    navigate('/navigate/product/barter', {
-                      state: { product: product, chatUserType: 'buyer' },
+                    navigate(routes.FETCH_PRODUCT_BARTER, {
+                      state: { product: product, chatUserType: "buyer" },
                     })
                   }
                 >
@@ -223,5 +223,5 @@ export const ProductDetailPage = () => {
         </div>
       </div> */}
     </>
-  )
-}
+  );
+};

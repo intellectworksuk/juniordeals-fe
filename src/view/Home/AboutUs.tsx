@@ -1,7 +1,11 @@
+import { useScrollToTop } from '../../hooks/useScrollToTop'
 import aboutUs from '../assets/img/about-us.jpg'
 import promosingValues from '../assets/img/promising-values.jpg'
 
 export const AboutUsPage = () => {
+  
+  useScrollToTop();
+
   return (
     <>
       <div className="company-block">

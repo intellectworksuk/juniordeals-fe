@@ -34,13 +34,9 @@ http.interceptors.request.use(
   (config) => {
     const excludedPaths = ["login"];
     const excludedFields = [
+      "DeliveryDate",
+      "dob",
       "specification",
-      "userName",
-      "password",
-      "Password",
-      "email",
-      "Email",
-      "confirm",
       "address",
       "longitude",
       "latitude",
@@ -51,14 +47,12 @@ http.interceptors.request.use(
       "token",
       "Token",
       "StripeTransactionId",
-      "ConfirmPassword",
-      "InputQuizQuestions",
       "QuizQuestions",
     ];
 
     // const { token } = useToken();
     // const specialChars = `/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;`
-    const specialChars = `/[!@#$%^&*()_=\[\]{};':"\\|<>\/?]/;`;
+    const specialChars = `/[^={};':"\\|<>\\/]/;`;
 
     if (!excludedPaths.some((path) => config.url?.includes(path))) {
       if (config.data) {

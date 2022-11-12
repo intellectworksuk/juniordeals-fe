@@ -13,7 +13,7 @@ import { ProductResponse } from "../../../types";
 import { useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import { store } from "../../../store";
-import { Space } from "antd";
+import { Button, Space } from "antd";
 import { useFireBase } from "./firebase/config";
 import { AiOutlineSend } from "react-icons/ai";
 import * as helper from "../../../util/helper";
@@ -92,9 +92,9 @@ export default function Textbox(props: TextboxProps) {
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => (e.keyCode === 13 ? sendInputMessage : null)}
         />
-        <button type="button" style={{ backgroundColor: "transparent" }}>
+        <Button ghost onClick={sendInputMessage} style={{marginTop: "10px"}}>
           <AiOutlineSend />
-        </button>
+        </Button>
       </div>
 
       {/* <button type="submit">Send</button> */}

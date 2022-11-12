@@ -7,6 +7,7 @@ import moment from "moment";
 import { Avatar, Image } from "antd";
 import noImageIcon from "../assets/img/jd-icon.png";
 import { UserOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 interface ProductDivFlexProps {
   // showBarters: boolean;
@@ -38,21 +39,26 @@ export const ProductDivFlex = (props: ProductDivFlexProps) => {
                 <div className="row" key={Math.random()}>
                   <div className="col-lg-6 col-md-6">
                     <div className="interestCard">
-                      <div className="categorDp">
-                        {product[0].productImage &&
-                        product[0].productImage.length > 0 ? (
-                          <img
-                            src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product[0].productImage[0].fileName}&type=product`}
-                            alt=""
-                          />
-                        ) : (
-                          // <img
-                          //   src="https://i.pinimg.com/originals/a2/a7/86/a2a786ea9b869c615f8652deb6a72a4d.png"
-                          //   alt="This is product image"
-                          // />
-                          <Image preview={false} src={noImageIcon} />
-                        )}
-                      </div>
+                      <Link
+                        to={routes.FETCH_PRODUCT_DETAIL}
+                        state={{ product: product[0] }}
+                      >
+                        <div className="categorDp">
+                          {product[0].productImage &&
+                          product[0].productImage.length > 0 ? (
+                            <img
+                              src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product[0].productImage[0].fileName}&type=product`}
+                              alt={noImageIcon}
+                            />
+                          ) : (
+                            // <img
+                            //   src="https://i.pinimg.com/originals/a2/a7/86/a2a786ea9b869c615f8652deb6a72a4d.png"
+                            //   alt="This is product image"
+                            // />
+                            <img alt="" src={noImageIcon} />
+                          )}
+                        </div>
+                      </Link>
                       <div className="categoryDesc">
                         <p className="itemDate">
                           {moment(product[0]?.createdOn).format(
@@ -94,21 +100,22 @@ export const ProductDivFlex = (props: ProductDivFlexProps) => {
                   {product.length > 1 && (
                     <div className="col-lg-6 col-md-6">
                       <div className="interestCard">
-                        <div className="categorDp">
-                          {product[1].productImage &&
-                          product[1].productImage.length > 0 ? (
-                            <img
-                              src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product[1]?.productImage[0].fileName}&type=product`}
-                              alt=""
-                            />
-                          ) : (
-                            // <img
-                            //   src="https://i.pinimg.com/originals/23/91/52/2391523603cbd5153d7eb4e37eb3c882.png"
-                            //   alt="This is product image"
-                            // />
-                            <img src={noImageIcon} />
-                          )}
-                        </div>
+                        <Link
+                          to={routes.FETCH_PRODUCT_DETAIL}
+                          state={{ product: product[1] }}
+                        >
+                          <div className="categorDp">
+                            {product[1].productImage &&
+                            product[1].productImage.length > 0 ? (
+                              <img
+                                src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product[1]?.productImage[0].fileName}&type=product`}
+                                alt={noImageIcon}
+                              />
+                            ) : (
+                              <img alt="" src={noImageIcon} />
+                            )}
+                          </div>
+                        </Link>
                         <div className="categoryDesc">
                           <p className="itemDate">
                             {moment(product[1]?.createdOn).format(

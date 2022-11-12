@@ -18,7 +18,7 @@ export interface CreateAccountData {
   longitude?: string;
   latitude?: string;
   hearAboutUs?: string;
-  mobileNumber?: string;
+  phoneNumber?: string;
   parentApprovalRequired?: boolean;
   image?: string;
 }
@@ -38,7 +38,7 @@ export interface User {
   salutation?: string;
   fullName?: string;
   address?: string;
-  mobileNumber?: string;
+  phoneNumber?: string;
   latitude?: string;
   longitude?: string;
   city?: { id?: number; title?: string; countryId?: number };
@@ -98,8 +98,16 @@ export interface DealConfirmationData {
 }
 
 export interface SearchData {
+  Status: number;
   Category: number;
   Search: string;
+}
+
+export interface ContactUsData {
+  Id: bigint;
+  FullName: string;
+  Email: string;
+  Message: string;
 }
 
 // export interface Children extends User {
@@ -210,6 +218,11 @@ export interface TransactionData {
   FeceiverId?: bigint;
 }
 
+export interface TransactionRedeemData {
+  Credits?: number;
+  Comments?: string;
+}
+
 export interface TransactionUser {
   id: bigint;
   userType: number;
@@ -228,6 +241,16 @@ export interface TransactionResponse {
   stripeTransactionId: string;
   createdOn: Date;
   deal: DealResponse;
+}
+
+export interface RedemptionResponse {
+  id: bigint;
+  credits: string;
+  userId: string;
+  applicationUser: User;
+  createdOn: string;
+  status: string;
+  comments: string;
 }
 
 export interface DealResponse {
@@ -363,6 +386,7 @@ export interface ProductState {
   error: string;
   categories: ProductCategoryResponse[];
   products: ProductResponse[];
+  latestproducts: ProductResponse[],
   recentproducts: ProductResponse[];
   wishListproducts: ProductResponse[];
 }
@@ -388,6 +412,7 @@ export interface TransactionState {
   status: TransactionStatus;
   error: string;
   transactions: TransactionResponse[];
+  redemptions: RedemptionResponse[];
 }
 
 export interface CreateEmailNotifyData {
@@ -426,6 +451,7 @@ type ProductStatus =
   | "fetchAllProductsPending"
   | "fetchAllProductsResolved"
   | "fetchAllProductsRejected"
+  | "fetchSingleProductResolved"
   | "fetchRecentlyViewedListPending"
   | "fetchRecentlyViewedListResolved"
   | "fetchRecentlyViewedListRejected"
@@ -537,7 +563,10 @@ type Status =
   | "initPaymentIntentRejected"
   | "confirmPaymentIntentPending"
   | "confirmPaymentIntentResolved"
-  | "confirmPaymentIntentRejected";
+  | "confirmPaymentIntentRejected"
+  | "saveContactUsPending"
+  | "saveContactUsResolved"
+  | "saveContactUsRejected";
 
 type ConfigStatus =
   | "idle"
@@ -553,9 +582,21 @@ type TransactionStatus =
   | "transferCreditsPending"
   | "transferCreditsResolved"
   | "transferCreditsRejected"
+  | "redeemCreditsPending"
+  | "redeemCreditsResolved"
+  | "redeemCreditsRejected"
+  | "approveRedemptionPending"
+  | "approveRedemptionResolved"
+  | "approveRedemptionRejected"
+  | "rejectRedemptionPending"
+  | "rejectRedemptionResolved"
+  | "rejectRedemptionRejected"
   | "fetchAllTransactionsPending"
   | "fetchAllTransactionsResolved"
-  | "fetchAllTransactionsRejected";
+  | "fetchAllTransactionsRejected"
+  | "fetchAllRedemptionsPending"
+  | "fetchAllRedemptionsResolved"
+  | "fetchAllRedemptionsRejected";
 
 export interface AuthState {
   status: Status;

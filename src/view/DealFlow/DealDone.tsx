@@ -301,7 +301,7 @@ export const DealDonePage = (props: DealDonePageProps) => {
                   rules={[
                     ({ getFieldValue }) => ({
                       validator(_rule, value) {
-                        if (!value || !value.includes("script")) {
+                        if (!value || !value.includes("<script>")) {
                           return Promise.resolve();
                         }
                         return Promise.reject("Invalid input found!");

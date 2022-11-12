@@ -8,7 +8,6 @@ import "./styles/styles.css";
 import "./styles/albery.css";
 import * as AuthService from "./store/auth/auth.actions";
 import { User } from "./types";
-import { useFireBase } from "./view/Components/ChatStore/firebase/config";
 import * as FirestoreService from "./view/Components/ChatStore/firebase/fireStoreService";
 import useEffectOnce from "./hooks/useEffectOnce";
 

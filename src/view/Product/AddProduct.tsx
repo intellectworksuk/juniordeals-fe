@@ -1,61 +1,62 @@
-import { DragDropUpload, TextEditor } from '../../view'
-import { Form, Spin } from 'antd'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
+import { DragDropUpload, TextEditor } from "../../view";
+import { Form, Spin } from "antd";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import {
   displayErrorMessage,
   displaySuccessNotification,
-} from '../../util/notifications'
-import { CreateProductData, ProductResponse } from '../../types'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
-import * as ProductService from '../../store/product/product.actions'
-import { UserType } from '../../enums'
+} from "../../util/notifications";
+import { CreateProductData, ProductResponse } from "../../types";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import * as ProductService from "../../store/product/product.actions";
+import { UserType } from "../../enums";
 import {
   clearProductStateError,
   clearProductStateStatus,
-} from '../../store/product/product.slice'
-import useEffectOnce from '../../hooks/useEffectOnce'
-import * as ConfigService from '../../store/config/config.actions'
+} from "../../store/product/product.slice";
+import useEffectOnce from "../../hooks/useEffectOnce";
+import * as ConfigService from "../../store/config/config.actions";
+import { UploadPictureWall } from "../Components/PictureWall";
 
-const { Item } = Form
+const { Item } = Form;
 
 interface ProductUploadPageProps {
-  signupType: UserType.PARENT
+  signupType: UserType.PARENT;
 }
 
 export const AddProductPage = (props: ProductUploadPageProps) => {
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
 
-  const location = useLocation()
+  const location = useLocation();
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
-  const { setups } = useAppSelector((state) => state.config)
+  const { setups } = useAppSelector((state) => state.config);
 
-  const product = location.state as ProductResponse
+  const product = location.state as ProductResponse;
 
   const { status: productStatus, error: productError } = useAppSelector(
-    (state) => state.product,
-  )
+    (state) => state.product
+  );
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const onFormSubmit = (formData: CreateProductData) => {
-    if (location.pathname.endsWith('/product/add')) {
-      dispatch(ProductService.createProduct(formData))
+    if (location.pathname.endsWith("/product/add")) {
+      dispatch(ProductService.createProduct(formData));
     } else {
-      formData.id = product.id
+      formData.id = product.id;
 
-      dispatch(ProductService.updateProduct(formData))
+      dispatch(ProductService.updateProduct(formData));
     }
-  }
+  };
 
   const onFinishFailed = () => {
     displayErrorMessage(
-      'Please complete all required form fields, or remove errors!',
-    )
-    return
-  }
+      "Please complete all required form fields, or remove errors!"
+    );
+    return;
+  };
 
   // useEffect(() => {
   //   if (productError) {
@@ -66,36 +67,36 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
   // }, [dispatch, productError]);
 
   useEffect(() => {
-    if (productStatus === 'createProductResolved') {
+    if (productStatus === "createProductResolved") {
       // displaySuccessNotification("Product has been uploaded");
-      dispatch(ProductService.fetchUserProducts())
+      dispatch(ProductService.fetchUserProducts());
 
-      form.resetFields()
+      form.resetFields();
     }
 
     // dispatch(clearProductStateStatus());
-  }, [dispatch, productStatus])
+  }, [dispatch, productStatus]);
 
   useEffectOnce(() => {
-    dispatch(ConfigService.fetchCategories())
-  })
+    dispatch(ConfigService.fetchCategories());
+  });
 
   useEffect(() => {
-    console.log('product =>' + JSON.stringify(product))
+    console.log("product =>" + JSON.stringify(product));
 
     if (product && product.title) {
-      form.setFieldsValue({ title: product.title })
-      form.setFieldsValue({ subTitle: product.subTitle })
-      form.setFieldsValue({ description: product.description })
-      form.setFieldsValue({ description: product.description })
-      form.setFieldsValue({ specification: product.specification })
-      form.setFieldsValue({ quantity: product.quantity })
-      form.setFieldsValue({ rate: product.rate })
-      form.setFieldsValue({ categoryId: product.categoryId })
-      form.setFieldsValue({ condition: product.condition })
-      form.setFieldsValue({ barter: product.barterAllowed ? '1' : '2' })
+      form.setFieldsValue({ title: product.title });
+      form.setFieldsValue({ subTitle: product.subTitle });
+      form.setFieldsValue({ description: product.description });
+      form.setFieldsValue({ description: product.description });
+      form.setFieldsValue({ specification: product.specification });
+      form.setFieldsValue({ quantity: product.quantity });
+      form.setFieldsValue({ rate: product.rate });
+      form.setFieldsValue({ categoryId: product.categoryId });
+      form.setFieldsValue({ condition: product.condition });
+      form.setFieldsValue({ barter: product.barterAllowed ? "1" : "2" });
     }
-  }, [product])
+  }, [product]);
 
   return (
     <>
@@ -114,10 +115,15 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
             </h4>
             <div className="row">
               <div className="col-lg-8 col-lg-offset-2 col-md-12 col-sm-12 col-xs-12">
-                <DragDropUpload
+                {/* <DragDropUpload
                   ItemName="productImages"
                   type="product"
-                ></DragDropUpload>
+                ></DragDropUpload> */}
+                <UploadPictureWall
+                  ItemName="productImages"
+                  buttonText="Product Images"
+                  type="product"
+                ></UploadPictureWall>
               </div>
             </div>
             <hr />
@@ -141,7 +147,7 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                     {
                       required: true,
                       message:
-                        'Please enter what defines the title of the product',
+                        "Please enter what defines the title of the product",
                     },
                   ]}
                 >
@@ -161,7 +167,7 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                     {
                       required: true,
                       message:
-                        'Please enter what defines the sub title of the product',
+                        "Please enter what defines the sub title of the product",
                     },
                   ]}
                 >
@@ -181,15 +187,19 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                     {
                       required: true,
                       message:
-                        'Please enter what defines the quantity of the product',
+                        "Please enter what defines the quantity of the product",
                     },
                     {
                       pattern: /^[0-9]{1,2}$/,
-                      message: 'Only 2 digits number are allowed',
+                      message: "Only 2 digits number are allowed",
                     },
                   ]}
                 >
-                  <input className="inpCtrl" placeholder="Enter quantity" />
+                  <input
+                    maxLength={10}
+                    className="inpCtrl"
+                    placeholder="Enter quantity"
+                  />
                 </Item>
               </div>
               <div className="col-lg-2">
@@ -199,15 +209,19 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                     {
                       required: true,
                       message:
-                        'Please enter what defines the points of the product',
+                        "Please enter what defines the points of the product",
                     },
                     {
                       pattern: /^[0-9]{1,5}$/,
-                      message: 'Only 5 digits number are allowed',
+                      message: "Only 5 digits number are allowed",
                     },
                   ]}
                 >
-                  <input className="inpCtrl" placeholder="Enter points" />
+                  <input
+                    maxLength={10}
+                    className="inpCtrl"
+                    placeholder="Enter points"
+                  />
                 </Item>
               </div>
               <div className="col-lg-4">
@@ -217,7 +231,7 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                     {
                       required: true,
                       message:
-                        'Please enter what defines the category of the product',
+                        "Please enter what defines the category of the product",
                     },
                   ]}
                 >
@@ -241,7 +255,7 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                     {
                       required: true,
                       message:
-                        'Please enter what defines the condition of the product',
+                        "Please enter what defines the condition of the product",
                     },
                   ]}
                 >
@@ -261,7 +275,7 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                     {
                       required: true,
                       message:
-                        'Please enter what defines the rate/price of the product',
+                        "Please enter what defines the rate/price of the product",
                     },
                   ]}
                 >
@@ -281,14 +295,14 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                     {
                       required: true,
                       message:
-                        'Please enter what defines the description of the product',
+                        "Please enter what defines the description of the product",
                     },
                     ({ getFieldValue }) => ({
                       validator(_rule, value) {
-                        if (!value || !value.includes('script')) {
-                          return Promise.resolve()
+                        if (!value || !value.includes("<script>")) {
+                          return Promise.resolve();
                         }
-                        return Promise.reject('Invalid input found!')
+                        return Promise.reject("Invalid input found!");
                       },
                     }),
                   ]}
@@ -308,14 +322,14 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                   rules={[
                     {
                       required: true,
-                      message: 'Please enter the specifications of the product',
+                      message: "Please enter the specifications of the product",
                     },
                     ({ getFieldValue }) => ({
                       validator(_rule, value) {
-                        if (!value || !value.includes('script')) {
-                          return Promise.resolve()
+                        if (!value || !value.includes("<script>")) {
+                          return Promise.resolve();
                         }
-                        return Promise.reject('Invalid input found!')
+                        return Promise.reject("Invalid input found!");
                       },
                     }),
                   ]}
@@ -330,13 +344,13 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                 <button
                   className="formBtnCtrl"
                   type="submit"
-                  disabled={productStatus === 'createProductPending'}
+                  disabled={productStatus === "createProductPending"}
                 >
                   <span id="button-text">
-                    {productStatus === 'createProductPending' ? (
+                    {productStatus === "createProductPending" ? (
                       <Spin size="small" />
                     ) : (
-                      'Upload Product Now'
+                      "Upload Product Now"
                     )}
                   </span>
                 </button>
@@ -346,5 +360,5 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
         </div>
       </section>
     </>
-  )
-}
+  );
+};

@@ -126,7 +126,7 @@ export const DealReceivePage = (props: DealReceivePageProps) => {
                 <Item name="Comments" rules={[
                   ({ getFieldValue }) => ({
                     validator(_rule, value) {
-                      if (!value || !value.includes("script")) {
+                      if (!value || !value.includes("<script>")) {
                         return Promise.resolve();
                       }
                       return Promise.reject(

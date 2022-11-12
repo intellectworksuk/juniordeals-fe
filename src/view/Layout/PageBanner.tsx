@@ -1,4 +1,6 @@
+import { Carousel } from "antd";
 import bannerImg from "../../view/assets/img/banner.jpg";
+import bannerImg2 from "../../view/assets/img/banner2.jpg";
 
 interface PageBannerProps {
   bannerImage: string;
@@ -16,9 +18,14 @@ export const PageBanner = (props: PageBannerProps) => {
           }}
         ></div>
       ) : (
-        <div className="bannerImg">
-          <img src={bannerImg} alt="" />
-        </div>
+        <Carousel autoplay>
+          <div className="bannerImg">
+            <img src={bannerImg2} alt="" />
+          </div>
+          {/* <div className="bannerImg">
+            <img src={bannerImg} alt="" />
+          </div> */}
+        </Carousel>
       )}
     </>
   );

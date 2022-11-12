@@ -1,5 +1,4 @@
 import Messages from "./Messages";
-import Settings from "./Settings";
 // import Members from "./Members";
 import "./Chat.css";
 import { useAuthListener } from "./firebase/useAuthListener";

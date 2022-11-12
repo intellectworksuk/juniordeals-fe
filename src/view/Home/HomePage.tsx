@@ -16,7 +16,7 @@ export const HomePage = () => {
   return (
     <>
       <Helmet>
-        <title>JuniorDeals</title>
+        <title>Junior Deals</title>
       </Helmet>
 
       <PageHeader bannerImage={bannerImg} useBannerAsStrip={false} />

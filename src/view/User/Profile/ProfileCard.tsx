@@ -89,7 +89,7 @@ export const ProfileMainCard = () => {
           👉 Address : <Text>{user.address}</Text>
         </Paragraph>
         <Paragraph>
-          👉 Phone Number : <Text>{user.mobileNumber}</Text>
+          👉 Phone Number : <Text>{user.phoneNumber}</Text>
         </Paragraph>
       </div>
     </Card>

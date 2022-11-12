@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 
 import { AiOutlineLogout, AiOutlineUser } from "react-icons/ai";
 import { PageBanner } from "./PageBanner";
 import { store } from "../../store";
-import { Space, Avatar, Image, Menu, Typography, Badge } from "antd";
+import { Space, Avatar, Image, Menu, Typography, Badge, Affix } from "antd";
 import type { MenuProps } from "antd";
 import * as routes from "../../constants/routes";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -83,12 +83,12 @@ export const PageHeader = (props: PageHeaderProps) => {
 
   useEffect(() => {
     if (productStatus === "addLikesResolved") {
-      displaySuccessNotification("Likes added");
+      // displaySuccessNotification("Likes added");
       dispatch(ProductService.fetchProductsForSell(undefined));
     }
 
     if (productStatus === "addToWishListResolved") {
-      displaySuccessNotification("Added to Wishlist");
+      // displaySuccessNotification("Added to Wishlist");
       dispatch(ProductService.fetchProductsForSell(undefined));
       dispatch(ProductService.fetchProductsWishList());
     }
@@ -157,9 +157,100 @@ export const PageHeader = (props: PageHeaderProps) => {
   return (
     <>
       <Helmet>
-        <title>JuniorDeals</title>
-      </Helmet>{" "}
-      <section className="sec-topMost">
+        <title>Junior Deals</title>
+      </Helmet>
+      <header className="jd-header">
+        <div className="jd-topbar">
+          <div className="container">
+            <div className="btn-group">
+              {user && user.userName ? <PrivateLinks /> : <PublicLinks />}
+            </div>
+          </div>
+        </div>
+        <div className="container">
+          <nav className="navbar navbar-inverse">
+            <div className="navbar-header">
+              <button
+                type="button"
+                data-target="#navbarCollapse"
+                data-toggle="collapse"
+                className="navbar-toggle"
+              >
+                <span className="sr-only">Toggle navigation</span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+              </button>
+              <a href="#" className="navbar-brand brand-x">
+                <img src="jd.png" />
+              </a>
+            </div>
+
+            <div id="navbarCollapse" className="collapse navbar-collapse">
+              <ul className="nav navbar-nav">
+                <li>
+                  <Link to={routes.HOME} className="btn-link">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={routes.FETCH_STORE_PRODUCT}
+                    state={{ ["barter"]: "active" }}
+                    className="btn-link"
+                    replace
+                  >
+                    Barter
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={routes.FETCH_STORE_PRODUCT}
+                    state={{ ["product"]: "active" }}
+                    className="btn-link"
+                    replace
+                  >
+                    Products
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={routes.USER_PROFILE}
+                    state={{ activeTabIndex: "5" }}
+                    className="btn-link"
+                  >
+                    My Wallet
+                  </Link>
+                </li>
+
+                <li className="brand-x">
+                  <a href="/home">
+                    <img className="brand" src={jd_ver} />
+                  </a>
+                </li>
+
+                <li>
+                  <Link to="/view/aboutus" className="btn-link">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/view/howitworks" className="btn-link">
+                    How it Works
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/view/contactus" className="btn-link">
+                    Contact Us
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </header>
+      <div className="hero"></div>
+      {/* <section className="sec-topMost">
         <div className="topBar">
           <div className="tb-left"></div>
           {user && user.userName ? <PrivateLinks /> : <PublicLinks />}
@@ -177,7 +268,6 @@ export const PageHeader = (props: PageHeaderProps) => {
               <li>
                 <Link
                   to={routes.ADMIN_HOME}
-                  // onClick={() => changeLocation(routes.FETCH_STORE_PRODUCT)}
                   state={{ activeTabIndex: "1" }}
                   className="btn-link"
                   replace
@@ -188,7 +278,6 @@ export const PageHeader = (props: PageHeaderProps) => {
               <li>
                 <Link
                   to={routes.ADMIN_HOME}
-                  // onClick={() => changeLocation(routes.FETCH_STORE_PRODUCT)}
                   state={{ activeTabIndex: "2" }}
                   className="btn-link"
                   replace
@@ -209,8 +298,9 @@ export const PageHeader = (props: PageHeaderProps) => {
                 >
                   Manager Credits
                 </Link>
-              </li>
-              {/* <li>
+              </li> */}
+
+      {/* <li>
                 <Link
                   to={routes.QUIZ_VIEW}
                   state={{ activeTabIndex: "5" }}
@@ -219,57 +309,27 @@ export const PageHeader = (props: PageHeaderProps) => {
                   Setup Quiz
                 </Link>
               </li> */}
-              <li>
-                <Link
-                  to={routes.ADMIN_HOME}
-                  state={{ activeTabIndex: "4" }}
-                  className="btn-link"
-                >
-                  Manager Users
-                </Link>
-              </li>
-              {/* <li>
-<NavLink to={routes.USER_SIGNUP} className="btn-link">
-Join Us
-</NavLink>
-</li> */}
-              <li>
-                <a href="#" className="btn-link">
-                  Contact Us
-                </a>
-              </li>
-            </ul>
-          </div>
+
+      {/* <li>
+                 <Link
+                   to={routes.ADMIN_HOME}
+                   state={{ activeTabIndex: "4" }}
+                   className="btn-link"
+                 >
+                   Manager Users
+                 </Link>
+               </li>
+               <li>
+                 <a href="#" className="btn-link">
+                   Contact Us
+                 </a>
+               </li>
+             </ul>
+           </div>
         ) : (
           <div className="menuCutom">
             <ul className="jdNav">
               <li>
-                {/* {user.userType === UserType.PARENT ? (
-                <Link to="/navigate/parent/home" className="btn-link">
-                  Home
-                </Link>
-              ) : (
-                ""
-              )}
-              {user.userType === UserType.CHILD ? (
-                <Link to="/navigate/child/home" className="btn-link">
-                  Home
-                </Link>
-              ) : (
-                ""
-              )}
-              {user.userType === UserType.ADMIN ? (
-                <Link to="/navigate/admin/home" className="btn-link">
-                  Home
-                </Link>
-              ) : (
-                ""
-              )}
-              {!user.userName && (
-                <a href="/" className="btn-link">
-                  Home
-                </a>
-              )} */}
                 <Link to={routes.HOME} className="btn-link">
                   Home
                 </Link>
@@ -277,7 +337,6 @@ Join Us
               <li>
                 <Link
                   to={routes.FETCH_STORE_PRODUCT}
-                  // onClick={() => changeLocation(routes.FETCH_STORE_PRODUCT)}
                   state={{ ["barter"]: "active" }}
                   className="btn-link"
                   replace
@@ -288,7 +347,6 @@ Join Us
               <li>
                 <Link
                   to={routes.FETCH_STORE_PRODUCT}
-                  // onClick={() => changeLocation(routes.FETCH_STORE_PRODUCT)}
                   state={{ ["product"]: "active" }}
                   className="btn-link"
                   replace
@@ -310,11 +368,6 @@ Join Us
               <img className="brand" src={jd_ver} />
             </a>
             <ul className="jdNav">
-              {/* <li>
-                <NavLink to={routes.QUIZ_VIEW} className="btn-link">
-                  Quizes
-                </NavLink>
-              </li>{" "} */}
               <li>
                 <Link to="/view/aboutus" className="btn-link">
                   About Us
@@ -332,12 +385,13 @@ Join Us
               </li>
             </ul>
           </div>
-        )}
-        <PageBanner
-          bannerImage={props.bannerImage}
-          useBannerAsStrip={props.useBannerAsStrip}
-        />
-      </section>
+        )} */}
+      <div style={{ height: "210px" }}>&nbsp;</div>
+      <PageBanner
+        bannerImage={props.bannerImage}
+        useBannerAsStrip={props.useBannerAsStrip}
+      />
+      {/* </section> */}
     </>
   );
 };
@@ -347,10 +401,31 @@ const PublicLinks = () => {
 
   return (
     <>
-      <div style={{ marginRight: "20px" }}>
+      <div className="jd-topbar">
+        <div className="container">
+          <div className="btn-group">
+            <button
+              type="button"
+              className="btn-round btn-block"
+              onClick={() => navigate(routes.LOGIN)}
+              style={{ padding: "5px 20px", marginTop: "20px" }}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              className="btn-round btn-block"
+              onClick={() => navigate(routes.USER_SIGNUP)}
+              style={{ padding: "5px 20px", marginTop: "20px" }}
+            >
+              Create Account
+            </button>
+          </div>
+        </div>
+      </div>
+      {/* <div style={{ marginRight: "20px" }}>
         <Space direction="horizontal">
           <div key="/login">
-            {/* <NavLink to={routes.LOGIN}>Sign In</NavLink> */}
             <button
               type="button"
               className="btn-round btn-block"
@@ -371,7 +446,7 @@ const PublicLinks = () => {
             </button>
           </div>
         </Space>
-      </div>
+      </div> */}
     </>
   );
 };

@@ -568,7 +568,8 @@ const AdminDealInfoStatus = (props: DealTemplateProps) => {
                     status: adminDealStatus,
                   })
                 ).then(
-                  (resp) => props.onDealResponse && props.onDealResponse(resp, deal)
+                  (resp) =>
+                    props.onDealResponse && props.onDealResponse(resp, deal)
                 )
               }
               disabled={
@@ -637,7 +638,7 @@ const BarterProductItemDescription = (props: DealTemplateProps) => {
           <small>
             <b>
               <p className="itemDesc">
-                Deal Poinst:{"   "}
+                Product Points:{"   "}
                 <Tag
                   color="darkgreen"
                   style={{ width: "50px", textAlign: "center" }}
@@ -685,7 +686,7 @@ const NormalProductItemDescription = (props: DealTemplateProps) => {
           <small>
             <b>
               <p className="itemDesc">
-                Deal Poinst:{"   "}
+                Product Points:{"   "}
                 <Tag
                   color="darkgreen"
                   style={{ width: "50px", textAlign: "center" }}

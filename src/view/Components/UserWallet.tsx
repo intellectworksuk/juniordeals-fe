@@ -1,5 +1,13 @@
 import { SaveOutlined } from "@ant-design/icons";
-import { Form, InputNumber, Select, Skeleton, Typography } from "antd";
+import {
+  Card,
+  Form,
+  InputNumber,
+  Select,
+  Skeleton,
+  Tag,
+  Typography,
+} from "antd";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { store } from "../../store";
 import moneybag_coins from "../assets/img/moneybag_coins.jpeg";
@@ -22,6 +30,7 @@ import { useNavigate } from "react-router-dom";
 import * as routes from "../../constants/routes";
 import * as ConfigService from "../../store/config/config.actions";
 import { UserType } from "../../enums";
+import moment from "moment";
 
 const { Paragraph, Text, Title } = Typography;
 
@@ -33,32 +42,31 @@ export const UserWallet = () => {
   const [form] = Form.useForm();
 
   const [inputCredits, setInputCredits] = useState<number>();
+  const [redeemInputCredits, setRedeemInputCredits] = useState<number>();
 
   const { user } = useAppSelector((state) => state.auth);
 
   const { setups } = useAppSelector((state) => state.config);
-  const { transactions, status: tranStatus } = useAppSelector(
-    (state) => state.transaction
-  );
+  const {
+    transactions,
+    redemptions,
+    status: tranStatus,
+  } = useAppSelector((state) => state.transaction);
 
   const transferCredits = (values: TransactionData) => {
     dispatch(TransactionService.transferCredits(values));
-    // dispatch(
-    //   TransactionService.transferCredits({
-    //     ReceiverId: user.id,
-    //     AvailableCredits: values.AvailableCredits,
-    //     Operator: values.Operator,
-    //     Credit:
-    //       values.Operator === "add" ? values.Credits! * -1 : values.Credits,
-    //   })
-    // );
+  };
+
+  const transferRedeemCredits = (values: TransactionData) => {
+    dispatch(TransactionService.redeemCredits(values));
   };
 
   useEffectOnce(() => {
-    if (transactions && transactions.length == 0) {
+    if (transactions && transactions.length === 0) {
       dispatch(ConfigService.fetchChargesSetup());
 
       dispatch(TransactionService.fetchAllTransactions());
+      dispatch(TransactionService.fetchAllRedemptions());
     }
   });
 
@@ -78,7 +86,11 @@ export const UserWallet = () => {
         </div>
         <div className="row">
           <div className="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12 text-center">
-            <img src={wallet_card} style={{ margin: "16px", width: "50%" }} />
+            <img
+              src={wallet_card}
+              style={{ margin: "16px", width: "50%" }}
+              alt=""
+            />
           </div>
         </div>
         <div className="row">
@@ -87,6 +99,7 @@ export const UserWallet = () => {
             <div className="order-ammount">
               <div className="flex-img-text-bal">
                 <img
+                  alt=""
                   className="coin-ico"
                   style={{ margin: "16px", width: "48px" }}
                   src={moneybag_coins}
@@ -126,6 +139,34 @@ export const UserWallet = () => {
             <hr />
           </div>
         </div>
+        <div className="row">
+          <div className="col-lg-12 col-lg-offset-3 text-center">
+            <Card type="inner" title="Points Redemption" style={{ width: 450 }}>
+              <p>
+                <Tag color="green" style={{ fontSize: 16 }}>
+                  <b>
+                    {`${setups.charges.Currency} ${
+                      (Number(redeemInputCredits) || 0) /
+                      (setups.charges.JDPoints === 0
+                        ? 1
+                        : setups.charges.JDPoints)
+                    }` || 0}
+                  </b>
+                </Tag>
+              </p>
+              <p>
+                <TransactionControl
+                  user={user}
+                  type="out"
+                  showComments={true}
+                  onSave={transferRedeemCredits}
+                  showOperator={false}
+                  onChangeCredits={setRedeemInputCredits}
+                ></TransactionControl>
+              </p>
+            </Card>
+          </div>
+        </div>
         {user.children?.map((kid: User) => (
           <div className="row" key={Math.random()}>
             <div className="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
@@ -133,6 +174,7 @@ export const UserWallet = () => {
               <div className="order-ammount">
                 <div className="flex-img-text-bal">
                   <img
+                    alt=""
                     className="coin-ico"
                     style={{ margin: "16px", width: "48px" }}
                     src={moneybag_coins}
@@ -180,6 +222,7 @@ export const UserWallet = () => {
                         <tr>
                           <th>Sr.</th>
                           <th>Received By</th>
+                          <th>Date</th>
                           <th>Received Credits</th>
                         </tr>
                       </thead>
@@ -188,6 +231,11 @@ export const UserWallet = () => {
                           <tr key={index.toString()}>
                             <td>{tran.id}</td>
                             <td>{tran.receiver.fullName}</td>
+                            <td>
+                              {moment(tran.createdOn).format(
+                                "MM-DD-YYYY HH:mm:ss"
+                              )}
+                            </td>
                             <td>{tran.credits} Points</td>
                           </tr>
                         ))}
@@ -200,6 +248,7 @@ export const UserWallet = () => {
                         <tr>
                           <th>Sr.</th>
                           <th>Item Purchased</th>
+                          <th>Date</th>
                           <th>Spent</th>
                         </tr>
                       </thead>
@@ -211,10 +260,56 @@ export const UserWallet = () => {
                               <td>{tran.id}</td>
                               <td>{tran.deal && tran.deal.product.title}</td>
                               <td>
+                                {moment(tran.createdOn).format(
+                                  "MM-DD-YYYY HH:mm:ss"
+                                )}
+                              </td>{" "}
+                              <td>
                                 {tran.deal && tran.deal.dealCredits} Points
                               </td>
                             </tr>
                           ))}
+                      </tbody>
+                    </table>
+                    <br />
+                    <table className="table table-hover table-striped">
+                      <caption>Redeem History</caption>
+                      <thead>
+                        <tr>
+                          <th>Sr.</th>
+                          <th>Credits Requested</th>
+                          <th>Date</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {redemptions.map((tran, index) => (
+                          <tr key={index.toString()}>
+                            <td>{tran.id}</td>
+                            <td>{tran.credits}</td>
+                            <td>
+                              {moment(tran.createdOn).format(
+                                "MM-DD-YYYY HH:mm:ss"
+                              )}
+                            </td>
+                            <td>
+                              {
+                                <Tag
+                                  color={
+                                    tran.status === "Approved"
+                                      ? "green"
+                                      : tran.status === "Rejected"
+                                      ? "red"
+                                      : "orange"
+                                  }
+                                  key={Math.random()}
+                                >
+                                  {tran.status}
+                                </Tag>
+                              }
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </>

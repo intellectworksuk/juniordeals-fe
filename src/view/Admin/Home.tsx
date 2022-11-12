@@ -1,8 +1,18 @@
-import { Input, Skeleton, Space, Tabs, TabsProps, Tag } from "antd";
+import {
+  Button,
+  Input,
+  Skeleton,
+  Space,
+  Table,
+  Tabs,
+  TabsProps,
+  Tag,
+} from "antd";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { ProductList } from "../Product";
 // import * as DealService from "../../store/deal/deal.actions";
 import * as AdminService from "../../store/admin/admin.actions";
+import * as TransactionService from "../../store/transaction/transaction.actions";
 import { useEffect, useState } from "react";
 import { AdminDealLister } from "../Components/DealLister";
 import {
@@ -18,6 +28,7 @@ import useEffectOnce from "../../hooks/useEffectOnce";
 import { onValue, ref } from "firebase/database";
 import { useFireBase } from "../Components/ChatStore/firebase/config";
 import { useLocation } from "react-router-dom";
+import * as ConfigService from "../../store/config/config.actions";
 
 const { Search } = Input;
 
@@ -32,9 +43,12 @@ export const AdminHomePage = () => {
     deals,
   } = useAppSelector((state) => state.admin);
 
-  const { status: tranStatus, error: tranError } = useAppSelector(
-    (state) => state.transaction
-  );
+  const { setups } = useAppSelector((state) => state.config);
+  const {
+    status: tranStatus,
+    error: tranError,
+    redemptions,
+  } = useAppSelector((state) => state.transaction);
 
   const [activeTabIndex, setActiveTabIndex] = useState<string>("1");
 
@@ -48,6 +62,10 @@ export const AdminHomePage = () => {
       // dispatch(AdminService.fetchAllDeals(0))
     } else if (key === "3") {
       // dispatch(AdminService.fetchAllUsers());
+    } else if (key === "5") {
+      dispatch(ConfigService.fetchChargesSetup());
+
+      dispatch(TransactionService.fetchAllRedemptions());
     }
 
     setActiveTabIndex(key);
@@ -71,6 +89,16 @@ export const AdminHomePage = () => {
     if (tranStatus === "transferCreditsResolved") {
       displaySuccessNotification("Transaction successful");
       // dispatch(AdminService.fetchAllUsers());
+      dispatch(clearTransactionStateStatus());
+    }
+    if (tranStatus === "approveRedemptionResolved") {
+      displaySuccessNotification("Transaction has been approved");
+      dispatch(TransactionService.fetchAllRedemptions());
+      dispatch(clearTransactionStateStatus());
+    }
+    if (tranStatus === "rejectRedemptionResolved") {
+      displaySuccessNotification("Transaction has been rejected");
+      dispatch(TransactionService.fetchAllRedemptions());
       dispatch(clearTransactionStateStatus());
     }
   }, [dispatch, tranStatus]);
@@ -159,7 +187,7 @@ export const AdminHomePage = () => {
                           }
                         >
                           <option value="-1">Select Deal Status</option>
-                          <option value="1">Created</option>
+                          <option value="1">Pending Approval</option>
                           <option value="2">Approved by buyer</option>
                           <option value="3">Approved by seller</option>
                           <option value="6">Mark as complete</option>
@@ -191,7 +219,7 @@ export const AdminHomePage = () => {
                 ),
               },
               {
-                label: "Manage Credits",
+                label: "Manage Points",
                 key: "3",
                 children: (
                   <>
@@ -204,6 +232,7 @@ export const AdminHomePage = () => {
                           }
                           size="large"
                           enterButton
+                          placeholder="Enter user name"
                         />
                       </div>
                       <div className="col-lg-3"></div>
@@ -230,6 +259,7 @@ export const AdminHomePage = () => {
                           }
                           size="large"
                           enterButton
+                          placeholder="Enter user name"
                         />
                       </div>
                       <div className="col-lg-3"></div>
@@ -238,6 +268,163 @@ export const AdminHomePage = () => {
                       <Skeleton active />
                     ) : (
                       <UserDivFlex />
+                    )}
+                  </>
+                ),
+              },
+              {
+                label: "Redeem Requests",
+                key: "5",
+                children: (
+                  <>
+                    {tranStatus === "fetchAllRedemptionsPending" ? (
+                      <Skeleton active />
+                    ) : (
+                      <Table
+                        columns={[
+                          {
+                            title: "id",
+                            dataIndex: "id",
+                            key: "id",
+                            width: "5%",
+                          },
+                          {
+                            title: "Name",
+                            dataIndex: ["applicationUser", "fullName"],
+                            key: "fullName",
+                          },
+                          {
+                            title: (
+                              <>
+                                {"Available"} <br /> {"Credits"}
+                              </>
+                            ),
+                            dataIndex: ["applicationUser", "availableCredits"],
+                            key: "availableCredits",
+                            width: "10%",
+                            align: "center",
+                            render: (value: Number) => (
+                              <>
+                                {value}
+                                <br />
+                                {
+                                  <Tag color="LightSlateGray" style={{ fontSize: 10 }}>
+                                    <b>
+                                      {`${setups.charges.Currency} ${
+                                        (Number(value) || 0) /
+                                        (setups.charges.JDPoints === 0
+                                          ? 1
+                                          : setups.charges.JDPoints)
+                                      }` || 0}
+                                    </b>
+                                  </Tag>
+                                }
+                              </>
+                            ),
+                          },
+                          {
+                            title: (
+                              <>
+                                {"Requested"} <br /> {"Credits"}
+                              </>
+                            ),
+                            dataIndex: "credits",
+                            key: "credits",
+                            width: "10%",
+                            align: "center",
+                            render: (value: Number) => (
+                              <>
+                                {value}
+                                <br />
+                                {
+                                  <Tag color="LightSlateGray" style={{ fontSize: 10 }}>
+                                    <b>
+                                      {`${setups.charges.Currency} ${
+                                        (Number(value) || 0) /
+                                        (setups.charges.JDPoints === 0
+                                          ? 1
+                                          : setups.charges.JDPoints)
+                                      }` || 0}
+                                    </b>
+                                  </Tag>
+                                }
+                              </>
+                            ),
+                          },
+                          {
+                            title: "Status",
+                            dataIndex: "status",
+                            key: "status",
+                            width: "10%",
+                            render: (text: string) => (
+                              <Tag
+                                color={
+                                  text === "Approved"
+                                    ? "green"
+                                    : text === "Rejected"
+                                    ? "red"
+                                    : "orange"
+                                }
+                                key={text}
+                              >
+                                {text}
+                              </Tag>
+                            ),
+                          },
+                          {
+                            title: "Comments",
+                            dataIndex: "comments",
+                            key: "comments",
+                            width: "20%",
+                            // render: (text: string) => (
+                            //   <>
+                            //     {text.substring(0, 30)}
+                            //   </>
+                            // ),
+                          },
+                          {
+                            title: "Actions",
+                            dataIndex: "id",
+                            key: "actions",
+                            width: "15%",
+                            render: (_, record) => (
+                              <>
+                                {record.status === "Pending" && (
+                                  <Space>
+                                    <Button
+                                      shape="round"
+                                      onClick={() =>
+                                        dispatch(
+                                          TransactionService.approveRedemption(
+                                            record.id
+                                          )
+                                        )
+                                      }
+                                    >
+                                      Approve
+                                    </Button>
+                                    <Button
+                                      shape="round"
+                                      type="primary"
+                                      danger
+                                      onClick={() =>
+                                        dispatch(
+                                          TransactionService.rejectRedemption(
+                                            record.id
+                                          )
+                                        )
+                                      }
+                                    >
+                                      Reject
+                                    </Button>
+                                  </Space>
+                                )}
+                              </>
+                            ),
+                          },
+                        ]}
+                        dataSource={redemptions}
+                      />
                     )}
                   </>
                 ),

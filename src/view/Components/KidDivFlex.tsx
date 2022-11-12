@@ -12,6 +12,7 @@ import { AvatarUpload } from "./AvatarUpload";
 import { UserOutlined } from "@ant-design/icons";
 import noImageIcon from "../assets/img/jd-icon.png";
 import { useNavigate } from "react-router-dom";
+import { UserType } from "../../enums";
 
 export const KidDivFlex = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ export const KidDivFlex = () => {
                           )}
                         </div>
                         <div className="categoryDesc">
-                          <button
+                          {/* <button
                             style={{
                               marginTop: "22px",
                               marginRight: "22px",
@@ -81,7 +82,7 @@ export const KidDivFlex = () => {
                             }
                           >
                             Edit
-                          </button>
+                          </button> */}
                           <p className="itemDate">
                             {moment(kid[0]?.createdOn).format(
                               "MM-DD-YYYY HH:mm:ss"
@@ -127,7 +128,7 @@ export const KidDivFlex = () => {
                             )}
                           </div>
                           <div className="categoryDesc">
-                            <button
+                            {/* {<button
                               style={{
                                 marginTop: "22px",
                                 marginRight: "22px",
@@ -143,7 +144,7 @@ export const KidDivFlex = () => {
                               }
                             >
                               Edit
-                            </button>
+                            </button>} */}
                             <p className="itemDate">
                               {moment(kid[1]?.createdOn).format(
                                 "MM-DD-YYYY HH:mm:ss"

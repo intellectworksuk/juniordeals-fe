@@ -1,17 +1,53 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IoLogoGithub, IoLogoLinkedin, IoMdMail } from "react-icons/all";
 import { Link } from "react-router-dom";
-import jd_black_logo from "../assets/img/jd-black.png";
+import jd_white_logo from "../assets/img/jd-white.png";
 import * as routes from "../../constants/routes";
+import { Col, Form, Row } from "antd";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import {
+  displayErrorMessage,
+  displaySuccessNotification,
+} from "../../util/notifications";
+import * as AuthService from "../../store/auth/auth.actions";
+import { ContactUsData } from "../../types";
+import { clearAuthError, clearAuthStatus } from "../../store/auth/auth.slice";
 
 export const PageFooter = () => {
+  const dispatch = useAppDispatch();
+
+  const { error, status } = useAppSelector((state) => state.auth);
+
+  const onFormSubmit = (formData: ContactUsData) => {
+    dispatch(AuthService.saveContactUs(formData));
+  };
+
+  const onFinishFailed = () => {
+    displayErrorMessage("Please complete all required form fields!");
+    return;
+  };
+
+  // useEffect(() => {
+  //   if (error) {
+  //     displayErrorMessage(error);
+  //     dispatch(clearAuthError());
+  //   }
+  // }, [dispatch, error]);
+
+  useEffect(() => {
+    if (status === "saveContactUsResolved") {
+      displaySuccessNotification("Inquiry has been sent");
+      dispatch(clearAuthStatus());
+    }
+  }, [dispatch, status]);
+
   return (
     <>
       <div className="sec-site-footer">
         <div className="footer-desc">
           <div className="logo-head">
             <img
-              src={jd_black_logo}
+              src={jd_white_logo}
               alt="JuniorDeals-Brand-logo"
               className="logo-dark"
             />
@@ -28,17 +64,29 @@ export const PageFooter = () => {
           <div className="desc-social">
             <ul className="social-footer">
               <li>
-                <a href="">
+                <a
+                  href="https://www.youtube.com/channel/UCHcoWhjaAZGRLKulSCfSD9w"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <i className="mdi mdi-youtube mdi-36px"></i>
                 </a>
               </li>
               <li>
-                <a href="">
+                <a
+                  href="https://www.instagram.com/junior.deals/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <i className="mdi mdi-instagram mdi-36px"></i>
                 </a>
               </li>
               <li>
-                <a href="">
+                <a
+                  href="https://www.facebook.com/people/Junior-Deals/100086375535835/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <i className="mdi mdi-facebook mdi-36px"></i>
                 </a>
               </li>
@@ -54,85 +102,147 @@ export const PageFooter = () => {
           </div>
         </div>
         <div className="footer-nav">
-          <ul className="micro-navigation">
-            <li>
-              <Link to={routes.HOME} className="btn-link">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={routes.FETCH_STORE_PRODUCT}
-                state={{ ["product"]: "active" }}
-                className="btn-link"
-              >
-                Barter
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={routes.FETCH_STORE_PRODUCT}
-                state={{ ["barter"]: "active" }}
-                className="btn-link"
-              >
-                Products
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={routes.USER_PROFILE}
-                state={{ activeTabIndex: "5" }}
-                className="btn-link"
-              >
-                My Wallet
-              </Link>
-            </li>
-            <li>
-              <a href="">About Us</a>
-            </li>
-            <li>
-              <a href="">How it works</a>
-            </li>
-            <li>
-              <a href="">Join Us</a>
-            </li>
-            <li>
-              <a href="">Contact Us</a>
-            </li>
-          </ul>
+          <Row gutter={16}>
+            <Col>
+              <ul className="micro-navigation">
+                <li>
+                  <Link to={routes.HOME} className="btn-link">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={routes.FETCH_STORE_PRODUCT}
+                    state={{ ["product"]: "active" }}
+                    className="btn-link"
+                  >
+                    Barter
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={routes.FETCH_STORE_PRODUCT}
+                    state={{ ["barter"]: "active" }}
+                    className="btn-link"
+                  >
+                    Products
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to={routes.USER_PROFILE}
+                    state={{ activeTabIndex: "5" }}
+                    className="btn-link"
+                  >
+                    My Wallet
+                  </Link>
+                </li>
+              </ul>
+            </Col>
+            <Col>
+              <ul className="micro-navigation">
+                {/* <li>
+                <NavLink to={routes.QUIZ_VIEW} className="btn-link">
+                  Quizes
+                </NavLink>
+              </li>{" "} */}
+                <li>
+                  <Link to="/view/aboutus" className="btn-link">
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/view/howitworks" className="btn-link">
+                    How it Works
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/view/contactus" className="btn-link">
+                    Contact Us
+                  </Link>
+                </li>
+              </ul>
+            </Col>
+          </Row>
         </div>
         <div className="footer-contact-form">
           <div className="micro-head">Send your suggestions and queries</div>
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-lg-6 col-md-6 col-sm-6">
-                <input
-                  type="text"
-                  className="footer-input"
-                  placeholder="Full Name*"
-                />
-              </div>
-              <div className="col-lg-6 col-md-6 col-sm-6">
-                <input
-                  type="text"
-                  className="footer-input"
-                  placeholder="Email Address*"
-                />
-              </div>
-              <div className="col-lg-12 col-md-12 col-sm-12">
-                <textarea maxLength={100}
-                  className="footer-input"
-                  placeholder="Message*"
-                ></textarea>
-              </div>
-              <div className="col-lg-6 col-md-6 col-sm-6"></div>
-              <div className="col-lg-6 col-md-6 col-sm-6">
-                <button type="button" className="footer-btn">
-                  Send Message
-                </button>
+          <Form
+            onFinish={onFormSubmit}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+          >
+            <div className="container-fluid">
+              <div className="row">
+                <div className="col-lg-6 col-md-6 col-sm-6">
+                  <Form.Item
+                    name="FullName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter FullName.",
+                      },
+                    ]}
+                  >
+                    <input
+                      maxLength={30}
+                      className="footer-input"
+                      placeholder="Full Name*"
+                    />
+                  </Form.Item>
+                </div>
+                <div className="col-lg-6 col-md-6 col-sm-6">
+                  <Form.Item
+                    name="Email"
+                    rules={[
+                      {
+                        type: "email",
+                        message: "The input is not valid E-mail!",
+                      },
+                      {
+                        required: true,
+                        message: "Please input your E-mail!",
+                      },
+                    ]}
+                  >
+                    <input
+                      maxLength={50}
+                      type="text"
+                      className="footer-input"
+                      placeholder="Email Address*"
+                    />
+                  </Form.Item>
+                </div>
+                <div className="col-lg-12 col-md-12 col-sm-12">
+                  <Form.Item
+                    name="Message"
+                    rules={[
+                      ({ getFieldValue }) => ({
+                        validator(_rule, value) {
+                          if (!value || !value.includes("<script>")) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject("Invalid input found!");
+                        },
+                      }),
+                    ]}
+                  >
+                    <textarea
+                      maxLength={150}
+                      className="footer-input"
+                      placeholder="Message*"
+                    ></textarea>
+                  </Form.Item>
+                </div>
+                <div className="col-lg-6 col-md-6 col-sm-6"></div>
+                <div className="col-lg-6 col-md-6 col-sm-6">
+                  <button type="submit" className="footer-btn">
+                    Send Message
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </Form>
         </div>
       </div>
 

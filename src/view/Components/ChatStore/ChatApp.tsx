@@ -1,7 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { ProductResponse } from "../../../types";
 import { useAuthListener } from "./firebase/useAuthListener";
-import Register from "./Register";
 import * as helper from "../../../util/helper";
 import * as FirebaseService from "./firebase/fireStoreService";
 import { useFireBase } from "./firebase/config";

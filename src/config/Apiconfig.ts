@@ -19,6 +19,7 @@ const Apiconfig = {
       sendNotify: '/user/sendemail',
       forgotpassword: '/auth/forgotpassword',
       resetPassword: '/auth/resetpassword',
+      saveContactUs: '/user/contactus'
     },
     admin: {
       fetchAllUsers: '/user/getall',
@@ -45,6 +46,7 @@ const Apiconfig = {
       fetchProductsWishList: 'product/getWishlistProducts',
       fetchUserProducts: 'product/getMyProducts',
       fetchAllProducts: 'product/getall',
+      fetchSingleProduct: 'product/details',
       fetchRecentlyViewedList: 'product/getRecentProducts',
     },
     deal: {
@@ -63,7 +65,11 @@ const Apiconfig = {
     },
     transaction: {
       addTransferTransaction: '/transaction/addTransferTransaction',
+      redeemCredits: '/transaction/addRedemption',
       fetchAllTransactions: '/transaction/getall',
+      fetchAllRedemptions: '/transaction/getAllRedemption',
+      approveRedemption: '/transaction/redemption/approve',
+      rejectRedemption: '/transaction/redemption/reject',
       initPay: '/transaction/getPaymentIntent',
       updPay: '/transaction/addStripeTransaction',
     },

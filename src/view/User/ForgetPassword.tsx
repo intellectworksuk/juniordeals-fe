@@ -94,7 +94,7 @@ export const ForgetPasswordPage = (/*props: ForgetPasswordPageProps*/) => {
                   ]}
                 >
                   <input
-                    maxLength={30}
+                    maxLength={50}
                     className="inpCtrl"
                     placeholder="Your Email Id"
                   ></input>

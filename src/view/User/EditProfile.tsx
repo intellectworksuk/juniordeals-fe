@@ -63,15 +63,15 @@ export const EditProfilePage = () => {
     form.setFieldsValue({ image: userLoc.image });
     form.setFieldsValue({ fullName: userLoc.fullName });
     form.setFieldsValue({ address: userLoc.address });
-    form.setFieldsValue({ mobileNumber: userLoc.mobileNumber });
+    form.setFieldsValue({ phoneNumber: userLoc.phoneNumber });
   });
 
-  useEffect(() => {
-    if (authError) {
-      displayErrorMessage(authError);
-      dispatch(clearAuthError());
-    }
-  }, [dispatch, authError]);
+  // useEffect(() => {
+  //   if (authError) {
+  //     displayErrorMessage(authError);
+  //     dispatch(clearAuthError());
+  //   }
+  // }, [dispatch, authError]);
 
   useEffect(() => {
     if (authStatus === "userUpdatedResolved") {
@@ -178,7 +178,7 @@ export const EditProfilePage = () => {
         <div className="row formRow">
           <div className="col-lg-12">
             <Item
-              name="mobileNumber"
+              name="phoneNumber"
               noStyle
               rules={[
                 {

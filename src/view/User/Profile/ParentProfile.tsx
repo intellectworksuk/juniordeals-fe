@@ -92,6 +92,7 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
       // }
     } else if (key === "5") {
       dispatch(ConfigService.fetchChargesSetup());
+      dispatch(AuthService.loadCurrentProfile());
       dispatch(TransactionService.fetchAllTransactions());
     }
 
@@ -143,8 +144,13 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
 
   useEffect(() => {
     if (tranStatus === "transferCreditsResolved") {
-      displaySuccessNotification("Transaction success");
+      displaySuccessNotification("Transaction successful");
       dispatch(AuthService.fetchChildrenProfile());
+      dispatch(clearTransactionStateStatus());
+    }
+    if (tranStatus === "redeemCreditsResolved") {
+      displaySuccessNotification("Transaction successful");
+      dispatch(AuthService.loadCurrentProfile());
       dispatch(clearTransactionStateStatus());
     }
   }, [dispatch, tranStatus]);

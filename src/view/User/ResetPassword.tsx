@@ -64,7 +64,7 @@ export const ResetPasswordPage = () => {
         onFinish={onFormSubmit}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
-        >
+      >
         <div className="row">
           <div className="col-lg-12">
             <Item name="Token" hidden={true}>
@@ -85,6 +85,7 @@ export const ResetPasswordPage = () => {
               ]}
             >
               <input
+                maxLength={50}
                 type="email"
                 className="inpCtrl"
                 placeholder={"Email ID"}
@@ -112,7 +113,7 @@ export const ResetPasswordPage = () => {
                     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/,
                   message:
                     "Password must be between 8 to 15 characters which contain at least one lowercase letter, one uppercase letter, one numeric digit, and one special character",
-                }
+                },
               ]}
               hasFeedback
             >

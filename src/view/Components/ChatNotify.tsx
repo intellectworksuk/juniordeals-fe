@@ -57,17 +57,19 @@ export const ChatNotifyBadge = (props: ChatNotifyBadgeProps) => {
         <></>
       ) : (
         <div style={{ marginTop: "5px" }}>
-          <Badge
-            count={messagetCount}
-            size={props.size === "small" ? "small" : "default"}
-          >
-            <Avatar
-              icon={<img src={chatIcon} />}
-              shape="square"
-              size={props.size}
-              style={{ backgroundColor: `${props.bgcolor}` }}
-            />
-          </Badge>
+          {messagetCount && (
+            <Badge
+              count={messagetCount}
+              size={props.size === "small" ? "small" : "default"}
+            >
+              <Avatar
+                icon={<img alt="" src={chatIcon} />}
+                shape="square"
+                size={props.size}
+                style={{ backgroundColor: `${props.bgcolor}` }}
+              />
+            </Badge>
+          )}
         </div>
       )}
     </>

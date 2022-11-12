@@ -1,7 +1,10 @@
-import { PageHeader } from '../Layout'
-import bannerImg from '../../view/assets/img/banner.jpg'
+import { PageHeader } from "../Layout";
+import bannerImg from "../../view/assets/img/banner.jpg";
+import { useScrollToTop } from "../../hooks/useScrollToTop";
 
 export const ContactUsPage = () => {
+  useScrollToTop();
+
   return (
     <>
       <div className="text-center contact-generic">
@@ -43,22 +46,34 @@ export const ContactUsPage = () => {
           <div className="col-lg-4 col-md-4 text-left">
             <h3 className="headingPrimary">Find us on Social Media</h3>
             <hr />
-            <a href="#" target="_blank">
+            <a
+              href="https://www.facebook.com/people/Junior-Deals/100086375535835/"
+              target="_blank"
+              rel="noreferrer"
+            >
               <i className="mdi mdi-facebook mdi-24px"></i>&emsp;Our Face book
               page
             </a>
             <br />
-            <a href="#" target="_blank">
+            <a href="#" target="_blank" rel="noreferrer">
               <i className="mdi mdi-twitter mdi-24px"></i>&emsp;Our Twitter
               Account
             </a>
             <br />
-            <a href="#" target="_blank">
+            <a
+              href="https://www.instagram.com/junior.deals/"
+              target="_blank"
+              rel="noreferrer"
+            >
               <i className="mdi mdi-instagram mdi-24px"></i>&emsp;Our Instagram
               page
             </a>
             <br />
-            <a href="#" target="_blank">
+            <a
+              href="https://www.youtube.com/channel/UCHcoWhjaAZGRLKulSCfSD9w"
+              target="_blank"
+              rel="noreferrer"
+            >
               <i className="mdi mdi-youtube mdi-24px"></i>&emsp;Our Youtube
               Channel
             </a>
@@ -79,7 +94,7 @@ export const ContactUsPage = () => {
           </div>
         </div>
         <hr />
-        <div className="row">
+        {/* <div className="row">
           <div className="col-lg-8 col-lg-offset-2 col-md-8">
             <h3 className="headingPrimary">
               Send Message
@@ -89,8 +104,8 @@ export const ContactUsPage = () => {
               </small>
             </h3>
           </div>
-        </div>
-        <form action="">
+        </div> */}
+        {/* <form action="">
           <div className="row">
             <div className="col-lg-4 col-lg-offset-2 col-md-4 col-md-offset-2">
               <input type="text" className="inpCtrl" placeholder="First Name" />
@@ -132,8 +147,8 @@ export const ContactUsPage = () => {
               <br />
             </div>
           </div>
-        </form>
+        </form> */}
       </div>
     </>
-  )
-}
+  );
+};

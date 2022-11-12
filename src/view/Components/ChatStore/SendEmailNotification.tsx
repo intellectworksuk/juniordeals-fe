@@ -84,7 +84,7 @@ export const SendEmailNotification = (props: SendEmailNotificationProps) => {
                     },
                     ({ getFieldValue }) => ({
                       validator(_rule, value) {
-                        if (!value || !value.includes("script")) {
+                        if (!value || !value.includes("<script>")) {
                           return Promise.resolve();
                         }
                         return Promise.reject("Invalid input found!");

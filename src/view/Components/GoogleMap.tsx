@@ -24,7 +24,7 @@ const GMAPS_API_KEY = config.google_maps_key; //"AIzaSyBAwlXYDbl6eeVRb0dlDyQo8Pv
 const initLat = 51.509865;
 const initLng = -0.118092;
 
-Geocode.setApiKey(GMAPS_API_KEY);
+Geocode.setApiKey(GMAPS_API_KEY!);
 
 const containerStyle = {
   width: "100%",
@@ -123,7 +123,7 @@ export const GoogleMapEmbed = (props: GoogleMapEmbedProps) => {
     <>
       <LoadScript
         id="google-map-script"
-        googleMapsApiKey={GMAPS_API_KEY}
+        googleMapsApiKey={GMAPS_API_KEY!}
         libraries={libraries}
       >
         <div id="searchbox">

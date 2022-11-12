@@ -30,7 +30,7 @@
     <script src="%PUBLIC_URL%/lib/vendor/js/jquery-ui.min.js"></script>
     <script src="%PUBLIC_URL%/lib/vendor/js/popper.min.js"></script>
     <script src="%PUBLIC_URL%/lib/vendor/albery/js/albery.js"></script>
-    <script src="%PUBLIC_URL%/lib/vendor/bs/js/bootstrap.js"></script>
+    <!-- <script src="%PUBLIC_URL%/lib/vendor/bs/js/bootstrap.js"></script> -->
     <script src="%PUBLIC_URL%/lib/vendor/bs/js/bootstrap.min.js"></script>
     <script src="%PUBLIC_URL%/lib/module/index.js"></script>
 
@@ -47,6 +47,16 @@
       rel="stylesheet"
       href="%PUBLIC_URL%/lib/vendor/bs/css/bootstrap-theme.css"
     />
+
+    <script>
+      $(window).scroll(function () {
+        if ($(window).scrollTop() > 100) {
+          $("header").addClass("sticky");
+        } else {
+          $("header").removeClass("sticky");
+        }
+      });
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

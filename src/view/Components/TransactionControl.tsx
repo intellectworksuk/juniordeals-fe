@@ -1,23 +1,27 @@
-import { SaveOutlined } from '@ant-design/icons'
-import { Form, InputNumber, Select, Spin } from 'antd'
-import { strictEqual } from 'assert'
-import { useAppSelector } from '../../hooks/reduxHooks'
-import { User } from '../../types'
+import { SaveOutlined } from "@ant-design/icons";
+import { Form, InputNumber, Select, Spin, Tag } from "antd";
+import { strictEqual } from "assert";
+import { useAppSelector } from "../../hooks/reduxHooks";
+import { User } from "../../types";
 
 interface TransactionControlProps {
-  user: User
-  showOperator: boolean
-  onSave: (values: any) => void
-  onChangeCredits?: (credits: any) => void
+  user: User;
+  type?: "in" | "out";
+  showComments?: boolean;
+  showOperator: boolean;
+  showPlusOperator?: boolean;
+  showMinusOperator?: boolean;
+  onSave: (values: any) => void;
+  onChangeCredits?: (credits: any) => void;
 }
 
 export const TransactionControl = (props: TransactionControlProps) => {
-  const { status } = useAppSelector((state) => state.transaction)
+  const { status } = useAppSelector((state) => state.transaction);
 
   const selectBefore = props.showOperator ? (
     <Form.Item
       name="Operator"
-      rules={[{ required: true, message: '*' }]}
+      rules={[{ required: true, message: "*" }]}
       noStyle
     >
       <Select>
@@ -27,8 +31,8 @@ export const TransactionControl = (props: TransactionControlProps) => {
       </Select>
     </Form.Item>
   ) : (
-    <>+</>
-  )
+    <>{props.type || props.type === "out" ? "-" : "+"}</>
+  );
 
   return (
     <>
@@ -36,11 +40,11 @@ export const TransactionControl = (props: TransactionControlProps) => {
         onFinish={props.onSave}
         fields={[
           {
-            name: ['ReceiverId'],
+            name: ["ReceiverId"],
             value: props.user.id,
           },
           {
-            name: ['AvailableCredits'],
+            name: ["AvailableCredits"],
             value: props.user.availableCredits,
           },
           // {
@@ -64,11 +68,12 @@ export const TransactionControl = (props: TransactionControlProps) => {
                 addonBefore={selectBefore}
                 addonAfter={
                   <button
+                    style={{ border: 0, backgroundColor: "rgb(250, 250, 250)" }}
                     type="submit"
-                    disabled={status === 'transferCreditsPending'}
+                    disabled={status === "transferCreditsPending"}
                   >
                     <span id="button-text">
-                      {status === 'transferCreditsPending' ? (
+                      {status === "transferCreditsPending" ? (
                         <Spin size="small" />
                       ) : (
                         <SaveOutlined />
@@ -80,9 +85,35 @@ export const TransactionControl = (props: TransactionControlProps) => {
                 onChange={props.onChangeCredits}
               ></InputNumber>
             </Form.Item>
+            {props.showComments && (
+              <Form.Item
+                name="Comments"
+                rules={[
+                  {
+                    required: true,
+                    message:
+                      "Please enter comments",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_rule, value) {
+                      if (!value || !value.includes("<script>")) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject("Invalid input found!");
+                    },
+                  }),
+                ]}
+              >
+                <textarea
+                  maxLength={100}
+                  className="inpCtrl"
+                  placeholder="Comments"
+                ></textarea>
+              </Form.Item>
+            )}
           </div>
         </div>
       </Form>
     </>
-  )
-}
+  );
+};

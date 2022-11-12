@@ -6,7 +6,7 @@ export const MaintenancePage = () => {
   return (
     <>
       <Helmet>
-        <title>JuniorDeals</title>
+        <title>Junior Deals</title>
       </Helmet>
 
       <div className="row">

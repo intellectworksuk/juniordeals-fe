@@ -6,13 +6,13 @@ import { useState } from "react";
 import { config } from "../../../../constants/env";
 
 // const firebaseConfig = {
-//   apiKey: "AIzaSyDFopDwsM3ZPnHURFSbIzgllo8PV2VhSPQ",
-//   authDomain: "chat-ware-f8777.firebaseapp.com",
-//   databaseURL: "https://chat-ware-f8777-default-rtdb.firebaseio.com",
-//   projectId: "chat-ware-f8777",
-//   storageBucket: "chat-ware-f8777.appspot.com",
-//   messagingSenderId: "971585314307",
-//   appId: "1:971585314307:web:9c47711adabead057a3836",
+//   apiKey: "AIzaSyBXJISpFmgeO_5WboUqsZUgUOvS5EPpe6c",
+//   authDomain: "buysing-f5c4e.firebaseapp.com",
+//   databaseURL: "https://buysing-f5c4e-default-rtdb.firebaseio.com",
+//   projectId: "buysing-f5c4e",
+//   storageBucket: "buysing-f5c4e.appspot.com",
+//   messagingSenderId: "705503908040",
+//   appId: "1:705503908040:web:0969aec1bb0813109355fd"
 // };
 
 export const useFireBase = () => {

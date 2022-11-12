@@ -8,6 +8,7 @@ export const initialState: ProductState = Object.freeze({
   categories: [],
   products: [],
   recentproducts: [],
+  latestproducts: [],
   wishListproducts: [],
   error: "",
 });
@@ -120,6 +121,16 @@ const productSlice = createSlice({
       }
     );
     builder.addCase(
+      ProductService.fetchLatestProducts.fulfilled,
+      (state, { payload }) => {
+        state.status = "fetchAllProductsResolved";
+
+        state.latestproducts = Util.fill(payload);
+
+        state.error = "";
+      }
+    );
+    builder.addCase(
       ProductService.fetchAllProducts.rejected,
       (state, { payload }: { payload: any }) => {
         state.error = Util.parseErrorMessage(payload);
@@ -181,6 +192,20 @@ const productSlice = createSlice({
     builder.addCase(ProductService.addLikes.fulfilled, (state, { payload }) => {
       state.status = "addLikesResolved";
 
+      // const currprod = state.categories
+      //   .flatMap((p) => p.products)
+      //   .find((p) => BigInt(p?.id!) === BigInt(payload.productId));
+      // if (currprod) {
+      //   let likes = currprod.likes;
+
+      //   if (!likes) likes = BigInt(0);
+
+      //   likes += BigInt(1);
+
+      //   currprod.id = payload.productId;
+      //   currprod.likes = likes;
+      // }
+
       state.error = "";
     });
     builder.addCase(
@@ -231,6 +256,33 @@ const productSlice = createSlice({
         state.error = Util.parseErrorMessage(payload);
 
         state.status = "approveProductRejected";
+      }
+    );
+
+    builder.addCase(
+      ProductService.fetchSingleProduct.fulfilled,
+      (state, { payload }) => {
+        state.status = "fetchSingleProductResolved";
+
+        // state.products = Util.fill(payload);
+        // payload.likes = BigInt(10);
+
+        // state.categories = state.categories
+        //   .flatMap((cat) => cat.products)
+        //   .map((product) =>
+        //     product?.id! === payload?.id! ? { ...product, ...payload } : product
+        //   );
+
+        const findProdIndex = state.categories
+          .flatMap((cat) => cat.products)
+          .findIndex((prod) => prod?.id === payload.id);
+
+        state.categories.flatMap((cat) => cat.products)[findProdIndex] =
+          payload;
+
+        // state.categories = Util.fill(newCategories);
+
+        state.error = "";
       }
     );
   },

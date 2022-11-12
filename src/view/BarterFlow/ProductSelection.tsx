@@ -8,8 +8,10 @@ import md1 from "../assets/img/md1.jpg";
 import { ProductResponse } from "../../types";
 import { useScrollToTop } from "../../hooks/useScrollToTop";
 import * as routes from "../../constants/routes";
-import { Badge, Tag } from "antd";
+import { Badge, Tag, Typography } from "antd";
 import { ProductAvatar } from "../Components/ProductAvatar";
+
+const {Text} = Typography
 
 export const BarterProductSelectionPage = () => {
   const location = useLocation();
@@ -57,9 +59,9 @@ export const BarterProductSelectionPage = () => {
               .map((product) => (
                 <Badge.Ribbon
                   text={`${
-                    product.rate! - productFromLocation.rate! < 0
-                      ? "Buyer to pay"
-                      : "Seller to pay"
+                    product.rate! - productFromLocation.rate! <= 0
+                      ? "Buyer"
+                      : "Seller"
                   } to pay`}
                   color="volcano"
                 >
@@ -76,14 +78,15 @@ export const BarterProductSelectionPage = () => {
                       </p>
                       <p>
                         <small>
-                          Product Subtitle:&nbsp; {product.subTitle}
+                          Subtitle:&nbsp; {product.subTitle}
                         </small>
                         <br />
-                        <small>Rate:&nbsp; $ {product.rate}</small>
+                        <small>Points:&nbsp; {product.rate}</small>
                       </p>
                     </div>
 
                     <div className="item-price">
+                      <small>Points difference:&nbsp;</small>
                       <Tag
                         color={
                           product.rate! - productFromLocation.rate! < 0

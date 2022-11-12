@@ -71,7 +71,7 @@ const authSlice = createSlice({
         state.user.fullName = payload.fullName;
         state.user.address = payload.address;
         state.user.image = payload.image;
-        state.user.mobileNumber = payload.mobileNumber;
+        state.user.phoneNumber = payload.phoneNumber;
 
         // state.user.profile.id = payload.profile.id;
       },
@@ -288,6 +288,24 @@ const authSlice = createSlice({
       AuthService.confirmPaymentIntent.rejected,
       (state, { payload }: { payload: any }) => {
         state.status = 'confirmPaymentIntentRejected'
+        state.error = Util.parseErrorMessage(payload)
+      },
+    )
+
+    builder.addCase(AuthService.saveContactUs.pending, (state) => {
+      state.status = 'saveContactUsPending'
+    })
+    builder.addCase(
+      AuthService.saveContactUs.fulfilled,
+      (state, { payload }) => {
+        state.status = 'saveContactUsResolved'
+        state.error = ''
+      },
+    )
+    builder.addCase(
+      AuthService.saveContactUs.rejected,
+      (state, { payload }: { payload: any }) => {
+        state.status = 'saveContactUsRejected'
         state.error = Util.parseErrorMessage(payload)
       },
     )

@@ -4,7 +4,7 @@ import * as routes from "../../constants/routes";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import * as ProductService from "../../store/product/product.actions";
-import { useEffect } from "react";
+import { SetStateAction, useEffect } from "react";
 import {
   displayErrorMessage,
   displaySuccessNotification,
@@ -19,12 +19,18 @@ import noImageIcon from "../assets/img/jd-icon.png";
 const { Text } = Typography;
 
 interface ProductDivProps {
+  // divIndex: number;
   product: ProductResponse;
-  stateKey: number;
+  productState: any[];
+  addLikes: () => void;
+  addWishList: () => void;
+  // setProductState: SetStateAction<any>;
   //   dispatch: AppDispatch;
 }
 
 export const ProductDiv = (props: ProductDivProps) => {
+  // console.log(JSON.stringify(props.productState));
+
   const dispatch = useAppDispatch();
 
   const { user } = useAppSelector((state) => state.auth);
@@ -32,14 +38,6 @@ export const ProductDiv = (props: ProductDivProps) => {
   const product = props.product;
 
   const { status, error, products } = useAppSelector((state) => state.product);
-
-  const addLikes = () => {
-    dispatch(ProductService.addLikes(product.id!));
-  };
-
-  const addToWishList = () => {
-    dispatch(ProductService.addToWishList(product.id!));
-  };
 
   return (
     <>
@@ -67,11 +65,16 @@ export const ProductDiv = (props: ProductDivProps) => {
         <div className="softactions">
           <button
             className="softactionbtn"
-            onClick={addLikes}
-            disabled={product.userLike || status === "addLikesPending"}
+            onClick={props.addLikes}
+            disabled={
+              props.productState.find((p) => p?.id! === product.id!)!.liked ||
+              props.productState.find((p) => p?.id! === product.id!)!.status ===
+                "addLikesPending"
+            }
           >
             <span id="button-text">
-              {status === "addLikesPending" ? (
+              {props.productState.find((p) => p?.id! === product.id!)!
+                .status === "addLikesPending" ? (
                 <Spin size="small" />
               ) : (
                 <>{product.likes!}&ensp;Likes</>
@@ -80,13 +83,16 @@ export const ProductDiv = (props: ProductDivProps) => {
           </button>
           <button
             className="softactionbtn"
-            onClick={addToWishList}
+            onClick={props.addWishList}
             disabled={
-              product.inUserWishList || status === "addToWishListPending"
+              props.productState.find((p) => p?.id! === product.id!)!.wished ||
+              props.productState.find((p) => p?.id! === product.id!)!.status ===
+                "addToWishListPending"
             }
           >
             <span id="button-text">
-              {status === "addToWishListPending" ? (
+              {props.productState.find((p) => p?.id! === product.id!)!
+                .status === "addToWishListPending" ? (
                 <Spin size="small" />
               ) : (
                 "+ Wishlist"
@@ -95,7 +101,7 @@ export const ProductDiv = (props: ProductDivProps) => {
           </button>
           <Link
             className="softactionbtn"
-            to={`/navigate/global/product/detail`}
+            to={routes.FETCH_PRODUCT_DETAIL}
             state={{ product: product }}
           >
             Buy Now

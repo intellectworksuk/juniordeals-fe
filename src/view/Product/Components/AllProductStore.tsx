@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import {
   displayErrorMessage,
   displaySuccessNotification,
-} from '../../../util/notifications'
-import * as ProductService from '../../../store/product/product.actions'
-import { ProductCategoryResponse, SearchData } from '../../../types'
-import Apiconfig from '../../../config/Apiconfig'
-import * as routes from '../../../constants/routes'
-import { Link, useLocation } from 'react-router-dom'
-import { ProductDiv } from '../../Components/ProductDiv'
-import { clearProductStateStatus } from '../../../store/product/product.slice'
-import { useScrollToTop } from '../../../hooks/useScrollToTop'
-import { Form, Spin } from 'antd'
-import useEffectOnce from '../../../hooks/useEffectOnce'
-import * as ConfigService from '../../../store/config/config.actions'
-import { ProductDivFlex } from '../../Components/ProductDivFlex'
+} from "../../../util/notifications";
+import * as ProductService from "../../../store/product/product.actions";
+import { ProductCategoryResponse, SearchData } from "../../../types";
+import Apiconfig from "../../../config/Apiconfig";
+import * as routes from "../../../constants/routes";
+import { Link, useLocation } from "react-router-dom";
+import { ProductDiv } from "../../Components/ProductDiv";
+import { clearProductStateStatus } from "../../../store/product/product.slice";
+import { useScrollToTop } from "../../../hooks/useScrollToTop";
+import { Form, Spin } from "antd";
+import useEffectOnce from "../../../hooks/useEffectOnce";
+import * as ConfigService from "../../../store/config/config.actions";
+import { ProductDivFlex } from "../../Components/ProductDivFlex";
 
 // interface ProductStoreProps {
 //   timeStamp: string;
@@ -24,25 +24,25 @@ import { ProductDivFlex } from '../../Components/ProductDivFlex'
 export const AllProductStore = (/*props: ProductStoreProps*/) => {
   // console.log(props.timeStamp);
 
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
 
-  const location = useLocation()
+  const location = useLocation();
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const { status: productStatus, products } = useAppSelector(
-    (state) => state.product,
-  )
+    (state) => state.product
+  );
 
   // const [productActiveTab, setProductActiveTab] = useState<string>("active");
   // const [barterActiveTab, setBbarterActiveTab] = useState<string>("active");
 
-  const { setups } = useAppSelector((state) => state.config)
-  const { user } = useAppSelector((state) => state.auth)
+  const { setups } = useAppSelector((state) => state.config);
+  const { user } = useAppSelector((state) => state.auth);
 
   const onFormSubmit = (formData: SearchData) => {
-    dispatch(ProductService.fetchAllProducts(formData))
-  }
+    dispatch(ProductService.fetchAllProducts(formData));
+  };
 
   // useEffect(() => {
   //   if (error) {
@@ -51,13 +51,13 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
   // }, [dispatch, error]);
 
   useEffectOnce(() => {
-    dispatch(ConfigService.fetchCategories())
+    dispatch(ConfigService.fetchCategories());
     // if (!!user.userName) {
     //   dispatch(ProductService.fetchProductsForSell(undefined));
     //   dispatch(ProductService.fetchProductsWishList());
     // }
-    dispatch(ProductService.fetchAllProducts(undefined))
-  })
+    dispatch(ProductService.fetchAllProducts(undefined));
+  });
 
   // let productActiveTab = "active";
   // let barterActiveTab = "";
@@ -81,7 +81,7 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
   // }
   // }, [productActiveTab, barterActiveTab]);
 
-  useScrollToTop()
+  useScrollToTop();
 
   return (
     <>
@@ -91,9 +91,14 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
             <div className="searchingHeader">
               <div className="container-fluid support-flex">
                 <div className="col-lg-6 col-md-6 col-sm-6">
-                  <div className="sb-title">
-                    <h3>SEARCH BY INTEREST</h3>
-                    <p></p>
+                  <div
+                    style={{
+                      color: "rgb(250, 173, 20)",
+                      fontSize: "35px",
+                      fontWeight: "900",
+                    }}
+                  >
+                    <div className="row">Search By Interest</div>
                   </div>
                 </div>
                 <div className="col-lg-6 col-md-6 col-sm-6">
@@ -125,13 +130,14 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
                     <div className="col-lg-2 col-md-2 col-sm-2">
                       <button
                         type="submit"
-                        className="btn btn-block btn-sm btn-primary"
+                        className="btn btn-block btn-sm"
+                        style={{ backgroundColor: "rgb(250, 173, 20)" }}
                         disabled={
-                          productStatus === 'fetchProductsForSellPending'
+                          productStatus === "fetchProductsForSellPending"
                         }
                       >
                         <span id="button-text">
-                          {productStatus === 'fetchProductsForSellPending' ? (
+                          {productStatus === "fetchProductsForSellPending" ? (
                             <Spin size="small" />
                           ) : (
                             <i className="mdi mdi-magnify"></i>
@@ -182,7 +188,7 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
                     .filter((p) => !p.barterAllowed)
                     .filter((p) => p.availableQuantity! > 0)
                     .filter(
-                      (p) => user.userName === undefined || p.userId != user.id,
+                      (p) => user.userName === undefined || p.userId != user.id
                     )}
                 />
               </div>
@@ -200,7 +206,7 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
                     .filter((p) => p.barterAllowed)
                     .filter((p) => p.availableQuantity! > 0)
                     .filter(
-                      (p) => user.userName === undefined || p.userId != user.id,
+                      (p) => user.userName === undefined || p.userId != user.id
                     )}
                 />
               </div>
@@ -209,5 +215,5 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};

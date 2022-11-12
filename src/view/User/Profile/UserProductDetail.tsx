@@ -43,11 +43,11 @@ export const UserProductDetailPage = () => {
   //   );
   // };
 
-  useEffectOnce(() => {
-    // getMessageCount();
+  // useEffectOnce(() => {
+  //   // getMessageCount();
 
-    dispatch(ProductService.fetchRecentlyViewedList())
-  })
+  //   dispatch(ProductService.fetchRecentlyViewedList())
+  // })
 
   // const productAttachToBuy = () => {
   //   // const chatRoomId = window.btoa(

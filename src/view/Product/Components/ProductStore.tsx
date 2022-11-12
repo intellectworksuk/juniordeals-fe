@@ -12,7 +12,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ProductDiv } from "../../Components/ProductDiv";
 import { clearProductStateStatus } from "../../../store/product/product.slice";
 import { useScrollToTop } from "../../../hooks/useScrollToTop";
-import { Form, Spin } from "antd";
+import { Form, Skeleton, Spin } from "antd";
 import useEffectOnce from "../../../hooks/useEffectOnce";
 import * as ConfigService from "../../../store/config/config.actions";
 import { ProductDivFlex } from "../../Components/ProductDivFlex";
@@ -32,9 +32,13 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
 
   const {
     status: productStatus,
+    error: productError,
     categories,
     wishListproducts,
   } = useAppSelector((state) => state.product);
+
+  const [productDivState, setProductDivState] = useState<any>();
+  const [currProdStateId, setCurrProdStateId] = useState<bigint>();
 
   // const [productActiveTab, setProductActiveTab] = useState<string>("active");
   // const [barterActiveTab, setBbarterActiveTab] = useState<string>("active");
@@ -46,11 +50,14 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
     dispatch(ProductService.fetchProductsForSell(formData));
   };
 
-  // useEffect(() => {
-  //   if (error) {
-  //     displayErrorMessage(error);
-  //   }
-  // }, [dispatch, error]);
+  useEffect(() => {
+    if (productError) {
+      // displayErrorMessage(error);
+      productDivState.forEach((ds: { status: string; }) => {
+        ds.status = "idle";
+      });
+    }
+  }, [dispatch, productError]);
 
   useEffectOnce(() => {
     dispatch(ConfigService.fetchCategories());
@@ -81,6 +88,71 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
     productActiveTab = "active";
   }
   // }, [productActiveTab, barterActiveTab]);
+
+  useEffect(() => {
+    if (productStatus === "fetchProductsForSellResolved") {
+      setProductDivState(
+        categories
+          .flatMap((c) => c.products)
+          .map((p, index) => ({
+            id: p?.id,
+            liked: p?.userLike,
+            wished: p?.inUserWishList,
+            status: "idle",
+          }))
+      );
+    }
+  }, [productStatus]);
+
+  const addLikes = (pid: bigint) => {
+    // const newState = [...props.productState];
+
+    productDivState.find((p: { id: bigint }) => p?.id! === pid)!.status =
+      "addLikesPending";
+
+    setCurrProdStateId(pid);
+    // props.setProductState(newState);
+
+    dispatch(ProductService.addLikes(pid));
+  };
+
+  const addToWishList = (pid: bigint) => {
+    productDivState.find((p: { id: bigint }) => p?.id! === pid)!.status =
+      "addToWishListPending";
+
+    setCurrProdStateId(pid);
+
+    dispatch(ProductService.addToWishList(pid));
+  };
+
+  useEffect(() => {
+    if (productStatus === "addLikesResolved") {
+      // const newState = [...props.productState];
+
+      productDivState.find(
+        (p: { id: bigint }) => BigInt(p?.id!) === BigInt(currProdStateId!)
+      )!.status = "addLikesResolved";
+      productDivState.find(
+        (p: { id: bigint }) => BigInt(p?.id!) === BigInt(currProdStateId!)
+      )!.liked = true;
+
+      // dispatch(ProductService.fetchSingleProduct(currProdStateId!))
+
+      // props.setProductState(newState);
+    }
+    if (productStatus === "addToWishListResolved") {
+      // const newState = [...props.productState];
+
+      productDivState.find(
+        (p: { id: bigint }) => BigInt(p?.id!) === BigInt(currProdStateId!)
+      )!.status = "addToWishListPending";
+      productDivState.find(
+        (p: { id: bigint }) => BigInt(p?.id!) === BigInt(currProdStateId!)
+      )!.wished = true;
+
+      // props.setProductState(newState);
+    }
+  }, [productStatus]);
 
   useScrollToTop();
 
@@ -179,6 +251,10 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
               </a>
             </li>
           </ul>
+
+          {/* {productStatus.endsWith("Pending") ? (
+            <Skeleton active></Skeleton>
+          ) : ( */}
           <div className="tab-content">
             <div
               role="tabpanel"
@@ -186,7 +262,8 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
               id="sellitems"
             >
               <div className="itemized-gallery">
-                {categories &&
+                {productDivState &&
+                  categories &&
                   categories.map((cateogry: ProductCategoryResponse) =>
                     cateogry?.products
                       ?.filter((product) => !product.barterAllowed)
@@ -194,7 +271,10 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
                         <ProductDiv
                           key={Math.random()}
                           product={product}
-                          stateKey={index}
+                          productState={productDivState}
+                          addLikes={() => addLikes(product.id!)}
+                          addWishList={() => addToWishList(product.id!)}
+                          // setProductState={setProductDivState}
                         />
                       ))
                   )}
@@ -206,7 +286,8 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
               id="barteritems"
             >
               <div className="itemized-gallery">
-                {categories &&
+                {/* {productDivState &&
+                  categories &&
                   categories.map((cateogry: ProductCategoryResponse) =>
                     cateogry?.products
                       ?.filter((product) => product.barterAllowed)
@@ -214,10 +295,11 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
                         <ProductDiv
                           key={Math.random()}
                           product={product}
-                          stateKey={index}
+                          productState={productDivState}
+                          // setProductState={setProductDivState}
                         />
                       ))
-                  )}
+                  )} */}
               </div>
             </div>
             <div role="tabpanel" className="tab-pane" id="wishlistitems">

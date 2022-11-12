@@ -162,7 +162,7 @@ export const LoginPage = () => {
               ]}
             >
               <input
-                maxLength={30}
+                maxLength={50}
                 className="inpCtrl"
                 type="text"
                 placeholder="Enter Email ID"

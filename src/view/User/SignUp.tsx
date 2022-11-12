@@ -116,7 +116,7 @@ export const SignUpPage = (props: SignUpPageProps) => {
           password: "",
           confirm: "",
           address: "",
-          mobileNumber: "",
+          phoneNumber: "",
           hearAboutUs: "0",
           longitude: "0",
           latitude: "0",
@@ -215,6 +215,7 @@ export const SignUpPage = (props: SignUpPageProps) => {
               ]}
             >
               <input
+                maxLength={50}
                 type="email"
                 className="inpCtrl"
                 placeholder={
@@ -318,7 +319,7 @@ export const SignUpPage = (props: SignUpPageProps) => {
         <div className="row formRow">
           <div className="col-lg-12">
             <Item
-              name="mobileNumber"
+              name="phoneNumber"
               noStyle
               rules={[
                 {
