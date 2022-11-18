@@ -5,17 +5,18 @@ import {
   displaySuccessNotification,
 } from "../../../util/notifications";
 import * as ProductService from "../../../store/product/product.actions";
-import { ProductCategoryResponse, SearchData } from "../../../types";
+import { SearchData } from "../../../types";
 import Apiconfig from "../../../config/Apiconfig";
 import * as routes from "../../../constants/routes";
 import { Link, useLocation } from "react-router-dom";
 import { ProductDiv } from "../../Components/ProductDiv";
 import { clearProductStateStatus } from "../../../store/product/product.slice";
 import { useScrollToTop } from "../../../hooks/useScrollToTop";
-import { Form, Skeleton, Spin } from "antd";
+import { Form, Pagination, Skeleton, Spin } from "antd";
 import useEffectOnce from "../../../hooks/useEffectOnce";
 import * as ConfigService from "../../../store/config/config.actions";
 import { ProductDivFlex } from "../../Components/ProductDivFlex";
+import type { PaginationProps } from "antd";
 
 // interface ProductStoreProps {
 //   timeStamp: string;
@@ -33,9 +34,13 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
   const {
     status: productStatus,
     error: productError,
-    categories,
+    products,
     wishListproducts,
+    paging: productPaging,
   } = useAppSelector((state) => state.product);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchFilter, setSearchFilter] = useState<SearchData>();
 
   const [productDivState, setProductDivState] = useState<any>();
   const [currProdStateId, setCurrProdStateId] = useState<bigint>();
@@ -47,13 +52,23 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
   const { user } = useAppSelector((state) => state.auth);
 
   const onFormSubmit = (formData: SearchData) => {
-    dispatch(ProductService.fetchProductsForSell(formData));
+    setSearchFilter(formData);
+
+    setCurrentPage(1);
+
+    dispatch(
+      ProductService.fetchProductsForSell({
+        ...formData,
+        pageNo: 1,
+        pageSize: 10,
+      })
+    );
   };
 
   useEffect(() => {
     if (productError) {
       // displayErrorMessage(error);
-      productDivState.forEach((ds: { status: string; }) => {
+      productDivState?.forEach((ds: { status: string }) => {
         ds.status = "idle";
       });
     }
@@ -61,10 +76,14 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
 
   useEffectOnce(() => {
     dispatch(ConfigService.fetchCategories());
-    if (!!user.userName) {
-      dispatch(ProductService.fetchProductsForSell(undefined));
+
+    // if (!!user.userName) {
+      dispatch(
+        ProductService.fetchProductsForSell({ pageNo: 1, pageSize: 10 })
+      );
+
       dispatch(ProductService.fetchProductsWishList());
-    }
+    // }
   });
 
   let productActiveTab = "active";
@@ -92,14 +111,12 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
   useEffect(() => {
     if (productStatus === "fetchProductsForSellResolved") {
       setProductDivState(
-        categories
-          .flatMap((c) => c.products)
-          .map((p, index) => ({
-            id: p?.id,
-            liked: p?.userLike,
-            wished: p?.inUserWishList,
-            status: "idle",
-          }))
+        products.map((p, index) => ({
+          id: p?.id,
+          liked: p?.userLike,
+          wished: p?.inUserWishList,
+          status: "idle",
+        }))
       );
     }
   }, [productStatus]);
@@ -107,20 +124,25 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
   const addLikes = (pid: bigint) => {
     // const newState = [...props.productState];
 
-    productDivState.find((p: { id: bigint }) => p?.id! === pid)!.status =
-      "addLikesPending";
+    const prod = productDivState.find((p: { id: bigint }) => p?.id! === pid);
 
-    setCurrProdStateId(pid);
-    // props.setProductState(newState);
+    if (prod) {
+      prod.status = "addLikesPending";
+
+      setCurrProdStateId(pid);
+    }
 
     dispatch(ProductService.addLikes(pid));
   };
 
   const addToWishList = (pid: bigint) => {
-    productDivState.find((p: { id: bigint }) => p?.id! === pid)!.status =
-      "addToWishListPending";
+    const prod = productDivState.find((p: { id: bigint }) => p?.id! === pid);
 
-    setCurrProdStateId(pid);
+    if (prod) {
+      prod.status = "addToWishListPending";
+
+      setCurrProdStateId(pid);
+    }
 
     dispatch(ProductService.addToWishList(pid));
   };
@@ -129,12 +151,19 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
     if (productStatus === "addLikesResolved") {
       // const newState = [...props.productState];
 
-      productDivState.find(
+      const prod = productDivState.find(
         (p: { id: bigint }) => BigInt(p?.id!) === BigInt(currProdStateId!)
-      )!.status = "addLikesResolved";
-      productDivState.find(
-        (p: { id: bigint }) => BigInt(p?.id!) === BigInt(currProdStateId!)
-      )!.liked = true;
+      );
+
+      if (prod) {
+        prod.status = "addLikesResolved";
+
+        prod.liked = true;
+      }
+
+      // productDivState.find(
+      //   (p: { id: bigint }) => BigInt(p?.id!) === BigInt(currProdStateId!)
+      // )!.liked = true;
 
       // dispatch(ProductService.fetchSingleProduct(currProdStateId!))
 
@@ -143,16 +172,29 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
     if (productStatus === "addToWishListResolved") {
       // const newState = [...props.productState];
 
-      productDivState.find(
+      const prod = productDivState.find(
         (p: { id: bigint }) => BigInt(p?.id!) === BigInt(currProdStateId!)
-      )!.status = "addToWishListPending";
-      productDivState.find(
-        (p: { id: bigint }) => BigInt(p?.id!) === BigInt(currProdStateId!)
-      )!.wished = true;
+      );
 
-      // props.setProductState(newState);
+      if (prod) {
+        prod.status = "addToWishListPending";
+
+        prod.wished = true;
+      }
     }
   }, [productStatus]);
+
+  const onPageChange: PaginationProps["onChange"] = (page, pageSize) => {
+    dispatch(
+      ProductService.fetchProductsForSell({
+        ...searchFilter,
+        pageNo: page,
+        pageSize: pageSize,
+      })
+    );
+
+    setCurrentPage(page);
+  };
 
   useScrollToTop();
 
@@ -162,14 +204,14 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
         <Form form={form} onFinish={onFormSubmit} autoComplete="off">
           <div className="searchBlock">
             <div className="searchingHeader">
-              <div className="container-fluid support-flex">
-                <div className="col-lg-6 col-md-6 col-sm-6">
+              <div className="support-flex">
+                <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                   <div className="sb-title">
                     <h3>SEARCH BY INTEREST</h3>
                     <p></p>
                   </div>
                 </div>
-                <div className="col-lg-6 col-md-6 col-sm-6">
+                <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                   <div className="row">
                     <div className="col-lg-5 col-md-5 col-sm-5">
                       <Form.Item name="Search">
@@ -198,7 +240,7 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
                     <div className="col-lg-2 col-md-2 col-sm-2">
                       <button
                         type="submit"
-                        className="btn btn-block btn-sm btn-primary"
+                        className="btn btn-block btn-sm btn-primary btn-ps"
                         disabled={
                           productStatus === "fetchProductsForSellPending"
                         }
@@ -263,21 +305,19 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
             >
               <div className="itemized-gallery">
                 {productDivState &&
-                  categories &&
-                  categories.map((cateogry: ProductCategoryResponse) =>
-                    cateogry?.products
-                      ?.filter((product) => !product.barterAllowed)
-                      .map((product, index) => (
-                        <ProductDiv
-                          key={Math.random()}
-                          product={product}
-                          productState={productDivState}
-                          addLikes={() => addLikes(product.id!)}
-                          addWishList={() => addToWishList(product.id!)}
-                          // setProductState={setProductDivState}
-                        />
-                      ))
-                  )}
+                  products &&
+                  products
+                    ?.filter((product) => !product.barterAllowed)
+                    .map((product, index) => (
+                      <ProductDiv
+                        key={Math.random()}
+                        product={product}
+                        productState={productDivState}
+                        addLikes={() => addLikes(product.id!)}
+                        addWishList={() => addToWishList(product.id!)}
+                        // setProductState={setProductDivState}
+                      />
+                    ))}
               </div>
             </div>
             <div
@@ -286,35 +326,42 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
               id="barteritems"
             >
               <div className="itemized-gallery">
-                {/* {productDivState &&
-                  categories &&
-                  categories.map((cateogry: ProductCategoryResponse) =>
-                    cateogry?.products
-                      ?.filter((product) => product.barterAllowed)
-                      .map((product, index) => (
-                        <ProductDiv
-                          key={Math.random()}
-                          product={product}
-                          productState={productDivState}
-                          // setProductState={setProductDivState}
-                        />
-                      ))
-                  )} */}
+                {productDivState &&
+                  products &&
+                  products
+                    ?.filter((product) => product.barterAllowed)
+                    .map((product, index) => (
+                      <ProductDiv
+                        key={Math.random()}
+                        product={product}
+                        productState={productDivState}
+                        addLikes={() => addLikes(product.id!)}
+                        addWishList={() => addToWishList(product.id!)}
+                        // setProductState={setProductDivState}
+                      />
+                    ))}
               </div>
             </div>
             <div role="tabpanel" className="tab-pane" id="wishlistitems">
               <div className="itemized-gallery">
-                {/* {categories &&
-                  categories.map((cateogry: ProductCategoryResponse) =>
-                    cateogry?.products
-                      ?.filter((product) => product.barterAllowed)
-                      .map((product) => (
-                        <ProductDiv key={Math.random()} product={product} />
-                      ))
-                  )} */}
                 <ProductDivFlex products={wishListproducts} />
               </div>
             </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-lg-12 text-center">
+            <Pagination
+              current={currentPage}
+              showSizeChanger={false}
+              onChange={onPageChange}
+              total={productPaging.totalCount}
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} items`
+              }
+              // defaultPageSize={20}
+              // defaultCurrent={1}
+            />
           </div>
         </div>
       </div>

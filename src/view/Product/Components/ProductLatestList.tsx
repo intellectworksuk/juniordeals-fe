@@ -5,7 +5,7 @@ import {
   displaySuccessNotification,
 } from "../../../util/notifications";
 import * as ProductService from "../../../store/product/product.actions";
-import { ProductCategoryResponse, ProductResponse } from "../../../types";
+import { ProductResponse } from "../../../types";
 import Apiconfig from "../../../config/Apiconfig";
 import * as routes from "../../../constants/routes";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -46,7 +46,7 @@ export const ProductLatestList = () => {
             <small>Make your day, find the best deal.</small>
           </h2>
         </div>
-        <Carousel autoplay>
+        <Carousel autoplay className="caro-height">
           <div className="freeHeaderCenter">
             {/* {categories &&
             categories.map((cateogry: ProductCategoryResponse) =>

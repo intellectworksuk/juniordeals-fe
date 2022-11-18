@@ -3,6 +3,9 @@ import { PlusOutlined } from "@ant-design/icons";
 import React from "react";
 import { getAuthToken } from "../../util/helper";
 import Apiconfig from "../../config/Apiconfig";
+import { displayErrorMessage } from "../../util/notifications";
+import { async } from "@firebase/util";
+import { resolve } from "node:path/win32";
 
 function getBase64(file: any) {
   return new Promise((resolve, reject) => {
@@ -23,6 +26,7 @@ const getFile = (e: any) => {
 
 export class UploadPictureWall extends React.Component<any, any> {
   state = {
+    validated: false,
     previewVisible: false,
     previewImage: "",
     previewTitle: "",
@@ -45,9 +49,69 @@ export class UploadPictureWall extends React.Component<any, any> {
   };
 
   handleChange = ({ fileList }: { fileList: any }) => {
-    this.setState({ fileList });
+    if (this.state.validated) {
+      this.setState({ fileList });
 
-    if (this.props.onImageSelect) this.props.onImageSelect(fileList);
+      if (this.props.onImageSelect) this.props.onImageSelect(fileList);
+    }
+  };
+
+  validateSizeAndTypeImage = (file: any) => {
+    const allowedImgFormats =
+      file.type === "image/jpeg" ||
+      file.type === "image/jpg" ||
+      file.type === "image/webp" ||
+      file.type === "image/gif";
+
+    this.state.validated = true;
+
+    if (!allowedImgFormats) {
+      displayErrorMessage("You can only upload JPG/GIF file!");
+      this.state.validated = false;
+    }
+
+    const isLt2M = file.size / 1024 / 1024 < 2;
+
+    if (!isLt2M) {
+      displayErrorMessage("Image must smaller than 2MB!");
+      this.state.validated = false;
+    }
+
+    return this.state.validated;
+  };
+
+  checkImageDimensions = (file: any): Promise<boolean> => {
+    this.state.validated = this.validateSizeAndTypeImage(file);
+
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.addEventListener("load", (event) => {
+        const _loadedImageUrl = event.target?.result;
+        const image = document.createElement("img");
+        image.src = _loadedImageUrl as string;
+
+        image.addEventListener("load", () => {
+          const { width, height } = image;
+
+          if (this.state.validated) {
+            if (width < 300 || height < 300) {
+              displayErrorMessage("Image dimension should be minimum 300*300");
+              this.state.validated = false;
+              resolve(false);
+            } else {
+              this.state.validated = true;
+
+              resolve(true);
+            }
+          } else {
+            this.state.validated = false;
+
+            resolve(false);
+          }
+        });
+      });
+    });
   };
 
   render() {
@@ -64,14 +128,15 @@ export class UploadPictureWall extends React.Component<any, any> {
 
     return (
       <>
-        <Form.Item name={this.props.ItemName} >
+        <Form.Item name={this.props.ItemName}>
           <Upload
             action={`${Apiconfig.baseURI}${Apiconfig.endpoints.file.uploadFile}?type=${this.props.type}`}
             {...headers}
             listType="picture-card"
             fileList={fileList}
-            onPreview={this.handlePreview}
+            // onPreview={this.handlePreview}
             onChange={this.handleChange}
+            beforeUpload={this.checkImageDimensions}
           >
             {fileList.length >= 8 ? null : uploadButton}
           </Upload>

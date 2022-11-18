@@ -15,7 +15,7 @@ export const fetchChargesSetup = createAsyncThunk(
 
       return result;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );

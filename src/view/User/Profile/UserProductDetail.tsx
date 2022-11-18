@@ -1,41 +1,53 @@
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
-import Apiconfig from '../../../config/Apiconfig'
-import * as routes from '../../../constants/routes'
-import parse from 'html-react-parser'
-import { ProductResponse } from '../../../types'
-import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
-import * as ProductService from '../../../store/product/product.actions'
-import { store } from '../../../store'
-import { Avatar, Badge, Button, Carousel, Image } from 'antd'
-import { WechatOutlined } from '@ant-design/icons'
-import useEffectOnce from '../../../hooks/useEffectOnce'
-import * as FireStoreService from '../../Components/ChatStore/firebase/fireStoreService'
-import { useFireBase } from '../../Components/ChatStore/firebase/config'
-import { useState } from 'react'
-import { useScrollToTop } from '../../../hooks/useScrollToTop'
-import noImageIcon from '../../assets/img/jd-icon.png'
-import chatIcon from '../../assets/img/chat-icon.png'
-import { UserType } from '../../../enums'
-import { ChatNotifyBadge } from '../../Components'
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import Apiconfig from "../../../config/Apiconfig";
+import * as routes from "../../../constants/routes";
+import parse from "html-react-parser";
+import { ProductResponse } from "../../../types";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
+import * as ProductService from "../../../store/product/product.actions";
+import { store } from "../../../store";
+import { Avatar, Badge, Button, Carousel, Form, Image, Space } from "antd";
+import { WechatOutlined } from "@ant-design/icons";
+import useEffectOnce from "../../../hooks/useEffectOnce";
+import * as FireStoreService from "../../Components/ChatStore/firebase/fireStoreService";
+import { useFireBase } from "../../Components/ChatStore/firebase/config";
+import { useEffect, useState } from "react";
+import { useScrollToTop } from "../../../hooks/useScrollToTop";
+import noImageIcon from "../../assets/img/jd-icon.png";
+import chatIcon from "../../assets/img/chat-icon.png";
+import { UserType } from "../../../enums";
+import { ChatNotifyBadge } from "../../Components";
+import { displayErrorMessage } from "../../../util/notifications";
 
 export const UserProductDetailPage = () => {
-  const [auth, fs] = useFireBase()
+  const [form] = Form.useForm();
 
-  const location = useLocation()
+  const [auth, fs] = useFireBase();
 
-  const dispatch = useAppDispatch()
+  const location = useLocation();
 
-  const product = location.state as ProductResponse
+  const dispatch = useAppDispatch();
 
-  const navigate = useNavigate()
+  const product = location.state as ProductResponse;
+
+  const navigate = useNavigate();
 
   // const [messagetCount, setMessageCount] = useState<bigint>(BigInt(0));
 
   const { recentproducts: recentlyViewedProducts } = useAppSelector(
-    (state) => state.product,
-  )
+    (state) => state.product
+  );
 
-  const { user } = useAppSelector((state) => state.auth)
+  const { user } = useAppSelector((state) => state.auth);
+
+  const onFormSubmit = (formData: any) => {
+    dispatch(ProductService.rejectProduct(formData));
+  };
+
+  const onFinishFailed = () => {
+    displayErrorMessage("Please complete all required form fields!");
+    return;
+  };
 
   // const getMessageCount = async () => {
   //   FireStoreService.getProductMessageCount(auth, fs, product).then((n) =>
@@ -63,7 +75,13 @@ export const UserProductDetailPage = () => {
   //   // navigate("/navigate/user/chat", { state: product });
   // };
 
-  useScrollToTop()
+  useEffectOnce(() => {
+    form.setFieldsValue({
+      ProductId: product.id,
+    });
+  });
+
+  useScrollToTop();
 
   return (
     <>
@@ -81,41 +99,6 @@ export const UserProductDetailPage = () => {
                 </div>
               ))}
             </Carousel>
-            {/* <div className="albery-container">
-              <div className="albery-wrapper">
-                {product.productImage?.map((img: any) => (
-                  <div className="albery-item">
-                    <img
-                      src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${img.fileName}&type=product`}
-                      alt=""
-                    />
-                  </div>
-                ))}
-              </div>
-
-              <div className="move-right">
-                <a href="#" id="rightArrow">
-                  &nbsp;
-                </a>
-              </div>
-              <div className="move-left">
-                <a href="#" id="leftArrow">
-                  &nbsp;
-                </a>
-              </div>
-            </div>
-            <div className="pagination-container">
-              <div className="pagination-wrapper">
-                {product.productImage?.map((img: any) => (
-                  <div className="pagination-item" data-item="1">
-                    <img
-                      src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${img.fileName}&type=product`}
-                      alt=""
-                    />
-                  </div>
-                ))}
-              </div>
-            </div> */}
           </div>
           <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <h6 className="text-uppercase">Upload Date: 01-01-2022</h6>
@@ -150,7 +133,7 @@ export const UserProductDetailPage = () => {
               <br />
             </p>
             <hr />
-            <h5 style={{ fontWeight: 'bold' }}>
+            <h5 style={{ fontWeight: "bold" }}>
               Item Specs &amp; other Information
             </h5>
             {parse(product.specification!)}
@@ -158,7 +141,7 @@ export const UserProductDetailPage = () => {
             <br />
             <Link
               to={routes.TO_CHAT}
-              state={{ product: product, chatUserType: 'seller' }}
+              state={{ product: product, chatUserType: "seller" }}
             >
               <ChatNotifyBadge
                 product={product}
@@ -166,19 +149,66 @@ export const UserProductDetailPage = () => {
                 bgcolor="rgb(255,255,255)"
               />
             </Link>
-
-            {/* {messagetCount > 0 && (
-              <button
-                className="btn-round-sec btn-block"
-                type="button"
-                onClick={() =>
-                  navigate(routes.START_DEAL, { state: { product: product } })
-                }
-              >
-                Start Deal
-              </button>
-            )} */}
           </div>
+          {user.userType !== UserType.CHILD && product.status !== "Rejected" && (
+            <Form
+              form={form}
+              size="small"
+              onFinish={onFormSubmit}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
+              initialValues={{ ProductId: "", Reason: "" }}
+            >
+              <div className="row">
+                <div className="col-lg-12 col-lg-offset-3">
+                  <Space
+                    direction="vertical"
+                    align="center"
+                    style={{ width: "100%", gap: "0" }}
+                  >
+                    <Form.Item name="ProductId" hidden={true}>
+                      <input />
+                    </Form.Item>
+                    <Form.Item
+                      name="Reason"
+                      rules={[
+                        {
+                          required: true,
+                          message:
+                            "Please enter reason for the product rejection.",
+                        },
+                        ({ getFieldValue }) => ({
+                          validator(_rule, value) {
+                            if (!value || !value.includes("<script>")) {
+                              return Promise.resolve();
+                            }
+                            return Promise.reject("Invalid input found!");
+                          },
+                        }),
+                      ]}
+                    >
+                      <textarea
+                        maxLength={100}
+                        className="inpCtrl"
+                        placeholder="Special Description for the item"
+                        style={{ width: "480px" }}
+                      ></textarea>
+                    </Form.Item>
+                    <button
+                      className="btn-round-sec btn-block"
+                      style={{ backgroundColor: "red" }}
+                      type="submit"
+                      // onClick={() =>
+                      //   navigate(routes.START_DEAL, { state: { product: product } })
+                      // }
+                    >
+                      Reject Product
+                    </button>
+                  </Space>
+                </div>
+              </div>
+            </Form>
+          )}
         </div>
       </section>
       {/* <div className="sec-barter-latest">
@@ -219,5 +249,5 @@ export const UserProductDetailPage = () => {
         </div>
       </div> */}
     </>
-  )
-}
+  );
+};

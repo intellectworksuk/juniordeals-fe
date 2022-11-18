@@ -48,11 +48,13 @@ http.interceptors.request.use(
       "Token",
       "StripeTransactionId",
       "QuizQuestions",
+      "Subject",
     ];
 
     // const { token } = useToken();
     // const specialChars = `/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;`
-    const specialChars = `/[^={};':"\\|<>\\/]/;`;
+    // const specialChars = `/[^={};':"\\|<>\\/]/;`;
+    const specialChars = `'/<>\\\//`;
 
     if (!excludedPaths.some((path) => config.url?.includes(path))) {
       if (config.data) {

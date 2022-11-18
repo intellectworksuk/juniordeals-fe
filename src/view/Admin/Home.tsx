@@ -1,6 +1,7 @@
 import {
   Button,
   Input,
+  Pagination,
   Skeleton,
   Space,
   Table,
@@ -29,6 +30,8 @@ import { onValue, ref } from "firebase/database";
 import { useFireBase } from "../Components/ChatStore/firebase/config";
 import { useLocation } from "react-router-dom";
 import * as ConfigService from "../../store/config/config.actions";
+import * as ProductService from "../../store/product/product.actions";
+import type { PaginationProps } from "antd";
 
 const { Search } = Input;
 
@@ -41,6 +44,7 @@ export const AdminHomePage = () => {
     status: adminStatus,
     error: adminError,
     deals,
+    usersPaging,
   } = useAppSelector((state) => state.admin);
 
   const { setups } = useAppSelector((state) => state.config);
@@ -51,17 +55,46 @@ export const AdminHomePage = () => {
   } = useAppSelector((state) => state.transaction);
 
   const [activeTabIndex, setActiveTabIndex] = useState<string>("1");
+  const [userSearchText1, setUserSearchText1] = useState<string>("");
+  const [userSearchText2, setUserSearchText2] = useState<string>("");
+  const [userCurrentPage, setUserCurrentPage] = useState<number>(1);
 
   const { activeUsersCount, inActiveUsersCount } = useAppSelector(
     (state) => state.admin
   );
 
+  const {
+    status: productStatus,
+    error: productError,
+    paging: productPaging,
+  } = useAppSelector((state) => state.product);
+
   const onTabIndexChanged: TabsProps["onChange"] = (key) => {
     if (key === "1") {
+      dispatch(
+        ProductService.fetchAllProducts({
+          pageNo: productPaging.pageNumber,
+          pageSize: productPaging.pageSize,
+        })
+      );
     } else if (key === "2") {
       // dispatch(AdminService.fetchAllDeals(0))
     } else if (key === "3") {
-      // dispatch(AdminService.fetchAllUsers());
+      dispatch(
+        AdminService.fetchAllUsers({
+          searchText: userSearchText1,
+          pageNo: 1,
+          pageSize: 10,
+        })
+      );
+    } else if (key === "4") {
+      dispatch(
+        AdminService.fetchAllUsers({
+          searchText: userSearchText2,
+          pageNo: 1,
+          pageSize: 10,
+        })
+      );
     } else if (key === "5") {
       dispatch(ConfigService.fetchChargesSetup());
 
@@ -136,6 +169,13 @@ export const AdminHomePage = () => {
     });
 
     dispatch(AdminService.fetchUserStats());
+
+    dispatch(
+      ProductService.fetchAllProducts({
+        pageNo: productPaging.pageNumber,
+        pageSize: productPaging.pageSize,
+      })
+    );
   });
 
   useEffect(() => {
@@ -144,10 +184,34 @@ export const AdminHomePage = () => {
     }
   }, [location.state]);
 
+  const onUserPageChange1: PaginationProps["onChange"] = (page, pageSize) => {
+    dispatch(
+      AdminService.fetchAllUsers({
+        searchText: userSearchText1,
+        pageNo: page,
+        pageSize: pageSize,
+      })
+    );
+
+    setUserCurrentPage(page);
+  };
+
+  const onUserPageChange2: PaginationProps["onChange"] = (page, pageSize) => {
+    dispatch(
+      AdminService.fetchAllUsers({
+        searchText: userSearchText2,
+        pageNo: page,
+        pageSize: pageSize,
+      })
+    );
+
+    setUserCurrentPage(page);
+  };
+
   return (
     <>
       <div className="row">
-        <div className="col-lg-8 col-lg-offset-4">
+        <div className="col-lg-12 text-center">
           <Space direction="horizontal">
             <Tag color="darkgreen">{`${activeUsersCount} Active Users`}</Tag>
             <Tag color="orange">{`${onlineUsers} Online Users`}</Tag>
@@ -227,9 +291,19 @@ export const AdminHomePage = () => {
                       <div className="col-lg-3"></div>
                       <div className="col-lg-6">
                         <Search
-                          onSearch={(searchText) =>
-                            dispatch(AdminService.fetchAllUsers(searchText))
-                          }
+                          onSearch={(searchText) => {
+                            setUserSearchText1(searchText);
+
+                            setUserCurrentPage(1);
+
+                            dispatch(
+                              AdminService.fetchAllUsers({
+                                searchText: searchText,
+                                pageNo: 1,
+                                pageSize: 10,
+                              })
+                            );
+                          }}
                           size="large"
                           enterButton
                           placeholder="Enter user name"
@@ -242,6 +316,21 @@ export const AdminHomePage = () => {
                     ) : (
                       <AdjustUserCreditPage />
                     )}
+                    <div className="row">
+                      <div className="col-lg-12  text-center">
+                        <Pagination
+                          current={userCurrentPage}
+                          showSizeChanger={false}
+                          onChange={onUserPageChange1}
+                          total={usersPaging.totalCount}
+                          showTotal={(total, range) =>
+                            `${range[0]}-${range[1]} of ${total} items`
+                          }
+                          // defaultPageSize={20}
+                          // defaultCurrent={1}
+                        />
+                      </div>
+                    </div>
                   </>
                 ),
               },
@@ -254,9 +343,19 @@ export const AdminHomePage = () => {
                       <div className="col-lg-3"></div>
                       <div className="col-lg-6">
                         <Search
-                          onSearch={(searchText) =>
-                            dispatch(AdminService.fetchAllUsers(searchText))
-                          }
+                          onSearch={(searchText) => {
+                            setUserSearchText2(searchText);
+
+                            setUserCurrentPage(1);
+
+                            dispatch(
+                              AdminService.fetchAllUsers({
+                                searchText: searchText,
+                                pageNo: 1,
+                                pageSize: 10,
+                              })
+                            );
+                          }}
                           size="large"
                           enterButton
                           placeholder="Enter user name"
@@ -269,6 +368,21 @@ export const AdminHomePage = () => {
                     ) : (
                       <UserDivFlex />
                     )}
+                    <div className="row">
+                      <div className="col-lg-12 text-center">
+                        <Pagination
+                          current={userCurrentPage}
+                          showSizeChanger={false}
+                          onChange={onUserPageChange2}
+                          total={usersPaging.totalCount}
+                          showTotal={(total, range) =>
+                            `${range[0]}-${range[1]} of ${total} items`
+                          }
+                          // defaultPageSize={20}
+                          // defaultCurrent={1}
+                        />
+                      </div>
+                    </div>
                   </>
                 ),
               },
@@ -308,7 +422,10 @@ export const AdminHomePage = () => {
                                 {value}
                                 <br />
                                 {
-                                  <Tag color="LightSlateGray" style={{ fontSize: 10 }}>
+                                  <Tag
+                                    color="LightSlateGray"
+                                    style={{ fontSize: 10 }}
+                                  >
                                     <b>
                                       {`${setups.charges.Currency} ${
                                         (Number(value) || 0) /
@@ -337,7 +454,10 @@ export const AdminHomePage = () => {
                                 {value}
                                 <br />
                                 {
-                                  <Tag color="LightSlateGray" style={{ fontSize: 10 }}>
+                                  <Tag
+                                    color="LightSlateGray"
+                                    style={{ fontSize: 10 }}
+                                  >
                                     <b>
                                       {`${setups.charges.Currency} ${
                                         (Number(value) || 0) /

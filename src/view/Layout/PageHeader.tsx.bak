@@ -69,14 +69,9 @@ export const PageHeader = (props: PageHeaderProps) => {
     error: authError,
   } = useAppSelector((state) => state.auth);
 
-  const {
-    status: productStatus,
-    error: productError,
-    paging: productPaging,
-    approvedProductId,
-    likedProductId,
-    wishedProductId
-  } = useAppSelector((state) => state.product);
+  const { status: productStatus, error: productError } = useAppSelector(
+    (state) => state.product
+  );
 
   const { status: setupStatus, error: setupError } = useAppSelector(
     (state) => state.config
@@ -99,12 +94,12 @@ export const PageHeader = (props: PageHeaderProps) => {
   useEffect(() => {
     if (productStatus === "addLikesResolved") {
       // displaySuccessNotification("Likes added");
-      dispatch(ProductService.fetchSingleProduct(likedProductId));
+      dispatch(ProductService.fetchProductsForSell(undefined));
     }
 
     if (productStatus === "addToWishListResolved") {
       // displaySuccessNotification("Added to Wishlist");
-      dispatch(ProductService.fetchSingleProduct(wishedProductId));
+      dispatch(ProductService.fetchProductsForSell(undefined));
       dispatch(ProductService.fetchProductsWishList());
     }
 
@@ -113,23 +108,10 @@ export const PageHeader = (props: PageHeaderProps) => {
       if (
         [UserType.ADMIN, UserType.SUPER_ADMIN].includes(Number(user.userType))
       ) {
-        if (approvedProductId > 0) {
-          dispatch(ProductService.fetchSingleProduct(approvedProductId));
-        }
-
-        // dispatch(
-        //   ProductService.fetchAllProducts({
-        //     pageNo: productPaging.pageNumber,
-        //     pageSize: productPaging.pageSize,
-        //   })
-        // );
+        dispatch(ProductService.fetchAllProducts(undefined));
       } else {
         dispatch(ProductService.fetchUserProducts());
       }
-    }
-
-    if (productStatus === "rejectProductResolved") {
-      displaySuccessNotification("Product has been marked cancelled.");
     }
 
     if (productStatus === "createProductResolved") {
@@ -197,10 +179,18 @@ export const PageHeader = (props: PageHeaderProps) => {
         </div>
         <div className="container">
           <div style={{ width: "100%" }}>
+            {/* <Online>
+              <Alert 
+                type="success"
+                message="You are back online."
+                banner
+                closable
+              />
+            </Online> */}
             <Offline>
               <Alert
                 type="error"
-                message="You might have gone offline, Check your internet connection."
+                message="You might be have gone offline, Check your internet connection."
                 banner
                 closable
               />
@@ -220,7 +210,7 @@ export const PageHeader = (props: PageHeaderProps) => {
                 <span className="icon-bar"></span>
               </button>
               <a href="#" className="navbar-brand brand-x">
-                <img src={jd_ver} />
+                <img src="jd.png" />
               </a>
             </div>
 
@@ -261,7 +251,7 @@ export const PageHeader = (props: PageHeaderProps) => {
                   </Link>
                 </li>
 
-                <li className="brand-lg">
+                <li className="brand-x">
                   <a href="/home">
                     <img className="brand" src={jd_ver} />
                   </a>
@@ -424,7 +414,7 @@ export const PageHeader = (props: PageHeaderProps) => {
             </ul>
           </div>
         )} */}
-      <div className="header-space"></div>
+      <div style={{ height: "210px" }}>&nbsp;</div>
       <PageBanner
         bannerImage={props.bannerImage}
         useBannerAsStrip={props.useBannerAsStrip}
@@ -579,7 +569,7 @@ const PrivateLinks = () => {
         <Menu
           mode="horizontal"
           selectable={false}
-          style={{ backgroundColor: "transparent" }}
+          style={{ backgroundColor: "#F7F8FA" }}
           items={items}
           // items={[
           //   {

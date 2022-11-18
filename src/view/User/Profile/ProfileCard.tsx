@@ -1,33 +1,33 @@
-import { EditOutlined, UserOutlined } from '@ant-design/icons'
-import { Avatar, Card, Divider, Image, Tag, Typography, Upload } from 'antd'
-import { AiOutlineCheckCircle } from 'react-icons/ai'
-import Apiconfig from '../../../config/Apiconfig'
-import { UserType } from '../../../enums'
-import { useAppSelector } from '../../../hooks/reduxHooks'
-import { User } from '../../../types'
-import { AvatarUpload } from '../../Components'
-import * as routes from '../../../constants/routes'
-import { matchPath, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { EditOutlined, UserOutlined } from "@ant-design/icons";
+import { Avatar, Card, Divider, Image, Tag, Typography, Upload } from "antd";
+import { AiOutlineCheckCircle } from "react-icons/ai";
+import Apiconfig from "../../../config/Apiconfig";
+import { UserType } from "../../../enums";
+import { useAppSelector } from "../../../hooks/reduxHooks";
+import { User } from "../../../types";
+import { AvatarUpload } from "../../Components";
+import * as routes from "../../../constants/routes";
+import { matchPath, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-const { Paragraph, Text, Title } = Typography
+const { Paragraph, Text, Title } = Typography;
 
 export const ProfileMainCard = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { user } = useAppSelector((state) => state.auth)
-  const [profileImage, setProfileImage] = useState<string>('')
+  const { user } = useAppSelector((state) => state.auth);
+  const [profileImage, setProfileImage] = useState<string>("");
 
   return (
     <Card className="profile-main">
       <div className="profile-main__avatar">
         <button
           style={{
-            marginTop: '10px',
-            marginRight: '10px',
-            position: 'absolute',
+            marginTop: "10px",
+            marginRight: "10px",
+            position: "absolute",
             top: 0,
-            right: 0
+            right: 0,
           }}
           className="btn btn-warning btn-md"
           onClick={() =>
@@ -63,10 +63,10 @@ export const ProfileMainCard = () => {
           <Tag
             icon={<AiOutlineCheckCircle />}
             color={`${
-              user?.userType === UserType.PARENT ? 'geekblue' : 'cyan'
+              user?.userType === UserType.PARENT ? "geekblue" : "cyan"
             }`}
           >
-            &nbsp;{' '}
+            &nbsp;{" "}
             {
               Object.keys(UserType)[
                 Object.values(UserType).indexOf(user.userType!)
@@ -93,5 +93,5 @@ export const ProfileMainCard = () => {
         </Paragraph>
       </div>
     </Card>
-  )
-}
+  );
+};

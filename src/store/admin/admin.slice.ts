@@ -10,6 +10,8 @@ export const initialState: AdminState = Object.freeze({
   inActiveUsersCount: 0,
   users: [],
   deals: [],
+  usersPaging: { pageNo: 1, pageSize: 10 },
+  dealsPaging: { pageNo: 1, pageSize: 10 },
 });
 
 const adminSlice = createSlice({
@@ -33,7 +35,9 @@ const adminSlice = createSlice({
       (state, { payload }) => {
         state.status = "fetchAllUsersResolved";
 
-        state.users = Util.fill(payload);
+        state.users = Util.fill(payload.result);
+
+        state.usersPaging = payload.paging;
       }
     );
     builder.addCase(

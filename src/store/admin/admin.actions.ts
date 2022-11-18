@@ -6,6 +6,7 @@ import { DealStatusEnum } from "../../enums/deal.status.enum";
 import {
   CreateQuizData,
   DealResponse,
+  Paging,
   QuizCategoryResponse,
   QuizQuestionResponse,
   QuizResponse,
@@ -16,20 +17,33 @@ import http from "../../util/http";
 
 export const fetchAllUsers = createAsyncThunk(
   "user/fetchAllUsers",
-  async (searchText: string, thunkAPI) => {
+  async (values: any, thunkAPI) => {
     try {
       let url = Apiconfig.endpoints.admin.fetchAllUsers;
 
-      if (searchText && searchText.length > 0) {
-        url += `?search=${searchText}`;
+      if (values.searchText && values.searchText.length > 0) {
+        url += `?search=${values.searchText}`;
+        if (values.pageNo && values.pageSize) {
+          if (Number(values.pageNo) > 0) {
+            url += `&pageNumber=${values.pageNo}`;
+            url += `&pageSize=${values.pageSize}`;
+          }
+        }
+      } else {
+        if (values.pageNo && values.pageSize) {
+          if (Number(values.pageNo) > 0) {
+            url += `?pageNumber=${values.pageNo}`;
+            url += `&pageSize=${values.pageSize}`;
+          }
+        }
       }
 
       const {
-        data: { result },
-      } = await http.get<{ result: User[] }>(url);
-      return result;
+        data: { result, paging },
+      } = await http.get<{ result: User[]; paging: Paging }>(url);
+      return { result, paging };
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -45,7 +59,7 @@ export const fetchUserStats = createAsyncThunk(
       } = await http.get<{ result: UserStatsResponse }>(url);
       return result;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -62,7 +76,7 @@ export const fetchAllDeals = createAsyncThunk(
 
       return result;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -141,4 +155,3 @@ export const updateDealStatus = createAsyncThunk(
     }
   }
 );
-

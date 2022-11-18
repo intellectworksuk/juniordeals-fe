@@ -5,17 +5,18 @@ import {
   displaySuccessNotification,
 } from "../../../util/notifications";
 import * as ProductService from "../../../store/product/product.actions";
-import { ProductCategoryResponse, SearchData } from "../../../types";
+import { SearchData } from "../../../types";
 import Apiconfig from "../../../config/Apiconfig";
 import * as routes from "../../../constants/routes";
 import { Link, useLocation } from "react-router-dom";
 import { ProductDiv } from "../../Components/ProductDiv";
 import { clearProductStateStatus } from "../../../store/product/product.slice";
 import { useScrollToTop } from "../../../hooks/useScrollToTop";
-import { Form, Spin } from "antd";
+import { Form, Pagination, Spin } from "antd";
 import useEffectOnce from "../../../hooks/useEffectOnce";
 import * as ConfigService from "../../../store/config/config.actions";
 import { ProductDivFlex } from "../../Components/ProductDivFlex";
+import type { PaginationProps } from "antd";
 
 // interface ProductStoreProps {
 //   timeStamp: string;
@@ -30,9 +31,11 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
 
   const dispatch = useAppDispatch();
 
-  const { status: productStatus, products } = useAppSelector(
-    (state) => state.product
-  );
+  const {
+    status: productStatus,
+    products,
+    paging: productPaging,
+  } = useAppSelector((state) => state.product);
 
   // const [productActiveTab, setProductActiveTab] = useState<string>("active");
   // const [barterActiveTab, setBbarterActiveTab] = useState<string>("active");
@@ -40,23 +43,46 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
   const { setups } = useAppSelector((state) => state.config);
   const { user } = useAppSelector((state) => state.auth);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchFilter, setSearchFilter] = useState<SearchData>();
+
   const onFormSubmit = (formData: SearchData) => {
-    dispatch(ProductService.fetchAllProducts(formData));
+    setSearchFilter(formData);
+
+    setCurrentPage(1);
+
+    dispatch(
+      ProductService.fetchAllProducts({
+        ...formData,
+        status: 2,
+        pageNo: 1,
+        pageSize: 10,
+      })
+    );
   };
 
-  // useEffect(() => {
-  //   if (error) {
-  //     displayErrorMessage(error);
-  //   }
-  // }, [dispatch, error]);
+  useEffect(() => {
+    if (productStatus === "fetchAllProductsResolved") {
+      // setTotalRecords(products.length)
+    }
+  }, [dispatch, productStatus]);
 
   useEffectOnce(() => {
     dispatch(ConfigService.fetchCategories());
+
+    setCurrentPage(1);
+
     // if (!!user.userName) {
     //   dispatch(ProductService.fetchProductsForSell(undefined));
     //   dispatch(ProductService.fetchProductsWishList());
     // }
-    dispatch(ProductService.fetchAllProducts(undefined));
+    dispatch(
+      ProductService.fetchAllProducts({
+        status: 2,
+        pageNo: productPaging.pageNumber,
+        pageSize: productPaging.pageSize,
+      })
+    );
   });
 
   // let productActiveTab = "active";
@@ -80,6 +106,19 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
   //   productActiveTab = "active";
   // }
   // }, [productActiveTab, barterActiveTab]);
+
+  const onPageChange: PaginationProps["onChange"] = (page, pageSize) => {
+    dispatch(
+      ProductService.fetchAllProducts({
+        ...searchFilter,
+        status: 2,
+        pageNo: page,
+        pageSize: pageSize,
+      })
+    );
+
+    setCurrentPage(page);
+  };
 
   useScrollToTop();
 
@@ -132,12 +171,10 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
                         type="submit"
                         className="btn btn-block btn-sm"
                         style={{ backgroundColor: "rgb(250, 173, 20)" }}
-                        disabled={
-                          productStatus === "fetchProductsForSellPending"
-                        }
+                        disabled={productStatus === "fetchAllProductsPending"}
                       >
                         <span id="button-text">
-                          {productStatus === "fetchProductsForSellPending" ? (
+                          {productStatus === "fetchAllProductsPending" ? (
                             <Spin size="small" />
                           ) : (
                             <i className="mdi mdi-magnify"></i>
@@ -177,12 +214,6 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
           <div className="tab-content">
             <div role="tabpanel" className="tab-pane active" id="sellitems">
               <div className="itemized-gallery">
-                {/* {products
-                                    ?.filter((product) => !product.barterAllowed)
-                                    .map((product) => (
-                                        <ProductDiv key={Math.random()} product={product} />
-                                    ))
-                                } */}
                 <ProductDivFlex
                   products={products
                     .filter((p) => !p.barterAllowed)
@@ -195,12 +226,6 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
             </div>
             <div role="tabpanel" id="barteritems" className="tab-pane">
               <div className="itemized-gallery">
-                {/* {products
-                                    ?.filter((product) => product.barterAllowed)
-                                    .map((product) => (
-                                        <ProductDiv key={Math.random()} product={product} />
-                                    ))
-                                } */}
                 <ProductDivFlex
                   products={products
                     .filter((p) => p.barterAllowed)
@@ -211,6 +236,21 @@ export const AllProductStore = (/*props: ProductStoreProps*/) => {
                 />
               </div>
             </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-lg-12 text-center">
+            <Pagination
+              current={currentPage}
+              showSizeChanger={false}
+              onChange={onPageChange}
+              total={productPaging.totalCount}
+              showTotal={(total, range) =>
+                `${range[0]}-${range[1]} of ${total} items`
+              }
+              // defaultPageSize={20}
+              // defaultCurrent={1}
+            />
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@ import { displayErrorMessage } from "../../util/notifications";
 import { useLocation } from "react-router-dom";
 import { clearAuthError, clearAuthStatus } from "../../store/auth/auth.slice";
 import { useScrollToTop } from "../../hooks/useScrollToTop";
+import * as ConfigService from "../../store/config/config.actions";
 
 const { Text } = Typography;
 
@@ -19,6 +20,7 @@ export const CardPaymentPage = () => {
   const location = useLocation();
 
   const { error: authError } = useAppSelector((state) => state.auth);
+  const { setups } = useAppSelector((state) => state.config);
 
   // const [isAuthError, setIsAuthError] = useState<boolean>(false);
 
@@ -32,10 +34,18 @@ export const CardPaymentPage = () => {
   //   }
   // }, [dispatch, authError]);
 
-  useEffectOnce(() => {
-    dispatch(AuthService.initPaymentIntent(credits));
+  // useEffectOnce(() => {
+  //   dispatch(AuthService.initPaymentIntent(credits));
+  // navigate(routes.START_PAY, {
+  //   state: { credits: inputCredits },
+  // })
+  //   dispatch(clearAuthError());
+  // });
 
-    dispatch(clearAuthError());
+  useEffectOnce(() => {
+    if (setups.charges.JDPoints <= 0) {
+      dispatch(ConfigService.fetchChargesSetup());
+    }
   });
 
   useScrollToTop();

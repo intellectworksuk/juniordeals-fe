@@ -42,6 +42,7 @@ const Apiconfig = {
       addToWishList: '/product/wishlist/add',
       userAttachToProduct: '/product/user/attach',
       approveProduct: '/product/approve',
+      rejectProduct: '/product/reject',
       fetchProductsForSell: 'product/getstoreproducts',
       fetchProductsWishList: 'product/getWishlistProducts',
       fetchUserProducts: 'product/getMyProducts',

@@ -52,12 +52,18 @@ export const AccountActivate = () => {
     <>
       {successMessage ? (
         <>
-          <br />
-          <br />
-          <br />
-          <img src={activateImg} />
-          <br />
-          <br />
+          <div className="row">
+            <div className="col-lg-3">
+              <div className="col-lg-6">
+                <br />
+                <br />
+                <br />
+                <img src={activateImg} />
+                <br />
+                <br />
+              </div>
+            </div>
+          </div>
           <div className="row">
             <div className="col-lg-3"></div>
             <div className="col-lg-6">

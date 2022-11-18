@@ -1,11 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Apiconfig from "../../config/Apiconfig";
-import {
-  CreateProductData,
-  ProductCategoryResponse,
-  ProductResponse,
-  User,
-} from "../../types";
+import { CreateProductData, Paging, ProductResponse, User } from "../../types";
 import http from "../../util/http";
 
 export const createProduct = createAsyncThunk(
@@ -40,7 +35,7 @@ export const createProduct = createAsyncThunk(
         data: { result },
       } = await http.post<{ result: ProductResponse }>(url, product);
       return result;
-    } catch (err: any) {
+    } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
   }
@@ -78,7 +73,7 @@ export const updateProduct = createAsyncThunk(
         data: { result },
       } = await http.put<{ result: ProductResponse }>(url, product);
       return result;
-    } catch (err: any) {
+    } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
   }
@@ -94,7 +89,7 @@ export const addLikes = createAsyncThunk(
         data: { result },
       } = await http.put<{ result: boolean }>(url);
       return { productId: id, result: result };
-    } catch (err: any) {
+    } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
   }
@@ -110,7 +105,7 @@ export const addToWishList = createAsyncThunk(
         data: { result },
       } = await http.put<{ result: boolean }>(url);
       return result;
-    } catch (err: any) {
+    } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
   }
@@ -132,13 +127,19 @@ export const fetchProductsForSell = createAsyncThunk(
           url += `&search=${values.Search}`;
         }
       }
+      if (values.pageNo && values.pageSize) {
+        if (Number(values.pageNo) > 0) {
+          url += `&pageNumber=${values.pageNo}`;
+          url += `&pageSize=${values.pageSize}`;
+        }
+      }
 
       const {
-        data: { result },
-      } = await http.get<{ result: ProductCategoryResponse[] }>(url);
-      return result;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+        data: { result, paging },
+      } = await http.get<{ result: ProductResponse[]; paging: Paging }>(url);
+      return { result, paging };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -153,8 +154,8 @@ export const fetchProductsWishList = createAsyncThunk(
         data: { result },
       } = await http.get<{ result: ProductResponse[] }>(url);
       return result;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -168,8 +169,8 @@ export const fetchUserProducts = createAsyncThunk(
         data: { result },
       } = await http.get<{ result: ProductResponse[] }>(url);
       return result;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -189,14 +190,20 @@ export const fetchAllProducts = createAsyncThunk(
         if (values.Search && values.Search.length > 0) {
           url += `&search=${values.Search}`;
         }
+        if (values.pageNo && values.pageSize) {
+          if (Number(values.pageNo) > 0) {
+            url += `&pageNumber=${values.pageNo}`;
+            url += `&pageSize=${values.pageSize}`;
+          }
+        }
       }
 
       const {
-        data: { result },
-      } = await http.get<{ result: ProductResponse[] }>(url);
-      return result;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+        data: { result, paging },
+      } = await http.get<{ result: ProductResponse[]; paging: Paging }>(url);
+      return { result, paging };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -220,8 +227,8 @@ export const fetchLatestProducts = createAsyncThunk(
         data: { result },
       } = await http.get<{ result: ProductResponse[] }>(url);
       return result;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -235,8 +242,8 @@ export const fetchRecentlyViewedList = createAsyncThunk(
         data: { result },
       } = await http.get<{ result: ProductResponse[] }>(url);
       return result;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -253,7 +260,7 @@ export const userAttachToProduct = createAsyncThunk(
       // return result;
 
       return true;
-    } catch (err: any) {
+    } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
   }
@@ -269,7 +276,23 @@ export const approveProduct = createAsyncThunk(
         data: { result },
       } = await http.put<{ result: boolean }>(url);
       return result;
-    } catch (err: any) {
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
+  }
+);
+
+export const rejectProduct = createAsyncThunk(
+  "product/rejectProduct",
+  async (values: any, thunkAPI) => {
+    try {
+      const url = `${Apiconfig.endpoints.product.rejectProduct}/${values.ProductId}`;
+
+      const {
+        data: { result },
+      } = await http.put<{ result: boolean }>(url, { Reason: values.Reason });
+      return result;
+    } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
   }
@@ -285,8 +308,8 @@ export const fetchSingleProduct = createAsyncThunk(
         data: { result },
       } = await http.get<{ result: ProductResponse }>(url);
       return result;
-    } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );

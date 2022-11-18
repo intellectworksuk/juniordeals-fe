@@ -1,11 +1,10 @@
-import howItWorks from '../assets/img/how-it-works.jpg'
-import getStarted from '../assets/img/get-started.jpg'
-import { useScrollToTop } from '../../hooks/useScrollToTop'
+import howItWorks from "../assets/img/how-it-works.jpg";
+import getStarted from "../assets/img/get-started.jpg";
+import { useScrollToTop } from "../../hooks/useScrollToTop";
 
 export const HowItWorksPage = () => {
-
   useScrollToTop();
-  
+
   return (
     <>
       <div className="company-block">
@@ -16,7 +15,7 @@ export const HowItWorksPage = () => {
             </h2>
           </div>
         </div> */}
-        <div className="row" style={{ marginTop: '48px' }}>
+        <div className="row" style={{ marginTop: "48px" }}>
           <div className="col-lg-6 col-md-6">
             <img className="img-rounded" width="100%" src={howItWorks} />
           </div>
@@ -65,13 +64,13 @@ export const HowItWorksPage = () => {
             <h2 className="headingPrimary">How to get started</h2>
           </div>
         </div>
-        <div className="row" style={{ marginTop: '48px' }}>
+        <div className="row" style={{ marginTop: "48px" }}>
           <div className="ccol-lg-6 col-md-6">
             <ul>
               <li>1. Activate your account through email verification</li>
               <li>2. Log into your account</li>
               <li>
-                3. Finish your profile and buy JD points from Junior Deals{' '}
+                3. Finish your profile and buy JD points from Junior Deals{" "}
               </li>
               <li>4. Create the child profile and assign JD points to child</li>
               <li>
@@ -92,5 +91,5 @@ export const HowItWorksPage = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};

@@ -44,7 +44,7 @@ export const UserWallet = () => {
   const [inputCredits, setInputCredits] = useState<number>();
   const [redeemInputCredits, setRedeemInputCredits] = useState<number>();
 
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, status: authStatus } = useAppSelector((state) => state.auth);
 
   const { setups } = useAppSelector((state) => state.config);
   const {
@@ -63,12 +63,20 @@ export const UserWallet = () => {
 
   useEffectOnce(() => {
     if (transactions && transactions.length === 0) {
-      dispatch(ConfigService.fetchChargesSetup());
+      // dispatch(ConfigService.fetchChargesSetup());
 
       dispatch(TransactionService.fetchAllTransactions());
       dispatch(TransactionService.fetchAllRedemptions());
     }
   });
+
+  useEffect(() => {
+    if (authStatus === "initPaymentIntentResolved") {
+      navigate(routes.START_PAY, {
+        state: { credits: inputCredits },
+      });
+    }
+  }, [authStatus]);
 
   return (
     <>
@@ -105,7 +113,7 @@ export const UserWallet = () => {
                   src={moneybag_coins}
                 />
                 <span>
-                  <strong>Your Points in wallet</strong>
+                  <strong>Parent's Points in wallet</strong>
                   <br />
                   {setups.charges.JDPoints} Points ={" "}
                   {`${setups.charges["Currency"]} ${setups.charges.Amount}`}
@@ -128,20 +136,28 @@ export const UserWallet = () => {
               <TransactionControl
                 user={user}
                 onSave={() =>
-                  navigate(routes.START_PAY, {
-                    state: { credits: inputCredits },
-                  })
+                  (inputCredits || 0) > 0 &&
+                  dispatch(AuthService.initPaymentIntent(inputCredits!))
                 }
                 onChangeCredits={setInputCredits}
                 showOperator={false}
               ></TransactionControl>
             )}
+            <p className="text-center">
+              <Tag color="green" style={{ fontSize: 16 }}>
+                <b>
+                  {`Points: ${
+                    (Number(inputCredits) || 0) * setups.charges.JDPoints!
+                  }` || 0}
+                </b>
+              </Tag>
+            </p>
             <hr />
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-12 col-lg-offset-3 text-center">
-            <Card type="inner" title="Points Redemption" style={{ width: 450 }}>
+          <div className="col-lg-12  text-center">
+            <Card type="inner" title="Points Redemption" style={{ width: "100%" }}>
               <p>
                 <Tag color="green" style={{ fontSize: 16 }}>
                   <b>
@@ -165,6 +181,16 @@ export const UserWallet = () => {
                 ></TransactionControl>
               </p>
             </Card>
+          </div>
+        </div>
+        <br />
+        <div className="row">
+          <div className="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+            {(user.children?.length || 0) > 0 && (
+              <span>
+                <strong>Child Points in wallet</strong>
+              </span>
+            )}
           </div>
         </div>
         {user.children?.map((kid: User) => (
@@ -210,6 +236,7 @@ export const UserWallet = () => {
         ))}
         <div className="row">
           <div className="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+            <hr />
             <div className="table-responsive">
               <>
                 {tranStatus === "fetchAllTransactionsPending" ? (
@@ -241,7 +268,7 @@ export const UserWallet = () => {
                         ))}
                       </tbody>
                     </table>
-                    <br />
+                    <hr />
                     <table className="table table-hover table-striped">
                       <caption>Deal History</caption>
                       <thead>
@@ -271,7 +298,7 @@ export const UserWallet = () => {
                           ))}
                       </tbody>
                     </table>
-                    <br />
+                    <hr />
                     <table className="table table-hover table-striped">
                       <caption>Redeem History</caption>
                       <thead>

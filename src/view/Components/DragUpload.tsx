@@ -1,43 +1,43 @@
-import { Upload, message, Form } from 'antd'
-import { InboxOutlined } from '@ant-design/icons'
-import { getAuthToken } from '../../util/helper'
-import React from 'react'
-import Apiconfig from '../../config/Apiconfig'
-import replace_img_sm from '../assets/img/replace-img-sm.png'
+import { Upload, message, Form } from "antd";
+import { InboxOutlined } from "@ant-design/icons";
+import { getAuthToken } from "../../util/helper";
+import React from "react";
+import Apiconfig from "../../config/Apiconfig";
+import replace_img_sm from "../assets/img/replace-img-sm.png";
 
-const { Dragger } = Upload
+const { Dragger } = Upload;
 export class DragDropUpload extends React.Component<any, any> {
   state = {
     fileList: [],
-  }
+  };
 
   onChange(info: any) {
-    const { status } = info.file
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList)
+    const { status } = info.file;
+    if (status !== "uploading") {
+      console.log(info.file, info.fileList);
     }
-    if (status === 'done') {
-      this.setState(info.fileList)
+    if (status === "done") {
+      this.setState(info.fileList);
 
-      if (this.props.onImageSelect) this.props.onImageSelect(info.fileList)
+      if (this.props.onImageSelect) this.props.onImageSelect(info.fileList);
 
-      message.success(`${info.file.name} file uploaded successfully.`)
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`)
+      message.success(`${info.file.name} file uploaded successfully.`);
+    } else if (status === "error") {
+      message.error(`${info.file.name} file upload failed.`);
     }
   }
 
   onDrop(e: any) {
-    console.log('Dropped files', e.dataTransfer.files)
+    console.log("Dropped files", e.dataTransfer.files);
   }
 
   render() {
     const props = {
-      name: 'file',
+      name: "file",
       multiple: true,
       action: `${Apiconfig.baseURI}${Apiconfig.endpoints.file.uploadFile}?type=${this.props.type}`,
       headers: { Authorization: `Bearer ${getAuthToken()}` },
-    }
+    };
 
     return (
       <>
@@ -50,6 +50,6 @@ export class DragDropUpload extends React.Component<any, any> {
           </Dragger>
         </Form.Item>
       </>
-    )
+    );
   }
 }

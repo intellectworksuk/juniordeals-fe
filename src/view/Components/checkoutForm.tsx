@@ -7,7 +7,7 @@ import {
   CardCvcElement,
   CardExpiryElement,
 } from "@stripe/react-stripe-js";
-import { Form, Spin } from "antd";
+import { Alert, Form, Spin, Statistic } from "antd";
 import useEffectOnce from "../../hooks/useEffectOnce";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import * as AuthService from "../../store/auth/auth.actions";
@@ -15,6 +15,7 @@ import { displayErrorMessage } from "../../util/notifications";
 import { Navigate, useNavigate } from "react-router-dom";
 import * as routes from "../../constants/routes";
 import { store } from "../../store";
+import moment from "moment";
 
 var elementStyles = {
   style: {
@@ -74,6 +75,9 @@ const cardStyle = {
   },
 };
 
+const { Countdown } = Statistic;
+const deadline = Date.now() + 5 * 1000;
+
 interface CheckoutFormProps {
   credits: number;
 }
@@ -86,6 +90,9 @@ export const CheckoutForm = (props: CheckoutFormProps) => {
     user,
     paymentId,
   } = useAppSelector((state) => state.auth);
+
+  const { setups } = useAppSelector((state) => state.config);
+
   const [succeeded, setSucceeded] = useState(false);
   const [error, setError] = useState<string>("");
   const [processing, setProcessing] = useState<boolean>(false);
@@ -159,7 +166,9 @@ export const CheckoutForm = (props: CheckoutFormProps) => {
         dispatch(
           AuthService.confirmPaymentIntent({
             Id: payload?.paymentIntent.id,
-            Credits: props.credits,
+            Credits:
+              props.credits *
+              (setups.charges.JDPoints <= 0 ? 1 : setups.charges.JDPoints),
             UserId: user.id,
           })
         );
@@ -169,6 +178,10 @@ export const CheckoutForm = (props: CheckoutFormProps) => {
         setProcessing(false);
 
         setSucceeded(true);
+
+        setTimeout(() => {
+          navigate(routes.USER_PROFILE, { state: { activeTabIndex: "5" } });
+        }, 2000);
       }
     } catch (err) {
       displayErrorMessage(`Payment failed`);
@@ -177,6 +190,10 @@ export const CheckoutForm = (props: CheckoutFormProps) => {
 
       setProcessing(false);
     }
+  };
+
+  const onFinish = () => {
+    navigate(routes.USER_PROFILE, { state: { activeTabIndex: "5" } });
   };
 
   return (
@@ -245,18 +262,34 @@ export const CheckoutForm = (props: CheckoutFormProps) => {
             onClick={handleSubmit}
           >
             <span id="button-text">
-              {processing ? <Spin size="small" /> : "Pay now"}
+              {processing || succeeded ? <Spin size="small" /> : "Pay now"}
             </span>
           </button>
+          <br />
           {/* Show any error that happens when processing the payment */}
           {error && (
-            <div className="card-error" role="alert">
-              {error}
-            </div>
+            // <div className="card-error" role="alert">
+            //   {error}
+            // </div>
+            <p>
+              <br />
+              <Alert
+                message="Error"
+                description={`An error has been occured while completing the transaction, Detail: ${error}`}
+                type="error"
+                showIcon
+              />
+            </p>
           )}
           {/* Show a success message upon completion */}
           <p className={succeeded ? "result-message" : "result-message hidden"}>
-            Payment succeeded.
+            <br />
+            <Alert
+              message="Success"
+              description="Your payment transaction has been completed. JD Points have been credited to your acount, Pls. check your wallet for confirmation."
+              type="success"
+              showIcon
+            />
           </p>
         </div>
       </div>

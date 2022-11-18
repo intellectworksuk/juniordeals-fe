@@ -5,11 +5,15 @@ import * as Util from "../../util/helper";
 
 export const initialState: ProductState = Object.freeze({
   status: "idle",
-  categories: [],
+  // categories: [],
   products: [],
   recentproducts: [],
   latestproducts: [],
   wishListproducts: [],
+  paging: { pageNumber: 1, pageSize: 10 },
+  approvedProductId: BigInt(0),
+  likedProductId: BigInt(0),
+  wishedProductId: BigInt(0),
   error: "",
 });
 
@@ -22,6 +26,9 @@ const productSlice = createSlice({
     },
     clearProductStateStatus: (state) => {
       state.status = "idle";
+    },
+    clearProductState: (state) => {
+      state = initialState;
     },
   },
 
@@ -69,7 +76,9 @@ const productSlice = createSlice({
       (state, { payload }) => {
         state.status = "fetchProductsForSellResolved";
 
-        state.categories = Util.fill(payload);
+        state.products = Util.fill(payload.result);
+
+        state.paging = payload.paging;
 
         state.error = "";
       }
@@ -115,7 +124,11 @@ const productSlice = createSlice({
       (state, { payload }) => {
         state.status = "fetchAllProductsResolved";
 
-        state.products = Util.fill(payload);
+        // console.log(JSON.stringify(payload.result));
+
+        state.products = Util.fill(payload.result);
+
+        state.paging = payload.paging;
 
         state.error = "";
       }
@@ -189,22 +202,10 @@ const productSlice = createSlice({
       state.status = "addLikesPending";
       state.error = "";
     });
-    builder.addCase(ProductService.addLikes.fulfilled, (state, { payload }) => {
+    builder.addCase(ProductService.addLikes.fulfilled, (state, payload) => {
       state.status = "addLikesResolved";
 
-      // const currprod = state.categories
-      //   .flatMap((p) => p.products)
-      //   .find((p) => BigInt(p?.id!) === BigInt(payload.productId));
-      // if (currprod) {
-      //   let likes = currprod.likes;
-
-      //   if (!likes) likes = BigInt(0);
-
-      //   likes += BigInt(1);
-
-      //   currprod.id = payload.productId;
-      //   currprod.likes = likes;
-      // }
+      state.likedProductId = BigInt(payload.meta.arg);
 
       state.error = "";
     });
@@ -223,8 +224,10 @@ const productSlice = createSlice({
     });
     builder.addCase(
       ProductService.addToWishList.fulfilled,
-      (state, { payload }) => {
+      (state, payload) => {
         state.status = "addToWishListResolved";
+
+        state.wishedProductId = BigInt(payload.meta.arg);
 
         state.error = "";
       }
@@ -244,8 +247,10 @@ const productSlice = createSlice({
     });
     builder.addCase(
       ProductService.approveProduct.fulfilled,
-      (state, { payload }) => {
+      (state, action) => {
         state.status = "approveProductResolved";
+
+        state.approvedProductId = BigInt(action.meta.arg);
 
         state.error = "";
       }
@@ -259,6 +264,27 @@ const productSlice = createSlice({
       }
     );
 
+    builder.addCase(ProductService.rejectProduct.pending, (state) => {
+      state.status = "rejectProductPending";
+      state.error = "";
+    });
+    builder.addCase(
+      ProductService.rejectProduct.fulfilled,
+      (state, { payload }) => {
+        state.status = "rejectProductResolved";
+
+        state.error = "";
+      }
+    );
+    builder.addCase(
+      ProductService.rejectProduct.rejected,
+      (state, { payload }: { payload: any }) => {
+        state.error = Util.parseErrorMessage(payload);
+
+        state.status = "rejectProductRejected";
+      }
+    );
+
     builder.addCase(
       ProductService.fetchSingleProduct.fulfilled,
       (state, { payload }) => {
@@ -267,20 +293,15 @@ const productSlice = createSlice({
         // state.products = Util.fill(payload);
         // payload.likes = BigInt(10);
 
-        // state.categories = state.categories
-        //   .flatMap((cat) => cat.products)
-        //   .map((product) =>
-        //     product?.id! === payload?.id! ? { ...product, ...payload } : product
-        //   );
+        state.products = state.products.map((product) =>
+          product?.id! === payload?.id! ? { ...product, ...payload } : product
+        );
 
-        const findProdIndex = state.categories
-          .flatMap((cat) => cat.products)
-          .findIndex((prod) => prod?.id === payload.id);
+        const findProdIndex = state.products.findIndex(
+          (prod) => prod?.id === payload.id
+        );
 
-        state.categories.flatMap((cat) => cat.products)[findProdIndex] =
-          payload;
-
-        // state.categories = Util.fill(newCategories);
+        state.products[findProdIndex] = payload;
 
         state.error = "";
       }
@@ -288,7 +309,10 @@ const productSlice = createSlice({
   },
 });
 
-export const { clearProductStateError, clearProductStateStatus } =
-  productSlice.actions;
+export const {
+  clearProductStateError,
+  clearProductStateStatus,
+  clearProductState,
+} = productSlice.actions;
 
 export default productSlice.reducer;

@@ -225,7 +225,7 @@ export const fetchChildrenProfile = createAsyncThunk(
       } = await http.get<{ result: User[] }>(url);
       return result;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );

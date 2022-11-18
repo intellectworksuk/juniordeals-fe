@@ -31,9 +31,9 @@ export default function UserChatRoom(props: UserChatRoomProps) {
   useScrollToTop();
 
   return (
-    <div className="homepage">
-      <aside>
-        <div className="msg-block" style={{ padding: "10px", height: "620px" }}>
+    <div className="row">
+      <div className="col-lg-3 col-xs-12">
+        <div className="msg-details">
           <details>
             {props.checkUserIsOnline && (
               <>
@@ -46,32 +46,29 @@ export default function UserChatRoom(props: UserChatRoomProps) {
             )}
           </details>
         </div>
-      </aside>
-      <main>
-        <div className="row text-center">
-          <div className="col-lg-12">
-            <h4>{product.title}</h4>
-          </div>
-        </div>
+      </div>
+      <div className="col-lg-6 col-xs-12">
+        <div className="col-xs-12 chatroom">
+          <h4 className="text-center">{product.title}</h4>
 
-        {props.checkUserIsOnline ? (
-          <>
-            <Messages chatRoomID={chatRoomID!} />
-            <Textbox chatRoomID={chatRoomID!} />
-          </>
-        ) : (
-          <SendEmailNotification
-            product={product}
-            barterProduct={barterProduct}
-          />
-        )}
-      </main>
-      <aside>
+          {props.checkUserIsOnline ? (
+            <>
+              <Messages chatRoomID={chatRoomID!} />
+              <Textbox chatRoomID={chatRoomID!} />
+            </>
+          ) : (
+            <SendEmailNotification
+              product={product}
+              barterProduct={barterProduct}
+            />
+          )}
+      </div>
+      </div>
+      <div className="col-lg-3 col-xs-12">
         {!chatUserType || chatUserType === "buyer" ? (
           <DealDonePage buyerId={buyerId!} showAsModal={false} />
         ) : (
-          <div
-            className="item-stage"
+          <div className="item-stage"
             style={{ padding: "10px", height: "620px" }}
           >
             <br />
@@ -104,7 +101,7 @@ export default function UserChatRoom(props: UserChatRoomProps) {
             </table>
           </div>
         )}
-      </aside>
+      </div>
     </div>
   );
 }

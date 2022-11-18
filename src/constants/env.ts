@@ -1,7 +1,7 @@
 const prod = {
     url: {
       API_URL: 
-        "http://juniordealsbeprod-env.eba-zyspfpx9.eu-west-2.elasticbeanstalk.com/api",
+        "https://api.juniordeals.co.uk/api",
     },
     firebase: {
       apiKey: "AIzaSyDjOYCMr1cqLXegQH_QzfvarpCWjKUEFnc",

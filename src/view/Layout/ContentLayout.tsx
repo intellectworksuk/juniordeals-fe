@@ -105,7 +105,7 @@ const ProductContentLayout = (props: {
         bannerImage={productBanner}
       />
 
-      <section className="sec-about-us bgTexture">
+      <section className="sec-create-item bgTexture">
         <div className="msg-block" style={{ padding: "20px" }}>
           {props.children}
         </div>
@@ -128,7 +128,7 @@ const ProductDetailContentLayout = (props: {
         bannerImage={productBanner}
       />
 
-      <section className="sec-about-us bgTexture">
+      <section className="sec-create-item bgTexture">
         <div className="msg-block" style={{ padding: "20px" }}>
           {props.children}
         </div>

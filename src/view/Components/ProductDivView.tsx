@@ -1,50 +1,65 @@
-import Apiconfig from '../../config/Apiconfig'
-import { AppDispatch, ProductResponse } from '../../types'
-import * as routes from '../../constants/routes'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
-import * as ProductService from '../../store/product/product.actions'
-import { useEffect } from 'react'
+import Apiconfig from "../../config/Apiconfig";
+import { AppDispatch, ProductResponse } from "../../types";
+import * as routes from "../../constants/routes";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import * as ProductService from "../../store/product/product.actions";
+import { useEffect, useState } from "react";
 import {
   displayErrorMessage,
   displaySuccessNotification,
-} from '../../util/notifications'
+} from "../../util/notifications";
 import {
   clearProductStateError,
   clearProductStateStatus,
-} from '../../store/product/product.slice'
-import { Image, Spin } from 'antd'
-import { UserType } from '../../enums'
-import { store } from '../../store'
-import noImageIcon from '../assets/img/jd-icon.png'
+} from "../../store/product/product.slice";
+import { Image, Spin, Tag } from "antd";
+import { UserType } from "../../enums";
+import { store } from "../../store";
+import noImageIcon from "../assets/img/jd-icon.png";
 
 interface ProductDivViewProps {
-  product: ProductResponse
+  product: ProductResponse;
   //   dispatch: AppDispatch;
 }
 
 export const ProductDivView = (props: ProductDivViewProps) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
-  const { status } = useAppSelector((state) => state.product)
+  const { status: prodStatus } = useAppSelector((state) => state.product);
 
-  const { user } = useAppSelector((state) => state.auth)
+  const { user } = useAppSelector((state) => state.auth);
 
-  const product = props.product
+  const product = props.product;
 
   const approveProduct = () => {
-    dispatch(ProductService.approveProduct(product.id!))
-  }
+    dispatch(ProductService.approveProduct(product.id!));
+  };
 
   return (
     <>
       <div key={Math.random()} className="shelf-item">
         <div className="imgBox">
-          {product.productImage && product.productImage.length > 0 ? (
+          {product.status === "Rejected" ? (
+            <>
+              <div style={{ height: "160px" }}>
+                <Tag
+                  color="red"
+                  style={{
+                    fontSize: "16px",
+                    marginTop: "90px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Rejected
+                </Tag>
+              </div>
+            </>
+          ) : product.productImage && product.productImage.length > 0 ? (
             <img
-              style={{ width: '100%', height: '160px' }}
+              style={{ width: "100%", height: "160px" }}
               src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.productImage[0].fileName}&type=product`}
               alt=""
             />
@@ -63,7 +78,7 @@ export const ProductDivView = (props: ProductDivViewProps) => {
         </div>
         <div className="softactions">
           {[UserType.PARENT, UserType.CHILD].includes(
-            Number(user.userType),
+            Number(user.userType)
           ) && (
             <button
               className="softactionbtn"
@@ -93,13 +108,13 @@ export const ProductDivView = (props: ProductDivViewProps) => {
               <button
                 className="softactionbtn"
                 onClick={() => approveProduct()}
-                disabled={status === 'approveProductPending'}
+                disabled={prodStatus === "approveProductPending"}
               >
                 <span id="button-text">
-                  {status === 'approveProductPending' ? (
+                  {prodStatus === "approveProductPending" ? (
                     <Spin size="small" />
                   ) : (
-                    'Approve'
+                    "Approve"
                   )}
                 </span>
               </button>
@@ -107,5 +122,5 @@ export const ProductDivView = (props: ProductDivViewProps) => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};

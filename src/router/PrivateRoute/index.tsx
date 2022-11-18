@@ -15,6 +15,7 @@ import { goOffline } from "firebase/database";
 import { useFireBase } from "../../view/Components/ChatStore/firebase/config";
 import { clearAuthStatus } from "../../store/auth/auth.slice";
 import { UserType } from "../../enums";
+import { clearProductState } from "../../store/product/product.slice";
 
 export const ProtectedRoute = ({ children }: { children: any }) => {
   const mounted = useRef(false);
@@ -40,6 +41,9 @@ export const ProtectedRoute = ({ children }: { children: any }) => {
     if (mounted.current) {
       if (authStatus === "loggedOut") {
         // localStorage.removeItem("user.auth");
+        localStorage.removeItem("persist:auth");
+
+        dispatch(clearProductState());
 
         goOffline(db);
 

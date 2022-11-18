@@ -3,7 +3,7 @@ import { IoLogoGithub, IoLogoLinkedin, IoMdMail } from "react-icons/all";
 import { Link } from "react-router-dom";
 import jd_white_logo from "../assets/img/jd-white.png";
 import * as routes from "../../constants/routes";
-import { Col, Form, Row } from "antd";
+import { Col, Form, Row, Spin } from "antd";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import {
   displayErrorMessage,
@@ -16,7 +16,9 @@ import { clearAuthError, clearAuthStatus } from "../../store/auth/auth.slice";
 export const PageFooter = () => {
   const dispatch = useAppDispatch();
 
-  const { error, status } = useAppSelector((state) => state.auth);
+  const { error: authError, status: authStatus } = useAppSelector(
+    (state) => state.auth
+  );
 
   const onFormSubmit = (formData: ContactUsData) => {
     dispatch(AuthService.saveContactUs(formData));
@@ -35,221 +37,267 @@ export const PageFooter = () => {
   // }, [dispatch, error]);
 
   useEffect(() => {
-    if (status === "saveContactUsResolved") {
+    if (authStatus === "saveContactUsResolved") {
       displaySuccessNotification("Inquiry has been sent");
       dispatch(clearAuthStatus());
     }
-  }, [dispatch, status]);
+  }, [dispatch, authStatus]);
 
   return (
     <>
       <div className="sec-site-footer">
-        <div className="footer-desc">
-          <div className="logo-head">
-            <img
-              src={jd_white_logo}
-              alt="JuniorDeals-Brand-logo"
-              className="logo-dark"
-            />
-          </div>
-          <div className="company-desc">
-            Junior Deals (JD) is a technological application that promotes
-            financial responsibility and instills a sense of safe barter of
-            belongings in children. We aim to target the youth of the UK,
-            encouraging them to step up, take responsibility, and understand the
-            worth of materialistic things that they own. Parents in the UK are a
-            huge market that demands an effective solution to instill a feeling
-            of responsible savings and the value of their possessions.
-          </div>
-          <div className="desc-social">
-            <ul className="social-footer">
-              <li>
-                <a
-                  href="https://www.youtube.com/channel/UCHcoWhjaAZGRLKulSCfSD9w"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <i className="mdi mdi-youtube mdi-36px"></i>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.instagram.com/junior.deals/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <i className="mdi mdi-instagram mdi-36px"></i>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.facebook.com/people/Junior-Deals/100086375535835/"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <i className="mdi mdi-facebook mdi-36px"></i>
-                </a>
-              </li>
-              <li>
-                <a href="">
-                  <i className="mdi mdi-twitter mdi-36px"></i>
-                </a>
-              </li>
-              <li>
-                <a href="">moreinfo@juniordeals.co.uk</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="footer-nav">
-          <Row gutter={16}>
-            <Col>
-              <ul className="micro-navigation">
+        <div className="col-lg-5 col-xs-12">
+          <div className="footer-desc">
+            <div className="logo-head">
+              <img
+                src={jd_white_logo}
+                alt="JuniorDeals-Brand-logo"
+                className="logo-dark"
+              />
+            </div>
+            <div className="company-desc">
+              Junior Deals (JD) is a technological application that promotes
+              financial responsibility and instills a sense of safe barter of
+              belongings in children. We aim to target the youth of the UK,
+              encouraging them to step up, take responsibility, and understand
+              the worth of materialistic things that they own. Parents in the UK
+              are a huge market that demands an effective solution to instill a
+              feeling of responsible savings and the value of their possessions.
+            </div>
+            <div className="desc-social">
+              <ul className="social-footer">
                 <li>
-                  <Link to={routes.HOME} className="btn-link">
-                    Home
-                  </Link>
+                  <a
+                    href="https://www.youtube.com/channel/UCHcoWhjaAZGRLKulSCfSD9w"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <i className="mdi mdi-youtube mdi-36px"></i>
+                  </a>
                 </li>
                 <li>
-                  <Link
-                    to={routes.FETCH_STORE_PRODUCT}
-                    state={{ ["product"]: "active" }}
-                    className="btn-link"
+                  <a
+                    href="https://www.instagram.com/junior.deals/"
+                    target="_blank"
+                    rel="noreferrer"
                   >
-                    Barter
-                  </Link>
+                    <i className="mdi mdi-instagram mdi-36px"></i>
+                  </a>
                 </li>
                 <li>
-                  <Link
-                    to={routes.FETCH_STORE_PRODUCT}
-                    state={{ ["barter"]: "active" }}
-                    className="btn-link"
+                  <a
+                    href="https://www.facebook.com/people/Junior-Deals/100086375535835/"
+                    target="_blank"
+                    rel="noreferrer"
                   >
-                    Products
-                  </Link>
+                    <i className="mdi mdi-facebook mdi-36px"></i>
+                  </a>
                 </li>
                 <li>
-                  <Link
-                    to={routes.USER_PROFILE}
-                    state={{ activeTabIndex: "5" }}
-                    className="btn-link"
-                  >
-                    My Wallet
-                  </Link>
+                  <a href="">
+                    <i className="mdi mdi-twitter mdi-36px"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="">moreinfo@juniordeals.co.uk</a>
                 </li>
               </ul>
-            </Col>
-            <Col>
-              <ul className="micro-navigation">
-                {/* <li>
+            </div>
+          </div>
+        </div>
+        <div className="col-lg-3 col-xs-12">
+          <div className="footer-nav">
+            <Row gutter={16}>
+              <Col>
+                <ul className="micro-navigation">
+                  <li>
+                    <Link to={routes.HOME} className="btn-link">
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={routes.FETCH_STORE_PRODUCT}
+                      state={{ ["barter"]: "active" }}
+                      className="btn-link"
+                    >
+                      Barter
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={routes.FETCH_STORE_PRODUCT}
+                      state={{ ["product"]: "active" }}
+                      className="btn-link"
+                    >
+                      Products
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={routes.USER_PROFILE}
+                      state={{ activeTabIndex: "5" }}
+                      className="btn-link"
+                    >
+                      My Wallet
+                    </Link>
+                  </li>
+                </ul>
+              </Col>
+              <Col>
+                <ul className="micro-navigation">
+                  {/* <li>
                 <NavLink to={routes.QUIZ_VIEW} className="btn-link">
                   Quizes
                 </NavLink>
               </li>{" "} */}
-                <li>
-                  <Link to="/view/aboutus" className="btn-link">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/view/howitworks" className="btn-link">
-                    How it Works
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/view/contactus" className="btn-link">
-                    Contact Us
-                  </Link>
-                </li>
-              </ul>
-            </Col>
-          </Row>
+                  <li>
+                    <Link to="/view/aboutus" className="btn-link">
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/view/howitworks" className="btn-link">
+                      How it Works
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/view/contactus" className="btn-link">
+                      Contact Us
+                    </Link>
+                  </li>
+                </ul>
+              </Col>
+            </Row>
+          </div>
         </div>
-        <div className="footer-contact-form">
-          <div className="micro-head">Send your suggestions and queries</div>
-          <Form
-            onFinish={onFormSubmit}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-          >
-            <div className="container-fluid">
-              <div className="row">
-                <div className="col-lg-6 col-md-6 col-sm-6">
-                  <Form.Item
-                    name="FullName"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please enter FullName.",
-                      },
-                    ]}
-                  >
-                    <input
-                      maxLength={30}
-                      className="footer-input"
-                      placeholder="Full Name*"
-                    />
-                  </Form.Item>
-                </div>
-                <div className="col-lg-6 col-md-6 col-sm-6">
-                  <Form.Item
-                    name="Email"
-                    rules={[
-                      {
-                        type: "email",
-                        message: "The input is not valid E-mail!",
-                      },
-                      {
-                        required: true,
-                        message: "Please input your E-mail!",
-                      },
-                    ]}
-                  >
-                    <input
-                      maxLength={50}
-                      type="text"
-                      className="footer-input"
-                      placeholder="Email Address*"
-                    />
-                  </Form.Item>
-                </div>
-                <div className="col-lg-12 col-md-12 col-sm-12">
-                  <Form.Item
-                    name="Message"
-                    rules={[
-                      ({ getFieldValue }) => ({
-                        validator(_rule, value) {
-                          if (!value || !value.includes("<script>")) {
-                            return Promise.resolve();
-                          }
-                          return Promise.reject("Invalid input found!");
+        <div className="col-lg-4 col-xs-12">
+          <div className="footer-contact-form">
+            <div className="micro-head">Send your suggestions and queries</div>
+            <Form
+              onFinish={onFormSubmit}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
+            >
+              <div className="container-fluid">
+                <div className="row">
+                  <div className="col-lg-6 col-md-6 col-sm-6">
+                    <Form.Item
+                      name="FullName"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter FullName.",
                         },
-                      }),
-                    ]}
-                  >
-                    <textarea
-                      maxLength={150}
-                      className="footer-input"
-                      placeholder="Message*"
-                    ></textarea>
-                  </Form.Item>
-                </div>
-                <div className="col-lg-6 col-md-6 col-sm-6"></div>
-                <div className="col-lg-6 col-md-6 col-sm-6">
-                  <button type="submit" className="footer-btn">
-                    Send Message
-                  </button>
+                      ]}
+                    >
+                      <input
+                        maxLength={30}
+                        className="footer-input"
+                        placeholder="Full Name*"
+                      />
+                    </Form.Item>
+                  </div>
+                  <div className="col-lg-6 col-md-6 col-sm-6">
+                    <Form.Item
+                      name="Email"
+                      rules={[
+                        {
+                          type: "email",
+                          message: "The input is not valid E-mail!",
+                        },
+                        {
+                          required: true,
+                          message: "Please input your E-mail!",
+                        },
+                      ]}
+                    >
+                      <input
+                        maxLength={50}
+                        type="text"
+                        className="footer-input"
+                        placeholder="Email Address*"
+                      />
+                    </Form.Item>
+                  </div>
+                  <div className="col-lg-12 col-md-12 col-sm-12">
+                    <Form.Item
+                      name="Message"
+                      rules={[
+                        ({ getFieldValue }) => ({
+                          validator(_rule, value) {
+                            if (!value || !value.includes("<script>")) {
+                              return Promise.resolve();
+                            }
+                            return Promise.reject("Invalid input found!");
+                          },
+                        }),
+                      ]}
+                    >
+                      <textarea
+                        maxLength={150}
+                        className="footer-input"
+                        placeholder="Message*"
+                      ></textarea>
+                    </Form.Item>
+                  </div>
+                  <div className="col-lg-6 col-md-6 col-sm-6"></div>
+                  <div className="col-lg-6 col-md-6 col-sm-6">
+                    <button
+                      type="submit"
+                      className="footer-btn"
+                      disabled={authStatus === "saveContactUsPending"}
+                    >
+                      <span id="button-text">
+                        {authStatus === "saveContactUsPending" ? (
+                          <Spin size="small" />
+                        ) : (
+                          "Send Message"
+                        )}
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Form>
+            </Form>
+          </div>
         </div>
-      </div>
 
-      <div className="sec-site-bottomline">
-        <p className="bottomline-text">
-          copyrights 2022 @ juniordeals.co.uk - All rights reserved
-        </p>
+        <div className="sec-site-footer">
+          <div className="row">
+            <div className="col-lg-12 text-center">
+              <a
+                href="/pdf/privacy-policy.pdf"
+                target="_blank"
+                style={{ color: "white" }}
+              >
+                Privacy Policy
+              </a>
+              {" | "}
+              <a
+                href="/pdf/cookies-policy.pdf"
+                target="_blank"
+                style={{ color: "white" }}
+              >
+                Cookie Policy
+              </a>
+              {" | "}
+              <a
+                href="/pdf/terms-policy.pdf"
+                target="_blank"
+                style={{ color: "white" }}
+              >
+                Terms & Conditions
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div className="sec-site-bottomline">
+          <p className="bottomline-text">
+            copyrights 2022 @ juniordeals.co.uk - All rights reserved
+          </p>
+        </div>
       </div>
     </>
   );

@@ -1,9 +1,8 @@
-import { useScrollToTop } from '../../hooks/useScrollToTop'
-import aboutUs from '../assets/img/about-us.jpg'
-import promosingValues from '../assets/img/promising-values.jpg'
+import { useScrollToTop } from "../../hooks/useScrollToTop";
+import aboutUs from "../assets/img/about-us.jpg";
+import promosingValues from "../assets/img/promising-values.jpg";
 
 export const AboutUsPage = () => {
-  
   useScrollToTop();
 
   return (
@@ -14,7 +13,7 @@ export const AboutUsPage = () => {
             <h2 className="text-center headingPrimary">About Junior Deals</h2>
           </div>
         </div> */}
-        <div className="row" style={{ marginTop: '48px' }}>
+        <div className="row" style={{ marginTop: "48px" }}>
           <div className="col-lg-6 col-md-6">
             <img className="img-rounded" width="100%" src={aboutUs} />
           </div>
@@ -35,7 +34,7 @@ export const AboutUsPage = () => {
             </p>
           </div>
         </div>
-        <div className="row" style={{ marginTop: '48px' }}>
+        <div className="row" style={{ marginTop: "48px" }}>
           <div className="col-lg-6 col-md-6">
             <h2 className="headingPrimary">Promising Values</h2>
             <br />
@@ -46,9 +45,9 @@ export const AboutUsPage = () => {
             <h4>
               <span
                 style={{
-                  font: 'verdana',
-                  fontWeight: 'bold',
-                  color: '#fed639',
+                  font: "verdana",
+                  fontWeight: "bold",
+                  color: "#fed639",
                 }}
               >
                 Resilience:
@@ -62,9 +61,9 @@ export const AboutUsPage = () => {
             <h4>
               <span
                 style={{
-                  font: 'verdana',
-                  fontWeight: 'bold',
-                  color: '#fed639',
+                  font: "verdana",
+                  fontWeight: "bold",
+                  color: "#fed639",
                 }}
               >
                 Time management:
@@ -79,9 +78,9 @@ export const AboutUsPage = () => {
             <h4>
               <span
                 style={{
-                  font: 'verdana',
-                  fontWeight: 'bold',
-                  color: '#fed639',
+                  font: "verdana",
+                  fontWeight: "bold",
+                  color: "#fed639",
                 }}
               >
                 Innovation and creativity:
@@ -96,9 +95,9 @@ export const AboutUsPage = () => {
             <h4>
               <span
                 style={{
-                  font: 'verdana',
-                  fontWeight: 'bold',
-                  color: '#fed639',
+                  font: "verdana",
+                  fontWeight: "bold",
+                  color: "#fed639",
                 }}
               >
                 Sense of initiating:
@@ -114,9 +113,9 @@ export const AboutUsPage = () => {
             <h4>
               <span
                 style={{
-                  font: 'verdana',
-                  fontWeight: 'bold',
-                  color: '#fed639',
+                  font: "verdana",
+                  fontWeight: "bold",
+                  color: "#fed639",
                 }}
               >
                 Optimistic approach:
@@ -132,9 +131,9 @@ export const AboutUsPage = () => {
             <h4>
               <span
                 style={{
-                  font: 'verdana',
-                  fontWeight: 'bold',
-                  color: '#fed639',
+                  font: "verdana",
+                  fontWeight: "bold",
+                  color: "#fed639",
                 }}
               >
                 Negotiation:
@@ -240,5 +239,5 @@ export const AboutUsPage = () => {
         </div> */}
       </div>
     </>
-  )
-}
+  );
+};

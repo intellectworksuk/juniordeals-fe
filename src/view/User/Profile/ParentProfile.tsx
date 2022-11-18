@@ -71,7 +71,7 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
     transactions,
   } = useAppSelector((state) => state.transaction);
 
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, error: authError, status: authStatus } = useAppSelector((state) => state.auth);
 
   const [activeTabIndex, setActiveTabIndex] = useState<string>("1");
 

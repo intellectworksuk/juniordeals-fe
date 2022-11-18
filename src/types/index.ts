@@ -140,14 +140,7 @@ export interface ChildrenPage {
       availableCredits: 0;
     }
   ];
-  paging: {
-    totalCount: 0;
-    pageNumber: 0;
-    pageSize: 0;
-    totalPages: 0;
-    sortDirection: string;
-    orderBy: string;
-  };
+  paging: Paging;
   hasErrors: true;
   error: string;
 }
@@ -300,11 +293,11 @@ export interface ChargesSetupResponse {
   Currency: string;
 }
 
-export interface ProductCategoryResponse {
-  id?: bigint;
-  title?: string;
-  products?: ProductResponse[];
-}
+// export interface ProductCategoryResponse {
+//   id?: bigint;
+//   title?: string;
+//   products?: ProductResponse[];
+// }
 
 export interface QuizCategoryResponse {
   id: bigint;
@@ -341,14 +334,7 @@ export interface Country {
       countryId: 0;
     }
   ];
-  paging: {
-    totalCount: 0;
-    pageNumber: 0;
-    pageSize: 0;
-    totalPages: 0;
-    sortDirection: "string";
-    orderBy: "string";
-  };
+  paging: Paging;
   hasErrors: true;
   error: string;
 }
@@ -360,35 +346,32 @@ export interface City {
       title: string;
     }
   ];
-  paging: {
-    totalCount: 0;
-    pageNumber: 0;
-    pageSize: 0;
-    totalPages: 0;
-    sortDirection: "string";
-    orderBy: "string";
-  };
+  paging: Paging;
   hasErrors: true;
   error: string;
 }
 
 export interface Paging {
-  totalCount: number;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-  sortDirection: string;
-  orderBy: string;
+  totalCount?: number;
+  pageNumber?: number;
+  pageSize?: number;
+  totalPages?: number;
+  sortDirection?: string;
+  orderBy?: string;
 }
 
 export interface ProductState {
   status: ProductStatus;
   error: string;
-  categories: ProductCategoryResponse[];
+  // categories: ProductCategoryResponse[];
   products: ProductResponse[];
-  latestproducts: ProductResponse[],
+  latestproducts: ProductResponse[];
   recentproducts: ProductResponse[];
   wishListproducts: ProductResponse[];
+  paging: Paging;
+  approvedProductId: bigint;
+  likedProductId: bigint;
+  wishedProductId: bigint;
 }
 
 export interface DealState {
@@ -461,7 +444,10 @@ type ProductStatus =
   | "fetchProductsWishListRejected"
   | "approveProductPending"
   | "approveProductResolved"
-  | "approveProductRejected";
+  | "approveProductRejected"
+  | "rejectProductPending"
+  | "rejectProductResolved"
+  | "rejectProductRejected";
 
 type DealStatus =
   | "idle"
@@ -613,6 +599,8 @@ export interface AdminState {
   inActiveUsersCount: number;
   users: User[];
   deals: DealResponse[];
+  usersPaging: Paging;
+  dealsPaging: Paging;
   // quizCategories: QuizCategoryResponse[];
   // quizes: QuizResponse[];
 }

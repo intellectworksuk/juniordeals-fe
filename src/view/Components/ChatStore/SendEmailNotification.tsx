@@ -33,8 +33,6 @@ export const SendEmailNotification = (props: SendEmailNotificationProps) => {
   const dispatch = useAppDispatch();
 
   const onFormSubmit = (formData: any) => {
-    console.log(formData);
-
     dispatch(AuthService.sendNotification(formData));
   };
 
@@ -65,6 +63,7 @@ export const SendEmailNotification = (props: SendEmailNotificationProps) => {
             onFinish={onFormSubmit}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
+            initialValues={{ UserId: "", ProductTitle: "", Message: "" }}
           >
             <div className="row">
               <div className="col-lg-8 col-lg-offset-2 col-md-12 col-sm-12 col-xs-12">

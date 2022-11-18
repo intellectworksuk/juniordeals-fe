@@ -1,0 +1,16 @@
+import { Stripe, loadStripe } from "@stripe/stripe-js";
+
+let stripePromise: Promise<Stripe | null>;
+const getStripe = () => {
+  if (!stripePromise) {
+    // if (process.env.REACT_APP_STRIPE_KEY) {
+    //   stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
+    // }
+    // if (process.env.REACT_APP_STRIPE_TEST_KEY) {
+      stripePromise = loadStripe("pk_test_51LmNHGF7eY9PCGIiCLOhCxFFVAKG21NlUQ6rxrg10UCRfgp0xAhCVU8SVftEapSR3SqKNbSq9GSY1ItR7VWcZN2x005Q0Fd5Vj");
+    // }
+  }
+  return stripePromise;
+};
+
+export default getStripe;

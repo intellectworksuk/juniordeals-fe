@@ -1,32 +1,31 @@
-import { useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks'
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../hooks/reduxHooks";
 import {
   displayErrorMessage,
   displaySuccessNotification,
-} from '../../../util/notifications'
-import * as ProductService from '../../../store/product/product.actions'
-import { ProductCategoryResponse } from '../../../types'
-import Apiconfig from '../../../config/Apiconfig'
-import * as routes from '../../../constants/routes'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { clearProductStateStatus } from '../../../store/product/product.slice'
-import { ProductDiv } from '../../Components/ProductDiv'
-import { Divider } from 'antd'
-import { ProductDivView } from '../../Components/ProductDivView'
-import { ProductLatestList, ProductStore } from '../../Product'
+} from "../../../util/notifications";
+import * as ProductService from "../../../store/product/product.actions";
+import Apiconfig from "../../../config/Apiconfig";
+import * as routes from "../../../constants/routes";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { clearProductStateStatus } from "../../../store/product/product.slice";
+import { ProductDiv } from "../../Components/ProductDiv";
+import { Divider } from "antd";
+import { ProductDivView } from "../../Components/ProductDivView";
+import { ProductLatestList, ProductStore } from "../../Product";
 
 export const UserProductsListPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const location = useLocation()
+  const location = useLocation();
 
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
-  const { products } = useAppSelector((state) => state.product)
+  const { products } = useAppSelector((state) => state.product);
 
   useEffect(() => {
-    dispatch(ProductService.fetchUserProducts())
-  }, [dispatch])
+    dispatch(ProductService.fetchUserProducts());
+  }, [dispatch]);
 
   return (
     <>
@@ -73,8 +72,7 @@ export const UserProductsListPage = () => {
         </div> */}
 
         <div className="row">
-          <div className="col-lg-4"></div>
-          <div className="col-lg-4">
+          <div className="col-lg-12 col-lg-offset-5">
             <button
               className="btn-round-sec btn-block"
               type="button"
@@ -83,7 +81,6 @@ export const UserProductsListPage = () => {
               Add Products
             </button>
           </div>
-          <div className="col-lg-4"></div>
         </div>
 
         <div className="inlineTabs">
@@ -152,5 +149,5 @@ export const UserProductsListPage = () => {
         </div> */}
       </section>
     </>
-  )
-}
+  );
+};

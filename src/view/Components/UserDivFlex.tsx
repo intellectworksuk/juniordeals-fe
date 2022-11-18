@@ -1,50 +1,54 @@
-import Apiconfig from '../../config/Apiconfig'
-import { ProductResponse } from '../../types'
-import * as routes from '../../constants/routes'
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks'
-import { ProviderProps } from 'react-redux'
-import kid1img from '../assets/img/kid-1.png'
-import kid2img from '../assets/img/kid-2.png'
-import kid3img from '../assets/img/kid-3.png'
-import { Avatar, Image, Input, Space, Spin, Tag } from 'antd'
-import moment from 'moment'
-import { AvatarUpload } from './AvatarUpload'
-import { UserOutlined } from '@ant-design/icons'
-import noImageIcon from '../assets/img/jd-icon.png'
-import useEffectOnce from '../../hooks/useEffectOnce'
-import * as AdminService from '../../store/admin/admin.actions'
-import { useFireBase } from './ChatStore/firebase/config'
-import { onValue, ref } from 'firebase/database'
-import { useState } from 'react'
+import Apiconfig from "../../config/Apiconfig";
+import { ProductResponse, User } from "../../types";
+import * as routes from "../../constants/routes";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { ProviderProps } from "react-redux";
+import kid1img from "../assets/img/kid-1.png";
+import kid2img from "../assets/img/kid-2.png";
+import kid3img from "../assets/img/kid-3.png";
+import { Avatar, Image, Input, Pagination, Space, Spin, Tag } from "antd";
+import moment from "moment";
+import { AvatarUpload } from "./AvatarUpload";
+import { UserOutlined } from "@ant-design/icons";
+import noImageIcon from "../assets/img/jd-icon.png";
+import useEffectOnce from "../../hooks/useEffectOnce";
+import * as AdminService from "../../store/admin/admin.actions";
+import { useFireBase } from "./ChatStore/firebase/config";
+import { onValue, ref } from "firebase/database";
+import { useState } from "react";
 
-const { Search } = Input
+const { Search } = Input;
 
 export const UserDivFlex = () => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
-  const { status: adminStatus, users } = useAppSelector((state) => state.admin)
+  const {
+    status: adminStatus,
+    users,
+    usersPaging,
+  } = useAppSelector((state) => state.admin);
 
   const biusers = users?.reduce(function (
     accumulator: any[],
     currentValue,
     currentIndex,
-    array,
+    array
   ) {
     if (currentIndex % 2 === 0)
-      accumulator.push(array.slice(currentIndex, currentIndex + 2))
-    return accumulator
+      accumulator.push(array.slice(currentIndex, currentIndex + 2));
+    return accumulator;
   },
-  [])
+  []);
 
   // const initSearch = (searchText: string) => {
   //   dispatch(AdminService.fetchAllUsers(searchText))
   // }
 
   const updateUserStatus = (userId: string, status: boolean) => {
-    dispatch(AdminService.updateUserStatus({ id: userId, status: status }))
+    dispatch(AdminService.updateUserStatus({ id: userId, status: status }));
 
     // dispatch(AdminService.updateUserState({ id: userId, status: status }))
-  }
+  };
 
   return (
     <>
@@ -60,7 +64,7 @@ export const UserDivFlex = () => {
                         <div className="categorDp">
                           {usr[0]?.image ? (
                             <Avatar
-                              style={{ margin: '50px 20px' }}
+                              style={{ margin: "50px 20px" }}
                               size={64}
                               src={
                                 <Image
@@ -83,7 +87,7 @@ export const UserDivFlex = () => {
                         <div className="categoryDesc">
                           <p className="itemDate">
                             {moment(usr[0]?.createdOn).format(
-                              'MM-DD-YYYY HH:mm:ss',
+                              "MM-DD-YYYY HH:mm:ss"
                             )}
                           </p>
                           <h4 className="itemDesc">{usr[0]?.fullName}</h4>
@@ -91,18 +95,18 @@ export const UserDivFlex = () => {
                           <Space direction="horizontal">
                             <Tag
                               color="darkgreen"
-                              style={{ width: '100px', textAlign: 'center' }}
+                              style={{ width: "100px", textAlign: "center" }}
                             >
                               <b>{usr[0]?.availableCredits}</b>
                             </Tag>
-                            {' Available Credits'}
+                            {" Available Credits"}
                           </Space>
                           {usr[0].isActive !== undefined &&
                             (usr[0].isActive ? (
                               <button
                                 style={{
-                                  margin: '250px 0px 350px 250px',
-                                  position: 'absolute',
+                                  margin: "250px 0px 350px 250px",
+                                  position: "absolute",
                                 }}
                                 className="btn btn-danger btn-sm"
                                 onClick={() =>
@@ -110,18 +114,18 @@ export const UserDivFlex = () => {
                                 }
                               >
                                 <span id="button-text">
-                                  {adminStatus === 'updateUserStatusPending' ? (
+                                  {adminStatus === "updateUserStatusPending" ? (
                                     <Spin size="small" />
                                   ) : (
-                                    'Deactivate'
+                                    "Deactivate"
                                   )}
                                 </span>
                               </button>
                             ) : (
                               <button
                                 style={{
-                                  margin: '250px 0px 350px 250px',
-                                  position: 'absolute',
+                                  margin: "250px 0px 350px 250px",
+                                  position: "absolute",
                                 }}
                                 className="btn btn-success btn-sm"
                                 onClick={() =>
@@ -129,10 +133,10 @@ export const UserDivFlex = () => {
                                 }
                               >
                                 <span id="button-text">
-                                  {adminStatus === 'updateUserStatusPending' ? (
+                                  {adminStatus === "updateUserStatusPending" ? (
                                     <Spin size="small" />
                                   ) : (
-                                    'Activate'
+                                    "Activate"
                                   )}
                                 </span>
                               </button>
@@ -146,7 +150,7 @@ export const UserDivFlex = () => {
                           <div className="categorDp">
                             {usr[1].image ? (
                               <Avatar
-                                style={{ margin: '50px 20px' }}
+                                style={{ margin: "50px 20px" }}
                                 size={64}
                                 src={
                                   <img
@@ -168,7 +172,7 @@ export const UserDivFlex = () => {
                           <div className="categoryDesc">
                             <p className="itemDate">
                               {moment(usr[1]?.createdOn).format(
-                                'MM-DD-YYYY HH:mm:ss',
+                                "MM-DD-YYYY HH:mm:ss"
                               )}
                             </p>
                             <h4 className="itemDesc">{usr[1]?.fullName}</h4>
@@ -176,18 +180,18 @@ export const UserDivFlex = () => {
                             <Space direction="horizontal">
                               <Tag
                                 color="darkgreen"
-                                style={{ width: '100px', textAlign: 'center' }}
+                                style={{ width: "100px", textAlign: "center" }}
                               >
                                 <b>{usr[1]?.availableCredits}</b>
                               </Tag>
-                              {' Available Credits'}
+                              {" Available Credits"}
                             </Space>
                             {usr[0].isActive !== undefined &&
                               (usr[1].isActive ? (
                                 <button
                                   style={{
-                                    margin: '250px 0px 350px 250px',
-                                    position: 'absolute',
+                                    margin: "250px 0px 350px 250px",
+                                    position: "absolute",
                                   }}
                                   className="btn btn-danger btn-sm"
                                   onClick={() =>
@@ -196,18 +200,18 @@ export const UserDivFlex = () => {
                                 >
                                   <span id="button-text">
                                     {adminStatus ===
-                                    'updateUserStatusPending' ? (
+                                    "updateUserStatusPending" ? (
                                       <Spin size="small" />
                                     ) : (
-                                      'Deactivate'
+                                      "Deactivate"
                                     )}
                                   </span>
                                 </button>
                               ) : (
                                 <button
                                   style={{
-                                    margin: '250px 0px 350px 250px',
-                                    position: 'absolute',
+                                    margin: "250px 0px 350px 250px",
+                                    position: "absolute",
                                   }}
                                   className="btn btn-success btn-sm"
                                   onClick={() =>
@@ -216,10 +220,10 @@ export const UserDivFlex = () => {
                                 >
                                   <span id="button-text">
                                     {adminStatus ===
-                                    'updateUserStatusPending' ? (
+                                    "updateUserStatusPending" ? (
                                       <Spin size="small" />
                                     ) : (
-                                      'Activate'
+                                      "Activate"
                                     )}
                                   </span>
                                 </button>
@@ -236,5 +240,5 @@ export const UserDivFlex = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};

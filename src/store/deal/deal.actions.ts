@@ -6,7 +6,6 @@ import {
   CreateProductData,
   DealConfirmationData,
   DealResponse,
-  ProductCategoryResponse,
   ProductResponse,
   User,
 } from "../../types";
@@ -104,7 +103,7 @@ export const fetchUserDeals = createAsyncThunk(
 
       return result;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -121,7 +120,7 @@ export const fetchUserDealByID = createAsyncThunk(
 
       return result;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );
@@ -138,7 +137,7 @@ export const fetchChildUserDeals = createAsyncThunk(
 
       return result;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      return thunkAPI.rejectWithValue(err);
     }
   }
 );

@@ -74,29 +74,46 @@ export const ChatList = (props: ChatListProps) => {
                 chatItems.map((item: any) => {
                   return (
                     !!user && (
-                      <li
-                        key={Math.random()}
-                        className="active"
-                        onClick={() => handleLoadChats(item)}
-                      >
-                        <div className="usr-msg-details">
-                          <div className="usr-ms-img">
-                            {/* <img className="user-dp" src="" alt="" /> */}
-                            <Avatar icon={<UserOutlined />} size="small" />
-                            {/* <span className="msg-status"></span> */}
-                          </div>
-                          <div className="usr-mg-info">
-                            <h3>{item.product}</h3>
-                            <p>
-                              {user.userName === item.buyerUserName
-                                ? item.sellerUserName
-                                : user.userName === item.sellerUserName
-                                ? item.buyerUserName
-                                : "Not Defined"}
-                            </p>
-                          </div>
-                        </div>
-                      </li>
+                      <>
+                        {user.userName === item.buyerUserName && (
+                          <li
+                            key={Math.random()}
+                            className="active"
+                            onClick={() => handleLoadChats(item)}
+                          >
+                            <div className="usr-msg-details">
+                              <div className="usr-ms-img">
+                                {/* <img className="user-dp" src="" alt="" /> */}
+                                <Avatar icon={<UserOutlined />} size="small" />
+                                {/* <span className="msg-status"></span> */}
+                              </div>
+                              <div className="usr-mg-info">
+                                <h3>{item.product}</h3>
+                                <p>item.sellerUserName</p>
+                              </div>
+                            </div>
+                          </li>
+                        )}
+                        {user.userName === item.sellerUserName && (
+                          <li
+                            key={Math.random()}
+                            className="active"
+                            onClick={() => handleLoadChats(item)}
+                          >
+                            <div className="usr-msg-details">
+                              <div className="usr-ms-img">
+                                {/* <img className="user-dp" src="" alt="" /> */}
+                                <Avatar icon={<UserOutlined />} size="small" />
+                                {/* <span className="msg-status"></span> */}
+                              </div>
+                              <div className="usr-mg-info">
+                                <h3>{item.product}</h3>
+                                <p>item.buyerUserName</p>
+                              </div>
+                            </div>
+                          </li>
+                        )}
+                      </>
                     )
                   );
                 })}

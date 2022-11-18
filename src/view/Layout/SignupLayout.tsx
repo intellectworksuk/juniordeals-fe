@@ -1,7 +1,7 @@
-import React, { ReactChild, ReactNode } from 'react'
-import { GrInherit } from 'react-icons/gr'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { UserType } from '../../enums'
+import React, { ReactChild, ReactNode } from "react";
+import { GrInherit } from "react-icons/gr";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { UserType } from "../../enums";
 import {
   PageHeader,
   PageBanner,
@@ -10,11 +10,11 @@ import {
   LoginPage,
   SignUpPage,
   JoinUsSection,
-} from '../../view'
-import { EditProfilePage } from '../User/EditProfile'
+} from "../../view";
+import { EditProfilePage } from "../User/EditProfile";
 
 const ChildSignupLayout = (props: {
-  children: ReactNode | null | undefined
+  children: ReactNode | null | undefined;
 }) => {
   return (
     <>
@@ -24,7 +24,7 @@ const ChildSignupLayout = (props: {
       />
 
       <section className="sec-form-controller">
-        <div className="gen-form-holder" style={{ height: '1450px' }}>
+        <div className="gen-form-holder" style={{ height: "1450px" }}>
           <div className="form-block">
             <main>{props.children}</main>
           </div>
@@ -40,11 +40,11 @@ const ChildSignupLayout = (props: {
       <JoinUsSection />
       <PageFooter />
     </>
-  )
-}
+  );
+};
 
 const ParentSignupLayout = (props: {
-  children: ReactNode | null | undefined
+  children: ReactNode | null | undefined;
 }) => {
   return (
     <>
@@ -54,7 +54,7 @@ const ParentSignupLayout = (props: {
       />
 
       <section className="sec-form-controller">
-        <div className="gen-form-holder" style={{ height: '1450px' }}>
+        <div className="gen-form-holder" style={{ height: "1450px" }}>
           <div className="form-block">
             <main>{props.children}</main>
           </div>
@@ -70,8 +70,8 @@ const ParentSignupLayout = (props: {
       <JoinUsSection />
       <PageFooter />
     </>
-  )
-}
+  );
+};
 
 const LoginLayout = (props: { children: ReactNode | null | undefined }) => {
   return (
@@ -82,7 +82,7 @@ const LoginLayout = (props: { children: ReactNode | null | undefined }) => {
       />
 
       <section className="sec-form-controller">
-        <div className="gen-form-holder" style={{ height: '550px' }}>
+        <div className="gen-form-holder" style={{ height: "550px" }}>
           <div className="form-block">
             <main>{props.children}</main>
           </div>
@@ -98,15 +98,15 @@ const LoginLayout = (props: { children: ReactNode | null | undefined }) => {
       <JoinUsSection />
       <PageFooter />
     </>
-  )
-}
+  );
+};
 
 export const SignupNavigation = () => {
-  const location = useLocation()
+  const location = useLocation();
 
   return (
     <>
-      {location.pathname.endsWith('p-signup') ? (
+      {location.pathname.endsWith("p-signup") ? (
         <ParentSignupLayout>
           <Routes>
             <Route
@@ -115,7 +115,7 @@ export const SignupNavigation = () => {
             />
           </Routes>
         </ParentSignupLayout>
-      ) : location.pathname.endsWith('') ? (
+      ) : location.pathname.endsWith("") ? (
         <ChildSignupLayout>
           <Routes>
             <Route
@@ -130,8 +130,8 @@ export const SignupNavigation = () => {
         </Routes>
       )}
     </>
-  )
-}
+  );
+};
 
 export const LoginNavigation = () => {
   // const { setToken } = useToken();
@@ -145,5 +145,5 @@ export const LoginNavigation = () => {
         </Routes>
       </LoginLayout>
     </>
-  )
-}
+  );
+};

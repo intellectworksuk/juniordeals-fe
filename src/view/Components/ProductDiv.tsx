@@ -39,6 +39,36 @@ export const ProductDiv = (props: ProductDivProps) => {
 
   const { status, error, products } = useAppSelector((state) => state.product);
 
+  const checkDisabled = (): boolean => {
+    const prod = props.productState.find((p) => p?.id! === product.id!);
+
+    if (prod) {
+      return prod.liked || prod.status === "addLikesPending";
+    }
+
+    return false;
+  };
+
+  const checkWished = (): boolean => {
+    const prod = props.productState.find((p) => p?.id! === product.id!);
+
+    if (prod) {
+      return prod.wished || prod.status === "addToWishListPending";
+    }
+
+    return false;
+  };
+
+  const checkProdStatus = (): string => {
+    const prod = props.productState.find((p) => p?.id! === product.id!);
+
+    if (prod) {
+      return prod.status;
+    }
+
+    return "";
+  };
+
   return (
     <>
       <div key={Math.random()} className="shelf-item">
@@ -66,15 +96,10 @@ export const ProductDiv = (props: ProductDivProps) => {
           <button
             className="softactionbtn"
             onClick={props.addLikes}
-            disabled={
-              props.productState.find((p) => p?.id! === product.id!)!.liked ||
-              props.productState.find((p) => p?.id! === product.id!)!.status ===
-                "addLikesPending"
-            }
+            disabled={checkDisabled()}
           >
             <span id="button-text">
-              {props.productState.find((p) => p?.id! === product.id!)!
-                .status === "addLikesPending" ? (
+              {checkProdStatus() === "addLikesPending" ? (
                 <Spin size="small" />
               ) : (
                 <>{product.likes!}&ensp;Likes</>
@@ -84,15 +109,10 @@ export const ProductDiv = (props: ProductDivProps) => {
           <button
             className="softactionbtn"
             onClick={props.addWishList}
-            disabled={
-              props.productState.find((p) => p?.id! === product.id!)!.wished ||
-              props.productState.find((p) => p?.id! === product.id!)!.status ===
-                "addToWishListPending"
-            }
+            disabled={checkWished()}
           >
             <span id="button-text">
-              {props.productState.find((p) => p?.id! === product.id!)!
-                .status === "addToWishListPending" ? (
+              {checkProdStatus() === "addToWishListPending" ? (
                 <Spin size="small" />
               ) : (
                 "+ Wishlist"

@@ -2,7 +2,7 @@ import { SaveOutlined } from "@ant-design/icons";
 import { Form, InputNumber, Select, Spin, Tag } from "antd";
 import { strictEqual } from "assert";
 import { useAppSelector } from "../../hooks/reduxHooks";
-import { User } from "../../types";
+import { ChargesSetupResponse, User } from "../../types";
 
 interface TransactionControlProps {
   user: User;
@@ -63,7 +63,7 @@ export const TransactionControl = (props: TransactionControlProps) => {
             </Form.Item>
             <Form.Item name="Credits">
               <InputNumber
-                min={0}
+                min={1}
                 max={9999}
                 addonBefore={selectBefore}
                 addonAfter={
@@ -91,8 +91,7 @@ export const TransactionControl = (props: TransactionControlProps) => {
                 rules={[
                   {
                     required: true,
-                    message:
-                      "Please enter comments",
+                    message: "Please enter comments",
                   },
                   ({ getFieldValue }) => ({
                     validator(_rule, value) {
