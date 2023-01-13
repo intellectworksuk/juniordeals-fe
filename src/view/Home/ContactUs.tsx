@@ -23,19 +23,15 @@ export const ContactUsPage = () => {
             <h3 className="headingPrimary">Our London Office</h3>
             <hr />
             <p>
-              167-169 Great Portland Street
+              115 London Road
               <br />
-              6th and 5th Floor
+              Morden, England
               <br />
-              London
-              <br />
-              W1W 5PF
+              SM4 5HP
               <br />
               --------------------------------
               <br />
-              021-12365478
-              <br />
-              021-23659874
+              +44 7448 454910 
               <br />
               www.juniordeals.co.uk
               <br />

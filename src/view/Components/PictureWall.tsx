@@ -126,6 +126,10 @@ export class UploadPictureWall extends React.Component<any, any> {
       headers: { Authorization: `Bearer ${getAuthToken()}` },
     };
 
+    if (this.props.clearState === true) {
+      this.state.fileList = [];
+    }
+
     return (
       <>
         <Form.Item name={this.props.ItemName}>
@@ -135,6 +139,7 @@ export class UploadPictureWall extends React.Component<any, any> {
             listType="picture-card"
             fileList={fileList}
             // onPreview={this.handlePreview}
+            accept={"image/jpeg, image/jpg, image/webp, image/gif"}
             onChange={this.handleChange}
             beforeUpload={this.checkImageDimensions}
           >

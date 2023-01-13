@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Apiconfig from "../../config/Apiconfig";
 import {
+  Paging,
   RedemptionResponse,
   TransactionData,
   TransactionRedeemData,
@@ -54,14 +55,21 @@ export const redeemCredits = createAsyncThunk(
 
 export const fetchAllTransactions = createAsyncThunk(
   "wallet/fetchAllTransactions",
-  async (_, thunkAPI) => {
+  async (values: any, thunkAPI) => {
     try {
-      const url = Apiconfig.endpoints.transaction.fetchAllTransactions;
+      let url = Apiconfig.endpoints.transaction.fetchAllTransactions;
+
+      if (values.pageNo && values.pageSize) {
+        if (Number(values.pageNo) > 0) {
+          url += `?pageNumber=${values.pageNo}`;
+          url += `&pageSize=${values.pageSize}`;
+        }
+      }
 
       const {
-        data: { result },
-      } = await http.get<{ result: TransactionResponse }>(url);
-      return result;
+        data: { result, paging },
+      } = await http.get<{ result: TransactionResponse; paging: Paging }>(url);
+      return { result, paging };
     } catch (err) {
       return thunkAPI.rejectWithValue(err);
     }
@@ -104,13 +112,15 @@ export const approveRedemption = createAsyncThunk(
 
 export const rejectRedemption = createAsyncThunk(
   "wallet/rejectRedemption",
-  async (id: bigint, thunkAPI) => {
+  async (values: any, thunkAPI) => {
     try {
-      const url = `${Apiconfig.endpoints.transaction.rejectRedemption}/${id}`;
+      const url = `${Apiconfig.endpoints.transaction.rejectRedemption}/${values.recordId}`;
 
       const {
         data: { result },
-      } = await http.put<{ result: RedemptionResponse }>(url);
+      } = await http.put<{ result: RedemptionResponse }>(url, {
+        Comments: values.reason,
+      });
 
       return result;
     } catch (err) {

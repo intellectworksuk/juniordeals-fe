@@ -71,30 +71,18 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
     transactions,
   } = useAppSelector((state) => state.transaction);
 
-  const { user, error: authError, status: authStatus } = useAppSelector((state) => state.auth);
+  const {
+    user,
+    error: authError,
+    status: authStatus,
+  } = useAppSelector((state) => state.auth);
 
   const [activeTabIndex, setActiveTabIndex] = useState<string>("1");
 
   const childrenData = user.children;
 
   const onTabIndexChanged: TabsProps["onChange"] = (key) => {
-    if (key === "1") {
-      if (user.userType === UserType.PARENT) {
-        dispatch(AuthService.fetchChildrenProfile());
-      }
-    } else if (key === "2") {
-      dispatch(ProductService.fetchUserProducts());
-    } else if (key === "3" || key === "4") {
-      dispatch(DealService.fetchUserDeals());
-
-      // if (user.userType === UserType.PARENT) {
-      //   dispatch(DealService.fetchChildUserDeals());
-      // }
-    } else if (key === "5") {
-      dispatch(ConfigService.fetchChargesSetup());
-      dispatch(AuthService.loadCurrentProfile());
-      dispatch(TransactionService.fetchAllTransactions());
-    }
+    initActiveTab(key);
 
     setActiveTabIndex(key);
   };
@@ -103,6 +91,8 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
 
   useEffect(() => {
     if (location.state) {
+      initActiveTab(location.state.activeTabIndex);
+
       setActiveTabIndex(location.state.activeTabIndex);
     }
   }, [location.state]);
@@ -144,12 +134,12 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
 
   useEffect(() => {
     if (tranStatus === "transferCreditsResolved") {
-      displaySuccessNotification("Transaction successful");
+      displaySuccessNotification("Credits have been transferred successfully.");
       dispatch(AuthService.fetchChildrenProfile());
       dispatch(clearTransactionStateStatus());
     }
     if (tranStatus === "redeemCreditsResolved") {
-      displaySuccessNotification("Transaction successful");
+      displaySuccessNotification("Your request has been sent for approval.");
       dispatch(AuthService.loadCurrentProfile());
       dispatch(clearTransactionStateStatus());
     }
@@ -161,6 +151,28 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
       <Select.Option value="minus">-</Select.Option>
     </Select>
   );
+
+  const initActiveTab = (key: string) => {
+    if (key === "1") {
+      if (user.userType === UserType.PARENT) {
+        dispatch(AuthService.fetchChildrenProfile());
+      }
+    } else if (key === "2") {
+      dispatch(ProductService.fetchUserProducts());
+    } else if (key === "3" || key === "4") {
+      dispatch(DealService.fetchUserDeals());
+
+      // if (user.userType === UserType.PARENT) {
+      //   dispatch(DealService.fetchChildUserDeals());
+      // }
+    } else if (key === "5") {
+      dispatch(ConfigService.fetchChargesSetup());
+      dispatch(AuthService.loadCurrentProfile());
+      dispatch(
+        TransactionService.fetchAllTransactions({ pageNo: 1, pageSize: 10 })
+      );
+    }
+  };
 
   useScrollToTop();
 

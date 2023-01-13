@@ -16,7 +16,7 @@ import {
 } from "../../../store/product/product.slice";
 import { ProductDivView } from "../../Components/ProductDivView";
 import useEffectOnce from "../../../hooks/useEffectOnce";
-import { Form, Pagination, Spin } from "antd";
+import { Form, Pagination, Skeleton, Spin } from "antd";
 import type { PaginationProps } from "antd";
 
 export const ProductList = () => {
@@ -137,16 +137,18 @@ export const ProductList = () => {
           </div>
         </Form>
       </div>
-
-      <div className="sec-itemized-gallery">
-        <div className="itemized-gallery">
-          {products &&
-            products?.map((product) => (
-              <ProductDivView product={product} key={Math.random()} />
-            ))}
+      {productStatus === "fetchAllProductsPending" ? (
+        <Skeleton active></Skeleton>
+      ) : (
+        <div className="sec-itemized-gallery">
+          <div className="itemized-gallery">
+            {products &&
+              products?.map((product) => (
+                <ProductDivView product={product} key={Math.random()} />
+              ))}
+          </div>
         </div>
-      </div>
-
+      )}
       <div className="row">
         <div className="col-lg-12 text-center">
           <Pagination

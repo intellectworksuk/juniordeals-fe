@@ -40,9 +40,9 @@ export class ErrorBoundary extends React.Component<
               `}
             extra={
               <Button type="primary">
-                <Link to={routes.HOME} replace>
+                <a href={routes.HOME}>
                   Back Home
-                </Link>
+                </a>
               </Button>
             }
           />

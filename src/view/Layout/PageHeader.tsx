@@ -75,7 +75,7 @@ export const PageHeader = (props: PageHeaderProps) => {
     paging: productPaging,
     approvedProductId,
     likedProductId,
-    wishedProductId
+    wishedProductId,
   } = useAppSelector((state) => state.product);
 
   const { status: setupStatus, error: setupError } = useAppSelector(
@@ -105,6 +105,7 @@ export const PageHeader = (props: PageHeaderProps) => {
     if (productStatus === "addToWishListResolved") {
       // displaySuccessNotification("Added to Wishlist");
       dispatch(ProductService.fetchSingleProduct(wishedProductId));
+
       dispatch(ProductService.fetchProductsWishList());
     }
 
@@ -164,7 +165,7 @@ export const PageHeader = (props: PageHeaderProps) => {
     if (authStatus === "resetPasswordResolved") {
       displaySuccessNotification("Reset password successfully.");
 
-      clearAuthStatus();
+      dispatch(clearAuthStatus());
     }
     if (authStatus === "userSignedUp") {
       displaySuccessNotification(
@@ -219,211 +220,146 @@ export const PageHeader = (props: PageHeaderProps) => {
                 <span className="icon-bar"></span>
                 <span className="icon-bar"></span>
               </button>
-              <a href="#" className="navbar-brand brand-x">
+              <a href={routes.HOME} className="navbar-brand brand-x">
                 <img src={jd_ver} />
               </a>
             </div>
 
             <div id="navbarCollapse" className="collapse navbar-collapse">
-              <ul className="nav navbar-nav">
-                <li>
-                  <Link to={routes.HOME} className="btn-link">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={routes.FETCH_STORE_PRODUCT}
-                    state={{ ["barter"]: "active" }}
-                    className="btn-link"
-                    replace
-                  >
-                    Barter
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={routes.FETCH_STORE_PRODUCT}
-                    state={{ ["product"]: "active" }}
-                    className="btn-link"
-                    replace
-                  >
-                    Products
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to={routes.USER_PROFILE}
-                    state={{ activeTabIndex: "5" }}
-                    className="btn-link"
-                  >
-                    My Wallet
-                  </Link>
-                </li>
+              {[UserType.ADMIN, UserType.SUPER_ADMIN].includes(
+                Number(user.userType)
+              ) ? (
+                <ul className="nav navbar-nav">
+                  <li>
+                    <Link to={routes.ADMIN_HOME} className="btn-link">
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={routes.ADMIN_HOME}
+                      // onClick={() => changeLocation(routes.FETCH_STORE_PRODUCT)}
+                      state={{ activeTabIndex: "1" }}
+                      className="btn-link"
+                      replace
+                    >
+                      Manage Products
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={routes.ADMIN_HOME}
+                      // onClick={() => changeLocation(routes.FETCH_STORE_PRODUCT)}
+                      state={{ activeTabIndex: "2" }}
+                      className="btn-link"
+                      replace
+                    >
+                      Manage Deals
+                    </Link>
+                  </li>
+                  <li className="brand-lg">
+                    <a href={routes.ADMIN_HOME}>
+                      <img className="brand" src={jd_ver} />
+                    </a>
+                  </li>
+                  <li>
+                    <Link
+                      to={routes.ADMIN_HOME}
+                      state={{ activeTabIndex: "3" }}
+                      className="btn-link"
+                    >
+                      Manager Points
+                    </Link>
+                  </li>
+                  {/* <li>
+              <Link
+                to={routes.QUIZ_VIEW}
+                state={{ activeTabIndex: "5" }}
+                className="btn-link"
+              >
+                Setup Quiz
+              </Link>
+            </li> */}
+                  <li>
+                    <Link
+                      to={routes.ADMIN_HOME}
+                      state={{ activeTabIndex: "4" }}
+                      className="btn-link"
+                    >
+                      Manager Users
+                    </Link>
+                  </li>
+                  {/* <li>
+                    <a href="#" className="btn-link">
+                      Contact Us
+                    </a>
+                  </li> */}
+                </ul>
+              ) : (
+                <ul className="nav navbar-nav">
+                  <li>
+                    <Link to={routes.HOME} className="btn-link">
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={routes.FETCH_STORE_PRODUCT}
+                      state={{ ["barter"]: "active" }}
+                      className="btn-link"
+                      replace
+                    >
+                      Barter
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={routes.FETCH_STORE_PRODUCT}
+                      state={{ ["product"]: "active" }}
+                      className="btn-link"
+                      replace
+                    >
+                      Products
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={routes.USER_PROFILE}
+                      state={{ activeTabIndex: "5" }}
+                      className="btn-link"
+                    >
+                      My Wallet
+                    </Link>
+                  </li>
 
-                <li className="brand-lg">
-                  <a href="/home">
-                    <img className="brand" src={jd_ver} />
-                  </a>
-                </li>
+                  <li className="brand-lg">
+                    <a href={routes.HOME}>
+                      <img className="brand" src={jd_ver} />
+                    </a>
+                  </li>
 
-                <li>
-                  <Link to="/view/aboutus" className="btn-link">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/view/howitworks" className="btn-link">
-                    How it Works
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/view/contactus" className="btn-link">
-                    Contact Us
-                  </Link>
-                </li>
-              </ul>
+                  <li>
+                    <Link to="/view/aboutus" className="btn-link">
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/view/howitworks" className="btn-link">
+                      How it Works
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/view/contactus" className="btn-link">
+                      Contact Us
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </div>
           </nav>
         </div>
       </header>
       <div className="hero"></div>
-      {/* <section className="sec-topMost">
-        <div className="topBar">
-          <div className="tb-left"></div>
-          {user && user.userName ? <PrivateLinks /> : <PublicLinks />}
-        </div>
-        {[UserType.ADMIN, UserType.SUPER_ADMIN].includes(
-          Number(user.userType)
-        ) ? (
-          <div className="menuCutom">
-            <ul className="jdNav">
-              <li>
-                <Link to={routes.ADMIN_HOME} className="btn-link">
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={routes.ADMIN_HOME}
-                  state={{ activeTabIndex: "1" }}
-                  className="btn-link"
-                  replace
-                >
-                  Manage Products
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={routes.ADMIN_HOME}
-                  state={{ activeTabIndex: "2" }}
-                  className="btn-link"
-                  replace
-                >
-                  Manage Deals
-                </Link>
-              </li>
-            </ul>
-            <a href="/home">
-              <img className="brand" src={jd_ver} />
-            </a>
-            <ul className="jdNav">
-              <li>
-                <Link
-                  to={routes.ADMIN_HOME}
-                  state={{ activeTabIndex: "3" }}
-                  className="btn-link"
-                >
-                  Manager Credits
-                </Link>
-              </li> */}
-
-      {/* <li>
-                <Link
-                  to={routes.QUIZ_VIEW}
-                  state={{ activeTabIndex: "5" }}
-                  className="btn-link"
-                >
-                  Setup Quiz
-                </Link>
-              </li> */}
-
-      {/* <li>
-                 <Link
-                   to={routes.ADMIN_HOME}
-                   state={{ activeTabIndex: "4" }}
-                   className="btn-link"
-                 >
-                   Manager Users
-                 </Link>
-               </li>
-               <li>
-                 <a href="#" className="btn-link">
-                   Contact Us
-                 </a>
-               </li>
-             </ul>
-           </div>
-        ) : (
-          <div className="menuCutom">
-            <ul className="jdNav">
-              <li>
-                <Link to={routes.HOME} className="btn-link">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={routes.FETCH_STORE_PRODUCT}
-                  state={{ ["barter"]: "active" }}
-                  className="btn-link"
-                  replace
-                >
-                  Barter
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={routes.FETCH_STORE_PRODUCT}
-                  state={{ ["product"]: "active" }}
-                  className="btn-link"
-                  replace
-                >
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={routes.USER_PROFILE}
-                  state={{ activeTabIndex: "5" }}
-                  className="btn-link"
-                >
-                  My Wallet
-                </Link>
-              </li>
-            </ul>
-            <a href="/home">
-              <img className="brand" src={jd_ver} />
-            </a>
-            <ul className="jdNav">
-              <li>
-                <Link to="/view/aboutus" className="btn-link">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/view/howitworks" className="btn-link">
-                  How it Works
-                </Link>
-              </li>
-              <li>
-                <Link to="/view/contactus" className="btn-link">
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
-          </div>
-        )} */}
       <div className="header-space"></div>
       <PageBanner
         bannerImage={props.bannerImage}
@@ -461,30 +397,6 @@ const PublicLinks = () => {
           </div>
         </div>
       </div>
-      {/* <div style={{ marginRight: "20px" }}>
-        <Space direction="horizontal">
-          <div key="/login">
-            <button
-              type="button"
-              className="btn-round btn-block"
-              onClick={() => navigate(routes.LOGIN)}
-              style={{ padding: "5px 20px", marginTop: "20px" }}
-            >
-              Sign In
-            </button>
-          </div>
-          <div key="/signup">
-            <button
-              type="button"
-              className="btn-round btn-block"
-              onClick={() => navigate(routes.USER_SIGNUP)}
-              style={{ padding: "5px 20px", marginTop: "20px" }}
-            >
-              Create Account
-            </button>
-          </div>
-        </Space>
-      </div> */}
     </>
   );
 };

@@ -395,6 +395,7 @@ export interface TransactionState {
   status: TransactionStatus;
   error: string;
   transactions: TransactionResponse[];
+  tranPaging: Paging;
   redemptions: RedemptionResponse[];
 }
 

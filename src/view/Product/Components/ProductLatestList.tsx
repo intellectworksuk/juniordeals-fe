@@ -26,6 +26,10 @@ export const ProductLatestList = () => {
 
   const dispatch = useAppDispatch();
 
+  const [userFilteredProds, setUserFilteredProds] = useState<ProductResponse[]>(
+    []
+  );
+
   const { latestproducts: products, status: prodStatus } = useAppSelector(
     (state) => state.product
   );
@@ -36,113 +40,43 @@ export const ProductLatestList = () => {
     dispatch(ProductService.fetchLatestProducts({ status: 2 }));
   });
 
+  useEffect(() => {
+    if (prodStatus === "fetchAllProductsResolved") {
+      setUserFilteredProds(
+        products.filter((p) => String(p.userId) !== String(user.id))
+      );
+
+      dispatch(clearProductStateStatus());
+    }
+  }, [dispatch, prodStatus]);
+
   return (
     <>
       <div className="sec-product-latest">
-        <div className="freeHeadCenter">
-          <h2>
-            Latest Products
-            <br />
-            <small>Make your day, find the best deal.</small>
-          </h2>
-        </div>
-        <Carousel autoplay className="caro-height">
-          <div className="freeHeaderCenter">
-            {/* {categories &&
-            categories.map((cateogry: ProductCategoryResponse) =>
-              cateogry?. */}
-            {products &&
-              products
-                .filter((p) => p.availableQuantity! > 0)
-                .filter(
-                  (p) => user.userName === undefined || p.userId !== user.id
-                )
-                ?.sort((a, b) => Number(b.id!) - Number(a.id!))
-                ?.slice(0, 4)
-                .map((product) => (
-                  <div className="basicDiv" key={Math.random()}>
-                    <Link
-                      to={routes.FETCH_PRODUCT_DETAIL}
-                      state={{ product: product }}
-                    >
-                      <div className="itemImage">
-                        {product.productImage &&
-                        product.productImage.length > 0 ? (
-                          <img
-                            alt={noImageIcon}
-                            style={{ width: "100%", height: 187 }}
-                            src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.productImage[0].fileName}&type=product`}
-                          />
-                        ) : (
-                          <img alt="" src={noImageIcon} />
-                        )}
-                      </div>
-                    </Link>
-                    <div className="itemInfo">
-                      <h4>{product.title}</h4>
-                      <p className="targetPrice" style={{ float: "right" }}>
-                        Points: {product.rate}
-                      </p>
-                      <br />
-                      <hr />
-                      <p>
-                        {product.description?.substring(0, 32)}
-                        {product.description &&
-                          product.description?.length > 32 &&
-                          "..."}
-                      </p>
-                    </div>
-                    <div className="selectKey">
-                      {user.userName && product.barterAllowed && (
-                        <button
-                          type="button"
-                          className="border-left"
-                          style={{ width: "100%" }}
-                          onClick={() =>
-                            navigate(routes.FETCH_PRODUCT_BARTER, {
-                              state: {
-                                product: product,
-                                chatUserType: "buyer",
-                              },
-                            })
-                          }
-                        >
-                          Barter
-                        </button>
-                      )}
-                      {user.userName && (
-                        <button
-                          type="button"
-                          style={{ width: "100%" }}
-                          onClick={() =>
-                            navigate(routes.TO_CHAT, {
-                              state: {
-                                product: product,
-                                chatUserType: "buyer",
-                              },
-                            })
-                          }
-                        >
-                          Buy
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
+        <div className="container">
+          <div className="freeHeadCenter">
+            <h2>
+              Latest Products
+              <br />
+              <small>Make your day, find the best deal.</small>
+            </h2>
           </div>
-          {products.length > 4 && (
+          <br></br>
+          <Carousel autoplay className="caro-height">
             <div className="freeHeaderCenter">
               {/* {categories &&
             categories.map((cateogry: ProductCategoryResponse) =>
               cateogry?. */}
-              {products &&
-                products
+              {userFilteredProds &&
+                userFilteredProds
                   .filter((p) => p.availableQuantity! > 0)
-                  .filter(
-                    (p) => user.userName === undefined || p.userId !== user.id
-                  )
+                  // .filter(
+                  //   (p) =>
+                  //     user.userName === undefined ||
+                  //     String(p.userId) !== String(user.id)
+                  // )
                   ?.sort((a, b) => Number(b.id!) - Number(a.id!))
-                  ?.slice(4, 8)
+                  ?.slice(0, 4)
                   .map((product) => (
                     <div className="basicDiv" key={Math.random()}>
                       <Link
@@ -158,19 +92,8 @@ export const ProductLatestList = () => {
                               src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.productImage[0].fileName}&type=product`}
                             />
                           ) : (
-                            // <img
-                            //   src="https://cdn.dribbble.com/users/3794257/screenshots/14968829/media/51623ff71554bb312db41d1ebe277f9a.png?compress=1&resize=400x300&vertical=top"
-                            //   alt=""
-                            // />
                             <img alt="" src={noImageIcon} />
                           )}
-                          {/* <div className="sellerInfomini">
-                      <img
-                        src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.applicationUser?.image}&type=user`}
-                        alt="Seller"
-                      />
-                      <p>{product.applicationUser?.fullName}</p>
-                    </div> */}
                         </div>
                       </Link>
                       <div className="itemInfo">
@@ -225,202 +148,303 @@ export const ProductLatestList = () => {
                     </div>
                   ))}
             </div>
-          )}
-          {products.length > 8 && (
-            <div className="freeHeaderCenter">
-              {/* {categories &&
+            {userFilteredProds.length > 4 && (
+              <div className="freeHeaderCenter">
+                {/* {categories &&
             categories.map((cateogry: ProductCategoryResponse) =>
               cateogry?. */}
-              {products &&
-                products
-                  .filter((p) => p.availableQuantity! > 0)
-                  .filter(
-                    (p) => user.userName === undefined || p.userId !== user.id
-                  )
-                  ?.sort((a, b) => Number(b.id!) - Number(a.id!))
-                  ?.slice(8, 12)
-                  .map((product) => (
-                    <div className="basicDiv" key={Math.random()}>
-                      <Link
-                        to={routes.FETCH_PRODUCT_DETAIL}
-                        state={{ product: product }}
-                      >
-                        <div className="itemImage">
-                          {product.productImage &&
-                          product.productImage.length > 0 ? (
-                            <img
-                              alt={noImageIcon}
-                              style={{ width: "100%", height: 187 }}
-                              src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.productImage[0].fileName}&type=product`}
-                            />
-                          ) : (
-                            // <img
-                            //   src="https://cdn.dribbble.com/users/3794257/screenshots/14968829/media/51623ff71554bb312db41d1ebe277f9a.png?compress=1&resize=400x300&vertical=top"
-                            //   alt=""
-                            // />
-                            <img alt="" src={noImageIcon} />
-                          )}
-                          {/* <div className="sellerInfomini">
+                {userFilteredProds &&
+                  userFilteredProds
+                    .filter((p) => p.availableQuantity! > 0)
+                    // .filter(
+                    //   (p) =>
+                    //     user.userName === undefined ||
+                    //     String(p.userId) !== String(user.id)
+                    // )
+                    ?.sort((a, b) => Number(b.id!) - Number(a.id!))
+                    ?.slice(4, 8)
+                    .map((product) => (
+                      <div className="basicDiv" key={Math.random()}>
+                        <Link
+                          to={routes.FETCH_PRODUCT_DETAIL}
+                          state={{ product: product }}
+                        >
+                          <div className="itemImage">
+                            {product.productImage &&
+                            product.productImage.length > 0 ? (
+                              <img
+                                alt={noImageIcon}
+                                style={{ width: "100%", height: 187 }}
+                                src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.productImage[0].fileName}&type=product`}
+                              />
+                            ) : (
+                              // <img
+                              //   src="https://cdn.dribbble.com/users/3794257/screenshots/14968829/media/51623ff71554bb312db41d1ebe277f9a.png?compress=1&resize=400x300&vertical=top"
+                              //   alt=""
+                              // />
+                              <img alt="" src={noImageIcon} />
+                            )}
+                            {/* <div className="sellerInfomini">
                       <img
                         src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.applicationUser?.image}&type=user`}
                         alt="Seller"
                       />
                       <p>{product.applicationUser?.fullName}</p>
                     </div> */}
+                          </div>
+                        </Link>
+                        <div className="itemInfo">
+                          <h4>{product.title}</h4>
+                          <p className="targetPrice" style={{ float: "right" }}>
+                            Points: {product.rate}
+                          </p>
+                          <br />
+                          <hr />
+                          <p>
+                            {product.description?.substring(0, 32)}
+                            {product.description &&
+                              product.description?.length > 32 &&
+                              "..."}
+                          </p>
                         </div>
-                      </Link>
-                      <div className="itemInfo">
-                        <h4>{product.title}</h4>
-                        <p className="targetPrice" style={{ float: "right" }}>
-                          Points: {product.rate}
-                        </p>
-                        <br />
-                        <hr />
-                        <p>
-                          {product.description?.substring(0, 32)}
-                          {product.description &&
-                            product.description?.length > 32 &&
-                            "..."}
-                        </p>
+                        <div className="selectKey">
+                          {user.userName && product.barterAllowed && (
+                            <button
+                              type="button"
+                              className="border-left"
+                              style={{ width: "100%" }}
+                              onClick={() =>
+                                navigate(routes.FETCH_PRODUCT_BARTER, {
+                                  state: {
+                                    product: product,
+                                    chatUserType: "buyer",
+                                  },
+                                })
+                              }
+                            >
+                              Barter
+                            </button>
+                          )}
+                          {user.userName && (
+                            <button
+                              type="button"
+                              style={{ width: "100%" }}
+                              onClick={() =>
+                                navigate(routes.TO_CHAT, {
+                                  state: {
+                                    product: product,
+                                    chatUserType: "buyer",
+                                  },
+                                })
+                              }
+                            >
+                              Buy
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      <div className="selectKey">
-                        {user.userName && product.barterAllowed && (
-                          <button
-                            type="button"
-                            className="border-left"
-                            style={{ width: "100%" }}
-                            onClick={() =>
-                              navigate(routes.FETCH_PRODUCT_BARTER, {
-                                state: {
-                                  product: product,
-                                  chatUserType: "buyer",
-                                },
-                              })
-                            }
-                          >
-                            Barter
-                          </button>
-                        )}
-                        {user.userName && (
-                          <button
-                            type="button"
-                            style={{ width: "100%" }}
-                            onClick={() =>
-                              navigate(routes.TO_CHAT, {
-                                state: {
-                                  product: product,
-                                  chatUserType: "buyer",
-                                },
-                              })
-                            }
-                          >
-                            Buy
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-            </div>
-          )}
-          {products.length > 12 && (
-            <div className="freeHeaderCenter">
-              {/* {categories &&
+                    ))}
+              </div>
+            )}
+            {userFilteredProds.length > 8 && (
+              <div className="freeHeaderCenter">
+                {/* {categories &&
             categories.map((cateogry: ProductCategoryResponse) =>
               cateogry?. */}
-              {products &&
-                products
-                  .filter((p) => p.availableQuantity! > 0)
-                  .filter(
-                    (p) => user.userName === undefined || p.userId !== user.id
-                  )
-                  ?.sort((a, b) => Number(b.id!) - Number(a.id!))
-                  ?.slice(12, 16)
-                  .map((product) => (
-                    <div className="basicDiv" key={Math.random()}>
-                      <Link
-                        to={routes.FETCH_PRODUCT_DETAIL}
-                        state={{ product: product }}
-                      >
-                        <div className="itemImage">
-                          {product.productImage &&
-                          product.productImage.length > 0 ? (
-                            <img
-                              alt={noImageIcon}
-                              style={{ width: "100%", height: 187 }}
-                              src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.productImage[0].fileName}&type=product`}
-                            />
-                          ) : (
-                            // <img
-                            //   src="https://cdn.dribbble.com/users/3794257/screenshots/14968829/media/51623ff71554bb312db41d1ebe277f9a.png?compress=1&resize=400x300&vertical=top"
-                            //   alt=""
-                            // />
-                            <img alt="" src={noImageIcon} />
-                          )}
-                          {/* <div className="sellerInfomini">
+                {userFilteredProds &&
+                  userFilteredProds
+                    .filter((p) => p.availableQuantity! > 0)
+                    // .filter(
+                    //   (p) =>
+                    //     user.userName === undefined ||
+                    //     String(p.userId) !== String(user.id)
+                    // )
+                    ?.sort((a, b) => Number(b.id!) - Number(a.id!))
+                    ?.slice(8, 12)
+                    .map((product) => (
+                      <div className="basicDiv" key={Math.random()}>
+                        <Link
+                          to={routes.FETCH_PRODUCT_DETAIL}
+                          state={{ product: product }}
+                        >
+                          <div className="itemImage">
+                            {product.productImage &&
+                            product.productImage.length > 0 ? (
+                              <img
+                                alt={noImageIcon}
+                                style={{ width: "100%", height: 187 }}
+                                src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.productImage[0].fileName}&type=product`}
+                              />
+                            ) : (
+                              // <img
+                              //   src="https://cdn.dribbble.com/users/3794257/screenshots/14968829/media/51623ff71554bb312db41d1ebe277f9a.png?compress=1&resize=400x300&vertical=top"
+                              //   alt=""
+                              // />
+                              <img alt="" src={noImageIcon} />
+                            )}
+                            {/* <div className="sellerInfomini">
                       <img
                         src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.applicationUser?.image}&type=user`}
                         alt="Seller"
                       />
                       <p>{product.applicationUser?.fullName}</p>
                     </div> */}
+                          </div>
+                        </Link>
+                        <div className="itemInfo">
+                          <h4>{product.title}</h4>
+                          <p className="targetPrice" style={{ float: "right" }}>
+                            Points: {product.rate}
+                          </p>
+                          <br />
+                          <hr />
+                          <p>
+                            {product.description?.substring(0, 32)}
+                            {product.description &&
+                              product.description?.length > 32 &&
+                              "..."}
+                          </p>
                         </div>
-                      </Link>
-                      <div className="itemInfo">
-                        <h4>{product.title}</h4>
-                        <p className="targetPrice" style={{ float: "right" }}>
-                          Points: {product.rate}
-                        </p>
-                        <br />
-                        <hr />
-                        <p>
-                          {product.description?.substring(0, 32)}
-                          {product.description &&
-                            product.description?.length > 32 &&
-                            "..."}
-                        </p>
+                        <div className="selectKey">
+                          {user.userName && product.barterAllowed && (
+                            <button
+                              type="button"
+                              className="border-left"
+                              style={{ width: "100%" }}
+                              onClick={() =>
+                                navigate(routes.FETCH_PRODUCT_BARTER, {
+                                  state: {
+                                    product: product,
+                                    chatUserType: "buyer",
+                                  },
+                                })
+                              }
+                            >
+                              Barter
+                            </button>
+                          )}
+                          {user.userName && (
+                            <button
+                              type="button"
+                              style={{ width: "100%" }}
+                              onClick={() =>
+                                navigate(routes.TO_CHAT, {
+                                  state: {
+                                    product: product,
+                                    chatUserType: "buyer",
+                                  },
+                                })
+                              }
+                            >
+                              Buy
+                            </button>
+                          )}
+                        </div>
                       </div>
-                      <div className="selectKey">
-                        {user.userName && product.barterAllowed && (
-                          <button
-                            type="button"
-                            className="border-left"
-                            style={{ width: "100%" }}
-                            onClick={() =>
-                              navigate(routes.FETCH_PRODUCT_BARTER, {
-                                state: {
-                                  product: product,
-                                  chatUserType: "buyer",
-                                },
-                              })
-                            }
-                          >
-                            Barter
-                          </button>
-                        )}
-                        {user.userName && (
-                          <button
-                            type="button"
-                            style={{ width: "100%" }}
-                            onClick={() =>
-                              navigate(routes.TO_CHAT, {
-                                state: {
-                                  product: product,
-                                  chatUserType: "buyer",
-                                },
-                              })
-                            }
-                          >
-                            Buy
-                          </button>
-                        )}
+                    ))}
+              </div>
+            )}
+            {userFilteredProds.length > 12 && (
+              <div className="freeHeaderCenter">
+                {/* {categories &&
+            categories.map((cateogry: ProductCategoryResponse) =>
+              cateogry?. */}
+                {userFilteredProds &&
+                  userFilteredProds
+                    .filter((p) => p.availableQuantity! > 0)
+                    // .filter(
+                    //   (p) =>
+                    //     user.userName === undefined ||
+                    //     String(p.userId) !== String(user.id)
+                    // )
+                    ?.sort((a, b) => Number(b.id!) - Number(a.id!))
+                    ?.slice(12, 16)
+                    .map((product) => (
+                      <div className="basicDiv" key={Math.random()}>
+                        <Link
+                          to={routes.FETCH_PRODUCT_DETAIL}
+                          state={{ product: product }}
+                        >
+                          <div className="itemImage">
+                            {product.productImage &&
+                            product.productImage.length > 0 ? (
+                              <img
+                                alt={noImageIcon}
+                                style={{ width: "100%", height: 187 }}
+                                src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.productImage[0].fileName}&type=product`}
+                              />
+                            ) : (
+                              // <img
+                              //   src="https://cdn.dribbble.com/users/3794257/screenshots/14968829/media/51623ff71554bb312db41d1ebe277f9a.png?compress=1&resize=400x300&vertical=top"
+                              //   alt=""
+                              // />
+                              <img alt="" src={noImageIcon} />
+                            )}
+                            {/* <div className="sellerInfomini">
+                      <img
+                        src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.applicationUser?.image}&type=user`}
+                        alt="Seller"
+                      />
+                      <p>{product.applicationUser?.fullName}</p>
+                    </div> */}
+                          </div>
+                        </Link>
+                        <div className="itemInfo">
+                          <h4>{product.title}</h4>
+                          <p className="targetPrice" style={{ float: "right" }}>
+                            Points: {product.rate}
+                          </p>
+                          <br />
+                          <hr />
+                          <p>
+                            {product.description?.substring(0, 32)}
+                            {product.description &&
+                              product.description?.length > 32 &&
+                              "..."}
+                          </p>
+                        </div>
+                        <div className="selectKey">
+                          {user.userName && product.barterAllowed && (
+                            <button
+                              type="button"
+                              className="border-left"
+                              style={{ width: "100%" }}
+                              onClick={() =>
+                                navigate(routes.FETCH_PRODUCT_BARTER, {
+                                  state: {
+                                    product: product,
+                                    chatUserType: "buyer",
+                                  },
+                                })
+                              }
+                            >
+                              Barter
+                            </button>
+                          )}
+                          {user.userName && (
+                            <button
+                              type="button"
+                              style={{ width: "100%" }}
+                              onClick={() =>
+                                navigate(routes.TO_CHAT, {
+                                  state: {
+                                    product: product,
+                                    chatUserType: "buyer",
+                                  },
+                                })
+                              }
+                            >
+                              Buy
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
-            </div>
-          )}
-        </Carousel>
+                    ))}
+              </div>
+            )}
+          </Carousel>
 
-        {/* <div className="freeHeadCenter">
+          {/* <div className="freeHeadCenter">
           <button
             type="button"
             className="btn-round-sec"
@@ -430,6 +454,7 @@ export const ProductLatestList = () => {
             All Latest Products
           </button>
         </div> */}
+        </div>
       </div>
     </>
   );

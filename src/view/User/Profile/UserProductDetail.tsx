@@ -150,66 +150,70 @@ export const UserProductDetailPage = () => {
               />
             </Link>
           </div>
-          {user.userType !== UserType.CHILD && product.status !== "Rejected" && (
-            <Form
-              form={form}
-              size="small"
-              onFinish={onFormSubmit}
-              onFinishFailed={onFinishFailed}
-              autoComplete="off"
-              initialValues={{ ProductId: "", Reason: "" }}
-            >
-              <div className="row">
-                <div className="col-lg-12 col-lg-offset-3">
-                  <Space
-                    direction="vertical"
-                    align="center"
-                    style={{ width: "100%", gap: "0" }}
-                  >
-                    <Form.Item name="ProductId" hidden={true}>
-                      <input />
-                    </Form.Item>
-                    <Form.Item
-                      name="Reason"
-                      rules={[
-                        {
-                          required: true,
-                          message:
-                            "Please enter reason for the product rejection.",
-                        },
-                        ({ getFieldValue }) => ({
-                          validator(_rule, value) {
-                            if (!value || !value.includes("<script>")) {
-                              return Promise.resolve();
-                            }
-                            return Promise.reject("Invalid input found!");
-                          },
-                        }),
-                      ]}
-                    >
-                      <textarea
-                        maxLength={100}
-                        className="inpCtrl"
-                        placeholder="Special Description for the item"
-                        style={{ width: "480px" }}
-                      ></textarea>
-                    </Form.Item>
-                    <button
-                      className="btn-round-sec btn-block"
-                      style={{ backgroundColor: "red" }}
-                      type="submit"
-                      // onClick={() =>
-                      //   navigate(routes.START_DEAL, { state: { product: product } })
-                      // }
-                    >
-                      Reject Product
-                    </button>
-                  </Space>
-                </div>
-              </div>
-            </Form>
-          )}
         </div>
+        <div className="row">
+          <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          </div>
+
+          <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            {user.userType !== UserType.CHILD && product.status !== "Rejected" && (
+              <Form
+                form={form}
+                size="small"
+                onFinish={onFormSubmit}
+                onFinishFailed={onFinishFailed}
+                autoComplete="off"
+                initialValues={{ ProductId: "", Reason: "" }}
+              >
+                <Space
+                  direction="vertical"
+                  align="center"
+                  style={{ width: "100%", gap: "0" }}
+                >
+                  <Form.Item name="ProductId" hidden={true}>
+                    <input />
+                  </Form.Item>
+                  <Form.Item
+                    name="Reason"
+                    rules={[
+                      {
+                        required: true,
+                        message:
+                          "Please enter reason for the product rejection.",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_rule, value) {
+                          if (!value || !value.includes("<script>")) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject("Invalid input found!");
+                        },
+                      }),
+                    ]}
+                  >
+                    <textarea
+                      maxLength={100}
+                      className="inpCtrl"
+                      placeholder="Special Description for the item"
+                      style={{ width: "480px" }}
+                    ></textarea>
+                  </Form.Item>
+                  <button
+                    className="btn-round-sec btn-block"
+                    style={{ backgroundColor: "red" }}
+                    type="submit"
+                  // onClick={() =>
+                  //   navigate(routes.START_DEAL, { state: { product: product } })
+                  // }
+                  >
+                    Reject Product
+                  </button>
+                </Space>
+              </Form>
+            )}
+          </div>
+        </div>
+
       </section>
       {/* <div className="sec-barter-latest">
         <div className="freeHeadCenter">

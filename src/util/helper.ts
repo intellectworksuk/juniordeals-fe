@@ -23,9 +23,9 @@ export const parseErrorMessage = (payload: any) => {
           payload.response.data.errors[0] &&
           payload.response.data.errors[0].message;
       } else {
-        // if (payload.response.status === 401) {
-        //   stateError = "You have signed out from your previous session, Pls. sign in again.";
-        // }
+        if (payload.response.status === 401) {
+          stateError = "";
+        }
         if (payload.response.status === 403) {
           stateError = "You don't have rights to access this resource.";
         }

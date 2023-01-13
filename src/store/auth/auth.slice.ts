@@ -165,8 +165,6 @@ const authSlice = createSlice({
       (state, { payload }: { payload: any }) => {
         state.error = Util.parseErrorMessage(payload);
 
-        console.log(state.error);
-
         state.isAuthenticated = false;
         state.status = "loggedInRejected";
       }

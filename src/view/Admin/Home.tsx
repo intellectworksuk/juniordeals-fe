@@ -2,6 +2,7 @@ import {
   Button,
   Input,
   Pagination,
+  Popconfirm,
   Skeleton,
   Space,
   Table,
@@ -14,7 +15,7 @@ import { ProductList } from "../Product";
 // import * as DealService from "../../store/deal/deal.actions";
 import * as AdminService from "../../store/admin/admin.actions";
 import * as TransactionService from "../../store/transaction/transaction.actions";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AdminDealLister } from "../Components/DealLister";
 import {
   displayErrorMessage,
@@ -32,10 +33,13 @@ import { useLocation } from "react-router-dom";
 import * as ConfigService from "../../store/config/config.actions";
 import * as ProductService from "../../store/product/product.actions";
 import type { PaginationProps } from "antd";
+import { useScrollToTop } from "../../hooks/useScrollToTop";
 
 const { Search } = Input;
 
 export const AdminHomePage = () => {
+  const [reasonInputRef, setReasonInputRef] = useState<string>("");
+
   const location = useLocation();
 
   const dispatch = useAppDispatch();
@@ -70,36 +74,7 @@ export const AdminHomePage = () => {
   } = useAppSelector((state) => state.product);
 
   const onTabIndexChanged: TabsProps["onChange"] = (key) => {
-    if (key === "1") {
-      dispatch(
-        ProductService.fetchAllProducts({
-          pageNo: productPaging.pageNumber,
-          pageSize: productPaging.pageSize,
-        })
-      );
-    } else if (key === "2") {
-      // dispatch(AdminService.fetchAllDeals(0))
-    } else if (key === "3") {
-      dispatch(
-        AdminService.fetchAllUsers({
-          searchText: userSearchText1,
-          pageNo: 1,
-          pageSize: 10,
-        })
-      );
-    } else if (key === "4") {
-      dispatch(
-        AdminService.fetchAllUsers({
-          searchText: userSearchText2,
-          pageNo: 1,
-          pageSize: 10,
-        })
-      );
-    } else if (key === "5") {
-      dispatch(ConfigService.fetchChargesSetup());
-
-      dispatch(TransactionService.fetchAllRedemptions());
-    }
+    initActiveTab(key);
 
     setActiveTabIndex(key);
   };
@@ -120,17 +95,17 @@ export const AdminHomePage = () => {
 
   useEffect(() => {
     if (tranStatus === "transferCreditsResolved") {
-      displaySuccessNotification("Transaction successful");
+      displaySuccessNotification("Credits have been transferred successfully.");
       // dispatch(AdminService.fetchAllUsers());
       dispatch(clearTransactionStateStatus());
     }
     if (tranStatus === "approveRedemptionResolved") {
-      displaySuccessNotification("Transaction has been approved");
+      displaySuccessNotification("Redeem request has been approved");
       dispatch(TransactionService.fetchAllRedemptions());
       dispatch(clearTransactionStateStatus());
     }
     if (tranStatus === "rejectRedemptionResolved") {
-      displaySuccessNotification("Transaction has been rejected");
+      displaySuccessNotification("Redeem request has been rejected");
       dispatch(TransactionService.fetchAllRedemptions());
       dispatch(clearTransactionStateStatus());
     }
@@ -180,6 +155,8 @@ export const AdminHomePage = () => {
 
   useEffect(() => {
     if (location.state) {
+      initActiveTab(location.state.activeTabIndex);
+
       setActiveTabIndex(location.state.activeTabIndex);
     }
   }, [location.state]);
@@ -207,6 +184,57 @@ export const AdminHomePage = () => {
 
     setUserCurrentPage(page);
   };
+
+  const initActiveTab = (key: string) => {
+    if (key === "1") {
+      dispatch(
+        ProductService.fetchAllProducts({
+          pageNo: productPaging.pageNumber,
+          pageSize: productPaging.pageSize,
+        })
+      );
+    } else if (key === "2") {
+      // dispatch(AdminService.fetchAllDeals(0))
+    } else if (key === "3") {
+      dispatch(
+        AdminService.fetchAllUsers({
+          searchText: userSearchText1,
+          pageNo: 1,
+          pageSize: 10,
+        })
+      );
+    } else if (key === "4") {
+      dispatch(
+        AdminService.fetchAllUsers({
+          searchText: userSearchText2,
+          pageNo: 1,
+          pageSize: 10,
+        })
+      );
+    } else if (key === "5") {
+      dispatch(ConfigService.fetchChargesSetup());
+
+      dispatch(TransactionService.fetchAllRedemptions());
+    }
+  };
+
+  const onRejectConfirm = (ev: any, recordId: bigint) => {
+    if (reasonInputRef.length > 0) {
+      dispatch(
+        TransactionService.rejectRedemption({
+          recordId: recordId,
+          reason: reasonInputRef,
+        })
+      );
+      setReasonInputRef("");
+    }
+  };
+
+  const onRejectCancel = (ev: any) => {
+    console.log(ev);
+  };
+
+  useScrollToTop();
 
   return (
     <>
@@ -311,11 +339,13 @@ export const AdminHomePage = () => {
                       </div>
                       <div className="col-lg-3"></div>
                     </div>
+                    <br />
                     {adminStatus === "fetchAllUsersPending" ? (
                       <Skeleton active />
                     ) : (
                       <AdjustUserCreditPage />
                     )}
+                    <br />
                     <div className="row">
                       <div className="col-lg-12  text-center">
                         <Pagination
@@ -363,11 +393,13 @@ export const AdminHomePage = () => {
                       </div>
                       <div className="col-lg-3"></div>
                     </div>
+                    <br />
                     {adminStatus === "fetchAllUsersPending" ? (
                       <Skeleton active />
                     ) : (
                       <UserDivFlex />
                     )}
+                    <br />
                     <div className="row">
                       <div className="col-lg-12 text-center">
                         <Pagination
@@ -395,6 +427,7 @@ export const AdminHomePage = () => {
                       <Skeleton active />
                     ) : (
                       <Table
+                        pagination={{ total: redemptions.length, pageSize: 10 }}
                         columns={[
                           {
                             title: "id",
@@ -523,20 +556,42 @@ export const AdminHomePage = () => {
                                     >
                                       Approve
                                     </Button>
-                                    <Button
-                                      shape="round"
-                                      type="primary"
-                                      danger
-                                      onClick={() =>
-                                        dispatch(
-                                          TransactionService.rejectRedemption(
-                                            record.id
-                                          )
-                                        )
+                                    <Popconfirm
+                                      title={
+                                        <>
+                                          <textarea
+                                            className="inpCtrl"
+                                            id="reasonInputRef"
+                                            name="reasonInputRef"
+                                            placeholder="Please specify reason of rejection?"
+                                            onChange={(e) =>
+                                              setReasonInputRef(e.target.value)
+                                            }
+                                          />
+                                        </>
                                       }
+                                      onConfirm={(e) =>
+                                        onRejectConfirm(e, record.id)
+                                      }
+                                      onCancel={onRejectCancel}
+                                      okText="Reject"
+                                      cancelText="Cancel"
                                     >
-                                      Reject
-                                    </Button>
+                                      <Button
+                                        shape="round"
+                                        type="primary"
+                                        danger
+                                        // onClick={() =>
+                                        //   dispatch(
+                                        //     TransactionService.rejectRedemption(
+                                        //       record.id
+                                        //     )
+                                        //   )
+                                        // }
+                                      >
+                                        Reject
+                                      </Button>
+                                    </Popconfirm>
                                   </Space>
                                 )}
                               </>
@@ -556,3 +611,13 @@ export const AdminHomePage = () => {
     </>
   );
 };
+
+// const PopconfirmInputReason = () => {
+//   return (<>
+//   <div className="row">
+//     <div className="col-lg-12">
+
+//     </div>
+//   </div>
+//   </>)
+// }

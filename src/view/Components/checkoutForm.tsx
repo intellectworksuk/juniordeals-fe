@@ -97,7 +97,7 @@ export const CheckoutForm = (props: CheckoutFormProps) => {
   const [error, setError] = useState<string>("");
   const [processing, setProcessing] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(true);
-  const [clientSecret, setClientSecret] = useState("");
+  // const [clientSecret, setClientSecret] = useState("");
   const stripe = useStripe();
   const elements = useElements();
 
@@ -125,10 +125,12 @@ export const CheckoutForm = (props: CheckoutFormProps) => {
   //   dispatch(AuthService.initPaymentIntent());
   // });
 
+  const [formBtnCtrlStyle, setFormBtnCtrlStyle] = useState("formBtnCtrl");
+
   useEffect(() => {
-    if (authStatus === "initPaymentIntentResolved") {
-      setClientSecret(paymentId!);
-    }
+    // if (authStatus === "initPaymentIntentResolved") {
+    //   setClientSecret(paymentId!);
+    // }
     if (authStatus === "confirmPaymentIntentResolved") {
       // navigate(routes.LOGIN);
       dispatch(AuthService.loadCurrentProfile());
@@ -142,15 +144,27 @@ export const CheckoutForm = (props: CheckoutFormProps) => {
     // Listen for changes in the CardElement
     // and display any errors as the customer types their card details
     setDisabled(event.empty);
+
     setError(event.error ? event.error.message : "");
   };
 
+  useEffect(() => {
+    if (error.length > 0) {
+      setFormBtnCtrlStyle("btn btn-default btn-100");
+    } else {
+      setFormBtnCtrlStyle("formBtnCtrl");
+    }
+  }, [error]);
+
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+
     setProcessing(true);
 
+    setFormBtnCtrlStyle("btn btn-default btn-100");
+
     try {
-      const payload = await stripe?.confirmCardPayment(clientSecret, {
+      const payload = await stripe?.confirmCardPayment(paymentId, {
         payment_method: {
           card: elements?.getElement(CardElement) || { token: "" },
         },
@@ -256,8 +270,8 @@ export const CheckoutForm = (props: CheckoutFormProps) => {
       <div className="row">
         <div className="col-lg-12">
           <button
-            className="formBtnCtrl"
-            disabled={processing || disabled || succeeded}
+            className={formBtnCtrlStyle}
+            disabled={processing || disabled || succeeded || error.length > 0}
             id="submit"
             onClick={handleSubmit}
           >

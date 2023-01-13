@@ -31,4 +31,4 @@ const dev = {
     google_maps_key: "AIzaSyBAwlXYDbl6eeVRb0dlDyQo8Pv7ud6rJrY"
   };
 
-export const config = process.env.NODE_ENV === "development" ? prod : prod;
+export const config = process.env.NODE_ENV === "development" ? dev : prod;

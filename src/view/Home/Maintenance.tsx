@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { PageHeader } from "../Layout";
 import maintenance from "../assets/img/maintenance.jpg";
+import ucp from "../assets/img/ucp.png";
 
 export const MaintenancePage = () => {
   return (
@@ -8,11 +9,8 @@ export const MaintenancePage = () => {
       <Helmet>
         <title>Junior Deals</title>
       </Helmet>
-
-      <div className="row">
-        <div className="col-lg-12">
-          <img src={maintenance} style={{ marginLeft: 35 }} />
-        </div>
+      <div className="ucp">
+        <img className="bi-lg" src={ucp} alt="" />
       </div>
     </>
   );

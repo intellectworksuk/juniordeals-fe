@@ -28,6 +28,7 @@ import inoutImg from "../assets/img/in-out.jpg";
 import outinImg from "../assets/img/out-in.jpg";
 import moment from "moment";
 import { ProductAvatar } from "./ProductAvatar";
+import { clearDealStateStatus } from "../../store/deal/deal.slice";
 
 interface DealListerProps {
   deals: DealResponse[];
@@ -294,6 +295,8 @@ const InboxDealInfoStatus = (props: DealTemplateProps) => {
   const user = props.user;
   const dealStatus = props.dealStatus;
 
+  const { status: dealSliceStatus } = useAppSelector((state) => state.deal);
+
   const [isDealDoneModalVisible, setIsDealDoneModalVisible] = useState(false);
   const [isDealReceiveModalVisible, setIsDealReceiveModalVisible] =
     useState(false);
@@ -322,6 +325,14 @@ const InboxDealInfoStatus = (props: DealTemplateProps) => {
     setIsDealDoneModalVisible(false);
     setIsDealReceiveModalVisible(false);
   };
+
+  useEffect(() => {
+    if (dealSliceStatus === "sendSellerApprovalResolved") {
+      setIsDealDoneModalVisible(false);
+
+      dispatch(clearDealStateStatus());
+    }
+  }, [dispatch, dealSliceStatus]);
 
   return (
     <>

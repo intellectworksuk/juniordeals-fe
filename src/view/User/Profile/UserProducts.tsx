@@ -72,7 +72,7 @@ export const UserProductsListPage = () => {
         </div> */}
 
         <div className="row">
-          <div className="col-lg-12 col-lg-offset-5">
+          <div className="col-lg-12 text-center">
             <button
               className="btn-round-sec btn-block"
               type="button"
@@ -131,22 +131,6 @@ export const UserProductsListPage = () => {
             </div>
           </div>
         </div>
-
-        {/* <div className="row">
-          <Divider />
-
-          <div className="col-lg-4"></div>
-          <div className="col-lg-4">
-            <button
-              className="btn-round-sec btn-block"
-              type="button"
-              onClick={() => navigate(routes.ADD_PRODUCT)}
-            >
-              Add Products
-            </button>
-          </div>
-          <div className="col-lg-4"></div>
-        </div> */}
       </section>
     </>
   );

@@ -48,7 +48,9 @@ a:active {
   background-repeat: repeat;
   background-position: center;
 }
-
+.over-auto {
+  overflow: auto;
+}
 .sec-cotact {
   float: left;
   width: 100%;
@@ -191,6 +193,24 @@ a:active {
 .sec-topMost .menuCutom .jdNav li {
   color: rgb(73, 130, 246);
 }
+
+.jd-slider {
+  height: 500px !important;
+  margin: -100px 0 0;
+}
+.jd-slider .slick-list {
+  height: 500px !important;
+}
+
+@media (min-width: 992px) {
+  .jd-slider {
+    height: 506px !important;
+    margin: -100px 0 0;
+  }
+  .jd-slider .slick-list {
+    height: 650px !important;
+  }
+}
 .sec-topMost .bannerImg {
   width: 100%;
   height: auto;
@@ -204,6 +224,21 @@ a:active {
   -o-object-position: center;
   object-position: center;
 }
+.bannerImg .bi-lg {
+  display: none !important;
+}
+@media (min-width: 992px) {
+  .bannerImg .bi-lg {
+    display: block !important;
+    margin: auto;
+    width: 100%;
+    height: auto;
+  }
+  .bannerImg .bi-xs {
+    display: none !important;
+  }
+}
+
 .sec-topMost .bannerStrip {
   height: auto;
   width: 100%;
@@ -828,6 +863,26 @@ a:active {
   background-position: center;
 }
 
+.ucp {
+  width: 100%;
+  height: 100vh;
+  background-image: url("img/ucp-bg.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ucp img {
+  width: 90%;
+  height: auto;
+}
+@media (min-width: 992px) {
+  .ucp img {
+    width: 500px;
+  }
+}
 .item-stage {
   min-height: 100px;
   border-radius: 8px;
@@ -1074,8 +1129,8 @@ form > .row {
 .sec-category-search {
   width: 100%;
   height: auto;
-  padding: 50px 0 0;
   background-color: rgb(255, 255, 255);
+  overflow: hidden;
 }
 .sec-category-search .searchBlock {
   float: left;
@@ -1134,7 +1189,7 @@ form > .row {
 }
 .sec-category-search .searchBlock .searchResults .interestCard .categorDp {
   position: relative;
-  height: 160px;
+  height: 170px;
   width: 100%;
 }
 .sec-category-search .searchBlock .searchResults .interestCard .categoryDesc {
@@ -1435,6 +1490,13 @@ form > .row {
 .sec-site-footer .footer-desc .desc-social .social-footer li a i {
   font-size: 26px;
   letter-spacing: 5px;
+}
+.pp-links {
+  overflow: auto;
+  position: relative;
+  margin: 20px 0 0 !important;
+  display: block ruby;
+  text-align: center;
 }
 
 @media (min-width: 992px) {
@@ -2328,7 +2390,7 @@ input[type="search"].my-search::-webkit-search-cancel-button {
 }
 
 .caro-height {
-  height: auto;
+  height: 100%;
 }
 @media (min-width: 992px) {
   .caro-height {
@@ -2336,5 +2398,6 @@ input[type="search"].my-search::-webkit-search-cancel-button {
   }
 }
 
-/* .hero {width: 100%;height: 600px;background: url(../hero.png) center no-repeat; background-size: cover;
-} */
+.btn-100 {
+  width: 100% !important;
+}

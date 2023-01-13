@@ -78,11 +78,15 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
     dispatch(ConfigService.fetchCategories());
 
     // if (!!user.userName) {
-      dispatch(
-        ProductService.fetchProductsForSell({ pageNo: 1, pageSize: 10 })
-      );
-
+    dispatch(
+      ProductService.fetchProductsForSell({
+        pageNo: 1,
+        pageSize: 10,
+      })
+    ).then((resp) => {
       dispatch(ProductService.fetchProductsWishList());
+    });
+
     // }
   });
 
@@ -177,7 +181,7 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
       );
 
       if (prod) {
-        prod.status = "addToWishListPending";
+        prod.status = "addToWishListResolved";
 
         prod.wished = true;
       }
@@ -201,167 +205,178 @@ export const ProductStore = (/*props: ProductStoreProps*/) => {
   return (
     <>
       <div className="sec-category-search">
-        <Form form={form} onFinish={onFormSubmit} autoComplete="off">
-          <div className="searchBlock">
-            <div className="searchingHeader">
-              <div className="support-flex">
-                <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                  <div className="sb-title">
-                    <h3>SEARCH BY INTEREST</h3>
-                    <p></p>
-                  </div>
-                </div>
-                <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                  <div className="row">
-                    <div className="col-lg-5 col-md-5 col-sm-5">
-                      <Form.Item name="Search">
-                        <input
-                          maxLength={30}
-                          type="search"
-                          className="form-control input-sm my-search"
-                        />
-                      </Form.Item>
-                    </div>
-                    <div className="col-lg-5 col-md-5 col-sm-5">
-                      <Form.Item name="Category">
-                        <select className="form-control input-sm">
-                          <option value="0">Select Category</option>
-                          {setups.categories.map((cat) => (
-                            <option
-                              value={cat.id.toString()}
-                              key={cat.id.toString()}
-                            >
-                              {cat.title}
-                            </option>
-                          ))}
-                        </select>
-                      </Form.Item>
-                    </div>
-                    <div className="col-lg-2 col-md-2 col-sm-2">
-                      <button
-                        type="submit"
-                        className="btn btn-block btn-sm btn-primary btn-ps"
-                        disabled={
-                          productStatus === "fetchProductsForSellPending"
-                        }
-                      >
-                        <span id="button-text">
-                          {productStatus === "fetchProductsForSellPending" ? (
-                            <Spin size="small" />
-                          ) : (
-                            <i className="mdi mdi-magnify"></i>
-                          )}
-                        </span>
-                      </button>
+        <div className="container">
+          <Form form={form} onFinish={onFormSubmit} autoComplete="off">
+            <div className="searchBlock">
+              <div className="searchingHeader">
+                <div className="support-flex">
+                  <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div className="sb-title">
+                      <h3>SEARCH BY INTEREST</h3>
+                      <p></p>
                     </div>
                   </div>
+                  <div className="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div className="row">
+                      <div className="col-lg-5 col-md-5 col-sm-5">
+                        <Form.Item name="Search">
+                          <input
+                            maxLength={30}
+                            type="search"
+                            className="form-control input-sm my-search"
+                          />
+                        </Form.Item>
+                      </div>
+                      <div className="col-lg-5 col-md-5 col-sm-5">
+                        <Form.Item name="Category">
+                          <select className="form-control input-sm">
+                            <option value="0">Select Category</option>
+                            {setups.categories.map((cat) => (
+                              <option
+                                value={cat.id.toString()}
+                                key={cat.id.toString()}
+                              >
+                                {cat.title}
+                              </option>
+                            ))}
+                          </select>
+                        </Form.Item>
+                      </div>
+                      <div className="col-lg-2 col-md-2 col-sm-2">
+                        <button
+                          type="submit"
+                          className="btn btn-block btn-sm btn-primary btn-ps"
+                          disabled={
+                            productStatus === "fetchProductsForSellPending"
+                          }
+                        >
+                          <span id="button-text">
+                            {productStatus === "fetchProductsForSellPending" ? (
+                              <Spin size="small" />
+                            ) : (
+                              <i className="mdi mdi-magnify"></i>
+                            )}
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </div>
+            </div>
+          </Form>
+          <div className="inlineTabs">
+            <ul className="nav nav-pills nav-justified" role="tablist">
+              <li role="presentation" className={`${productActiveTab}`}>
+                <a
+                  href="#sellitems"
+                  aria-controls="home"
+                  role="tab"
+                  data-toggle="tab"
+                >
+                  Selling items
+                </a>
+              </li>
+              <li role="presentation" className={`${barterActiveTab}`}>
+                <a
+                  href="#barteritems"
+                  aria-controls="profile"
+                  role="tab"
+                  data-toggle="tab"
+                >
+                  Barter items
+                </a>
+              </li>
+              <li role="presentation">
+                <a
+                  href="#wishlistitems"
+                  aria-controls="profile"
+                  role="tab"
+                  data-toggle="tab"
+                >
+                  Wishlist
+                </a>
+              </li>
+            </ul>
+            <div className="tab-content">
+              <div
+                role="tabpanel"
+                className={`tab-pane ${productActiveTab}`}
+                id="sellitems"
+              >
+                {productStatus === "fetchProductsForSellPending" ? (
+                  <Skeleton active></Skeleton>
+                ) : (
+                  <div className="itemized-gallery">
+                    {productDivState &&
+                      products &&
+                      products
+                        ?.filter((product) => !product.barterAllowed)
+                        .map((product, index) => (
+                          <ProductDiv
+                            key={Math.random()}
+                            product={product}
+                            productState={productDivState}
+                            addLikes={() => addLikes(product.id!)}
+                            addWishList={() => addToWishList(product.id!)}
+                            // setProductState={setProductDivState}
+                          />
+                        ))}
+                  </div>
+                )}
+              </div>
+              <div
+                role="tabpanel"
+                className={`tab-pane ${barterActiveTab}`}
+                id="barteritems"
+              >
+                {productStatus === "fetchProductsForSellPending" ? (
+                  <Skeleton active></Skeleton>
+                ) : (
+                  <div className="itemized-gallery">
+                    {productDivState &&
+                      products &&
+                      products
+                        ?.filter((product) => product.barterAllowed)
+                        .map((product, index) => (
+                          <ProductDiv
+                            key={Math.random()}
+                            product={product}
+                            productState={productDivState}
+                            addLikes={() => addLikes(product.id!)}
+                            addWishList={() => addToWishList(product.id!)}
+                            // setProductState={setProductDivState}
+                          />
+                        ))}
+                  </div>
+                )}
+              </div>
+              <div role="tabpanel" className="tab-pane" id="wishlistitems">
+                {productStatus === "fetchProductsWishListPending" ? (
+                  <Skeleton active />
+                ) : (
+                  <div className="itemized-gallery">
+                    <ProductDivFlex products={wishListproducts} />
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </Form>
-        <div className="inlineTabs">
-          <ul className="nav nav-pills nav-justified" role="tablist">
-            <li role="presentation" className={`${productActiveTab}`}>
-              <a
-                href="#sellitems"
-                aria-controls="home"
-                role="tab"
-                data-toggle="tab"
-              >
-                Selling items
-              </a>
-            </li>
-            <li role="presentation" className={`${barterActiveTab}`}>
-              <a
-                href="#barteritems"
-                aria-controls="profile"
-                role="tab"
-                data-toggle="tab"
-              >
-                Barter items
-              </a>
-            </li>
-            <li role="presentation">
-              <a
-                href="#wishlistitems"
-                aria-controls="profile"
-                role="tab"
-                data-toggle="tab"
-              >
-                Wishlist
-              </a>
-            </li>
-          </ul>
-
-          {/* {productStatus.endsWith("Pending") ? (
-            <Skeleton active></Skeleton>
-          ) : ( */}
-          <div className="tab-content">
-            <div
-              role="tabpanel"
-              className={`tab-pane ${productActiveTab}`}
-              id="sellitems"
-            >
-              <div className="itemized-gallery">
-                {productDivState &&
-                  products &&
-                  products
-                    ?.filter((product) => !product.barterAllowed)
-                    .map((product, index) => (
-                      <ProductDiv
-                        key={Math.random()}
-                        product={product}
-                        productState={productDivState}
-                        addLikes={() => addLikes(product.id!)}
-                        addWishList={() => addToWishList(product.id!)}
-                        // setProductState={setProductDivState}
-                      />
-                    ))}
-              </div>
+          <br />
+          <div className="row over-auto">
+            <div className="col-lg-12 text-center">
+              <Pagination
+                current={currentPage}
+                showSizeChanger={false}
+                onChange={onPageChange}
+                total={productPaging.totalCount}
+                showTotal={(total, range) =>
+                  `${range[0]}-${range[1]} of ${total} items`
+                }
+                // defaultPageSize={20}
+                // defaultCurrent={1}
+              />
             </div>
-            <div
-              role="tabpanel"
-              className={`tab-pane ${barterActiveTab}`}
-              id="barteritems"
-            >
-              <div className="itemized-gallery">
-                {productDivState &&
-                  products &&
-                  products
-                    ?.filter((product) => product.barterAllowed)
-                    .map((product, index) => (
-                      <ProductDiv
-                        key={Math.random()}
-                        product={product}
-                        productState={productDivState}
-                        addLikes={() => addLikes(product.id!)}
-                        addWishList={() => addToWishList(product.id!)}
-                        // setProductState={setProductDivState}
-                      />
-                    ))}
-              </div>
-            </div>
-            <div role="tabpanel" className="tab-pane" id="wishlistitems">
-              <div className="itemized-gallery">
-                <ProductDivFlex products={wishListproducts} />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-12 text-center">
-            <Pagination
-              current={currentPage}
-              showSizeChanger={false}
-              onChange={onPageChange}
-              total={productPaging.totalCount}
-              showTotal={(total, range) =>
-                `${range[0]}-${range[1]} of ${total} items`
-              }
-              // defaultPageSize={20}
-              // defaultCurrent={1}
-            />
           </div>
         </div>
       </div>

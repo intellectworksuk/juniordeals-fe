@@ -26,6 +26,9 @@ import aboutUsBanner from "../assets/img/bs-1.jpg"
 import howitWorkBanner from "../assets/img/bs-2.jpg"
 import contactUsBanner from "../assets/img/bs-3.jpg"
 import productBanner from "../assets/img/bs-4.jpg"
+import { PrivacyPolicyPage } from "../Home/PrivacyPolicy";
+import { CookiePolicyPage } from "../Home/CookiePolicy";
+import { TermsPolicyPage } from "../Home/TermPolicy";
 
 
 const ContentLayout = (props: { children: ReactNode | null | undefined }) => {
@@ -75,8 +78,8 @@ const ContactUsContentLayout = (props: {
 const HowitWorksContentLayout = (props: {
   children: ReactNode | null | undefined;
 }) => {
-  return (      
-    <> 
+  return (
+    <>
       <PageHeader
         useBannerAsStrip={true}
         bannerImage={howitWorkBanner}
@@ -194,6 +197,9 @@ export const ContentNavigation = (/*props: { view: string }*/) => {
               path="/global/product/detail"
               element={<ProductDetailPage />}
             ></Route>
+            <Route path="/privacy" element={<PrivacyPolicyPage />}></Route>
+            <Route path="/cookie" element={<CookiePolicyPage />}></Route>
+            <Route path="/terms" element={<TermsPolicyPage />}></Route>
             <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
         </ContentLayout>
@@ -213,7 +219,7 @@ export const ProtectedNavigationContentNavigation = () => {
   return (
     <>
       {location.pathname.endsWith("/product/add") ||
-      location.pathname.endsWith("/product/edit") ? (
+        location.pathname.endsWith("/product/edit") ? (
         <ProductContentLayout>
           <Routes>
             <Route

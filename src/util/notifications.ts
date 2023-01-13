@@ -24,6 +24,7 @@ export function displaySuccessNotification(
  * displays error toast
  */
 export const displayErrorMessage = (error: string) => {
-  return message.error(error);
+  if (error.length > 0) {
+    return message.error(error);
+  }
 };
-

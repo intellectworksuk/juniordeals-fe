@@ -1,5 +1,7 @@
+import Apiconfig from "../../config/Apiconfig";
+import * as routes from "../../constants/routes";
 import { DragDropUpload, TextEditor } from "../../view";
-import { Form, Spin } from "antd";
+import { Col, Form, Row, Space, Spin } from "antd";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import {
   displayErrorMessage,
@@ -7,7 +9,7 @@ import {
 } from "../../util/notifications";
 import { CreateProductData, ProductResponse } from "../../types";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as ProductService from "../../store/product/product.actions";
 import { UserType } from "../../enums";
 import {
@@ -41,6 +43,8 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
 
   const navigate = useNavigate();
 
+  const [clearImageState, setClearImageState] = useState<boolean>(false);
+
   const onFormSubmit = (formData: CreateProductData) => {
     if (location.pathname.endsWith("/product/add")) {
       dispatch(ProductService.createProduct(formData));
@@ -73,7 +77,7 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
 
       form.resetFields();
 
-      form.setFieldsValue({ productImages: [] });
+      setClearImageState(true);
     }
 
     // dispatch(clearProductStateStatus());
@@ -106,22 +110,40 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <h2 className="text-center">Create New Item</h2>
+        <h2 className="text-center">
+          {location.pathname.endsWith("product/edit")
+            ? "Update Item"
+            : "Create New Item"}
+        </h2>
         <h4 className="text-center">
           Upload image(s) and add relevant description for item you want to sell
           or barter
         </h4>
         <div className="row">
-          <div className="col-lg-8 col-lg-offset-2 col-md-12 col-sm-12 col-xs-12">
+          <div className="col-lg-8 col-lg-offset-2">
             {/* <DragDropUpload
                   ItemName="productImages"
                   type="product"
                 ></DragDropUpload> */}
-            <UploadPictureWall
-              ItemName="productImages"
-              buttonText="Product Images"
-              type="product"
-            ></UploadPictureWall>
+            <Row gutter={16}>
+              <Col>
+                {product.productImage && product.productImage.length > 0 && (
+                  <img
+                    style={{ width: "104px", height: "104px" }}
+                    src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.productImage[0].fileName}&type=product`}
+                    alt=""
+                  />
+                )}
+              </Col>
+              <Col>
+                <UploadPictureWall
+                  ItemName="productImages"
+                  buttonText="Product Images"
+                  type="product"
+                  clearState={clearImageState}
+                ></UploadPictureWall>
+              </Col>
+            </Row>
           </div>
         </div>
         <hr />
@@ -346,6 +368,8 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
               <span id="button-text">
                 {productStatus === "createProductPending" ? (
                   <Spin size="small" />
+                ) : location.pathname.endsWith("product/edit") ? (
+                  "Update Product"
                 ) : (
                   "Upload Product Now"
                 )}

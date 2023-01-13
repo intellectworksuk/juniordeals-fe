@@ -163,7 +163,7 @@ export const DealDonePage = (props: DealDonePageProps) => {
     if (barterProduct) {
       setDealPaidBuy(
         barterProduct.rate === normalProduct?.rate!
-          ? ""
+          ? "Buyer"
           : barterProductValue * barterProduct.rate >
             normalProductValue * normalProduct?.rate!
           ? "Seller"

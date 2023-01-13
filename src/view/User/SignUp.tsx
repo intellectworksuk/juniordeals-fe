@@ -189,7 +189,8 @@ export const SignUpPage = (props: SignUpPageProps) => {
                 <input
                   type="date"
                   className="inpCtrl"
-                  max={moment().format("YYYY-MM-DD")}
+                  min={moment().subtract(20, "years").format("YYYY-MM-DD")}
+                  max={moment().subtract(5, "years").format("YYYY-MM-DD")}
                 />
               </Item>
             </div>

@@ -15,6 +15,7 @@ import { SetupContentNavigation } from "../view/Layout/FormLayout";
 import { LoginNavigation } from "../view/Layout/SignupLayout";
 import { MaintenancePage } from "../view/Home/Maintenance";
 import { ProtectedAdminContentNavigation } from "../view/Layout/ContentLayout";
+import { PrivacyPolicyPage } from "../view/Home/PrivacyPolicy";
 
 /**
  * Top level application router
@@ -26,7 +27,7 @@ export const Router = ({ user }: { user: User }) => {
 
   return (
     <Routes>
-      <Route path="/" element={<MaintenancePage />}></Route>
+      <Route path="/" element={<HomePage />}></Route>
       <Route path="/home" element={<HomePage />}></Route>
       <Route path="/user/*" element={<LoginNavigation />}></Route>
       <Route path="/account/*" element={<FormNavigation />}></Route>

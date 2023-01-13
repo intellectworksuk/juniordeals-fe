@@ -7,6 +7,8 @@ export const initialState: TransactionState = Object.freeze({
   status: "idle",
   transactions: [],
   redemptions: [],
+  tranPaging: {},
+  redeemPaging: {},
   error: "",
 });
 
@@ -80,7 +82,9 @@ const transactionSlice = createSlice({
       (state, { payload }) => {
         state.status = "fetchAllTransactionsResolved";
 
-        state.transactions = Util.fill(payload);
+        state.transactions = Util.fill(payload.result);
+
+        state.tranPaging = payload.paging;
 
         state.error = "";
       }
