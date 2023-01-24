@@ -10,6 +10,9 @@ import {
   Select,
   TabsProps,
   Skeleton,
+  Typography,
+  Badge,
+  Avatar,
 } from "antd";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import kid1img from "../../assets/img/kid-1.png";
@@ -65,6 +68,8 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
     childDeals,
   } = useAppSelector((state) => state.deal);
 
+  const [newParentDealCount, setNewParentDealCount] = useState<number>(0);
+
   const {
     status: tranStatus,
     error: tranError,
@@ -87,7 +92,9 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
     setActiveTabIndex(key);
   };
 
-  useEffectOnce(() => {});
+  useEffectOnce(() => {
+    dispatch(DealService.fetchUserDeals());
+  });
 
   useEffect(() => {
     if (location.state) {
@@ -121,6 +128,14 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
       dispatch(DealService.fetchChildUserDeals());
     }
     if (dealStatus.endsWith("Resolved")) {
+      dispatch(clearDealStateStatus());
+    }
+    if (dealStatus === "fetchUserDealsResolved") {
+      if (parentDeals && parentDeals.length > 0) {
+        setNewParentDealCount(
+          parentDeals.filter((pd) => pd.seenBySeller === false).length
+        );
+      }
       dispatch(clearDealStateStatus());
     }
   }, [dispatch, dealStatus]);
@@ -197,7 +212,18 @@ export const ParentProfilePage = (props: ParentProfilePageProps) => {
                 children: <UserProductsListPage />,
               },
               {
-                label: "Deal Inbox",
+                label: (
+                  <>
+                    <Typography.Text> Deal Inbox</Typography.Text>{" "}
+                    {newParentDealCount > 0 && (
+                      <Badge
+                        className="site-badge-count-109"
+                        count={newParentDealCount + " +"}
+                        style={{ backgroundColor: "tomato" }}
+                      />
+                    )}
+                  </>
+                ),
                 key: "3",
                 children: (
                   <>

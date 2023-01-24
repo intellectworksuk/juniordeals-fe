@@ -127,7 +127,7 @@ export const AddProductPage = (props: ProductUploadPageProps) => {
                 ></DragDropUpload> */}
             <Row gutter={16}>
               <Col>
-                {product.productImage && product.productImage.length > 0 && (
+                {product && product.productImage && product.productImage.length > 0 && (
                   <img
                     style={{ width: "104px", height: "104px" }}
                     src={`${Apiconfig.baseURI}${routes.DOWNLOAD_IMAGE}${product.productImage[0].fileName}&type=product`}

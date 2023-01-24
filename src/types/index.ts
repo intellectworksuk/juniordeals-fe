@@ -279,6 +279,8 @@ export interface DealResponse {
   buyerComments: string;
   sellerRating: number;
   sellerComments: string;
+  seenBySeller: boolean;
+  deliveryAddressBuyer: String;
 }
 
 export interface ConfigResponse {

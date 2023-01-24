@@ -131,6 +131,7 @@ export const DealDonePage = (props: DealDonePageProps) => {
         DealCredits: props.filler.dealCredits,
         DeliveryDate: moment(props.filler.deliveryDate),
         Comments: props.filler.comments,
+        DeliveryAddressBuyer: props.filler.deliveryAddressBuyer,
       });
       setNormalProduct(props.filler.product);
       setBarterProduct(props.filler.barterProduct);
@@ -294,6 +295,21 @@ export const DealDonePage = (props: DealDonePageProps) => {
                     className="inpCtrl"
                     placeholder="Delivery date"
                     min={moment().format("YYYY-MM-DD")}
+                  />
+                </Item>
+                <Item
+                  name="DeliveryAddressBuyer"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter your delivery address!",
+                    },
+                  ]}
+                >
+                  <input
+                    className="inpCtrl"
+                    placeholder="Delivery Address"
+                    maxLength={100}
                   />
                 </Item>
                 <Item

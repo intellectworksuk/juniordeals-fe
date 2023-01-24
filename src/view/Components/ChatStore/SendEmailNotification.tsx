@@ -51,9 +51,11 @@ export const SendEmailNotification = (props: SendEmailNotificationProps) => {
   return (
     <>
       <div className="text-center">
+        <br />
         <div className="row">
           <img src={userNotOnlineImg} alt="" style={{ width: "230px" }} />
         </div>
+        <br />
         <div className="row">
           <h2>Please send an email to notify about this product.</h2>
         </div>
